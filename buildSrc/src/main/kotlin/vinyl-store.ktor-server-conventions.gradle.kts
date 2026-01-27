@@ -1,0 +1,36 @@
+/*
+ * Copyright 2026 Attila Fazekas
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+plugins {
+    id("vinyl-store.kotlin-conventions")
+    id("org.jetbrains.kotlin.plugin.serialization")
+}
+
+dependencies {
+    implementation("io.github.smiley4:ktor-openapi:_")
+    implementation("io.github.smiley4:ktor-swagger-ui:_")
+    implementation("io.github.smiley4:schema-kenerator-core:_")
+    implementation("io.github.smiley4:schema-kenerator-swagger:_")
+    implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:_")
+    implementation("io.ktor:ktor-server-auth-jwt-jvm:_")
+    implementation("io.ktor:ktor-server-content-negotiation-jvm:_")
+    implementation("io.ktor:ktor-server-core-jvm:_")
+    implementation("io.ktor:ktor-server-html-builder-jvm:_")
+    implementation("io.ktor:ktor-server-netty-jvm:_")
+    implementation("io.ktor:ktor-server-test-host-jvm:_")
+    implementation("org.komapper:kova-core:_")
+    implementation("org.komapper:kova-ktor:_")
+}
