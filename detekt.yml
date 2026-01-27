@@ -1,0 +1,25 @@
+comments:
+  active: true
+  excludes: ["**/test/kotlin/**"]
+  AbsentOrWrongFileLicense:
+    active: true
+    licenseTemplateFile: 'license.template'
+  CommentOverPrivateFunction:
+    active: true
+  CommentOverPrivateProperty:
+    active: true
+  DeprecatedBlockTag:
+    active: true
+  EndOfSentenceFormat:
+    active: true
+  KDocReferencesNonPublicProperty:
+    active: true
+complexity:
+  LongMethod:
+    active: true
+    threshold: 200
+  TooManyFunctions:
+    thresholdInFiles: 20
+formatting:
+  NoWildcardImports:
+    active: true
