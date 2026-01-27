@@ -35,7 +35,9 @@ import io.github.attilafazekas.vinylstore.routes.v2.vinylV2Routes
 import io.github.smiley4.ktoropenapi.OpenApi
 import io.github.smiley4.ktoropenapi.config.AuthScheme
 import io.github.smiley4.ktoropenapi.config.AuthType
+import io.github.smiley4.ktoropenapi.config.ExampleEncoder
 import io.github.smiley4.ktoropenapi.config.OutputFormat
+import io.github.smiley4.ktoropenapi.config.SchemaGenerator
 import io.github.smiley4.ktoropenapi.openApi
 import io.github.smiley4.ktoropenapi.route
 import io.github.smiley4.ktorswaggerui.swaggerUI
@@ -107,14 +109,14 @@ fun Application.vinylStoreApplication(store: VinylStoreData = VinylStoreData()) 
 
 private fun Application.configureOpenApi() {
     install(OpenApi) {
-//        schemas {
-//            // configure the schema generator to use the default kotlinx-serializer
-//            generator = SchemaGenerator.kotlinx()
-//        }
-//        examples {
-//            // configure the example encoder to encode kotlin objects using kotlinx-serializer
-//            exampleEncoder = ExampleEncoder.kotlinx()
-//        }
+        schemas {
+            // configure the schema generator to use the default kotlinx-serializer
+            generator = SchemaGenerator.kotlinx()
+        }
+        examples {
+            // configure the example encoder to encode kotlin objects using kotlinx-serializer
+            exampleEncoder = ExampleEncoder.kotlinx()
+        }
         outputFormat = OutputFormat.JSON
         info {
             title = "Vinyl Store API"
