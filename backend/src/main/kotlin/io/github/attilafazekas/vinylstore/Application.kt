@@ -16,6 +16,7 @@
 
 package io.github.attilafazekas.vinylstore
 
+import com.sun.tools.javac.tree.TreeInfo.args
 import io.github.attilafazekas.vinylstore.models.UserPrincipal
 import io.github.attilafazekas.vinylstore.routes.adminRoutes
 import io.github.attilafazekas.vinylstore.routes.healthRoutes
@@ -57,26 +58,33 @@ const val USER_AUTH = "UserAuth"
 const val V1 = "v1"
 const val V2 = "v2"
 
-fun main() {
+fun main(args: Array<String>) {
+    val autoReset = args.contains("--auto-reset")
+
     println("Vinyl Store API running on http://localhost:8080")
     println("Admin credentials: admin@vinylstore.com / admin123")
     println("Try: http://localhost:8080/v1/listings")
-    startVinylStoreServer()
+    startVinylStoreServer(autoReset)
 }
 
-fun startVinylStoreServer() =
+fun startVinylStoreServer(autoReset: Boolean = false) =
     embeddedServer(Netty, port = 8080) {
-        vinylStoreApplication()
+        vinylStoreApplication(autoReset = autoReset)
     }.start(wait = true)
 
-fun Application.vinylStoreApplication(store: VinylStoreData = VinylStoreData()) {
+fun Application.vinylStoreApplication(
+    store: VinylStoreData = VinylStoreData(),
+    autoReset: Boolean = false,
+) {
     configureOpenApi()
     configurePlugins()
 
-    // Auto-reset checker
-    intercept(ApplicationCallPipeline.Monitoring) {
-        if (store.shouldReset()) {
-            store.resetToBootstrap()
+    // Auto-reset checker - only if enabled
+    if (autoReset) {
+        intercept(ApplicationCallPipeline.Monitoring) {
+            if (store.shouldReset()) {
+                store.resetToBootstrap()
+            }
         }
     }
 
