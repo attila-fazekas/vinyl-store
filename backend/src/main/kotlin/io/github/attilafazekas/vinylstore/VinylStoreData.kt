@@ -234,6 +234,7 @@ class VinylStoreData {
                 role = role,
                 isActive = true,
                 createdAt = TimestampUtil.now(),
+                updatedAt = TimestampUtil.now(),
             )
         users[id] = user
         return user
@@ -249,6 +250,7 @@ class VinylStoreData {
             user.copy(
                 role = role ?: user.role,
                 isActive = isActive ?: user.isActive,
+                updatedAt = TimestampUtil.now(),
             )
         users[id] = updated
         return updated
@@ -278,7 +280,20 @@ class VinylStoreData {
             }
         }
         val id = addressIdCounter.getAndIncrement()
-        val address = Address(id, userId, type, fullName, street, city, postalCode, country, isDefault)
+        val address =
+            Address(
+                id = id,
+                userId = userId,
+                type = type,
+                fullName = fullName,
+                street = street,
+                city = city,
+                postalCode = postalCode,
+                country = country,
+                isDefault = isDefault,
+                createdAt = TimestampUtil.now(),
+                updatedAt = TimestampUtil.now(),
+            )
         addresses[id] = address
         return address
     }
@@ -307,6 +322,7 @@ class VinylStoreData {
                 postalCode = postalCode ?: address.postalCode,
                 country = country ?: address.country,
                 isDefault = isDefault ?: address.isDefault,
+                updatedAt = TimestampUtil.now(),
             )
         addresses[id] = updated
         return updated
@@ -320,7 +336,7 @@ class VinylStoreData {
     ) {
         addresses.values
             .filter { it.userId == userId && it.type == type && it.isDefault }
-            .forEach { addresses[it.id] = it.copy(isDefault = false) }
+            .forEach { addresses[it.id] = it.copy(isDefault = false, updatedAt = TimestampUtil.now()) }
     }
 
     fun createArtist(name: String): Artist {
@@ -408,7 +424,19 @@ class VinylStoreData {
         conditionSleeve: String,
     ): Vinyl {
         val id = vinylIdCounter.getAndIncrement()
-        val vinyl = Vinyl(id, title, artistId, labelId, genreId, year, conditionMedia, conditionSleeve)
+        val vinyl =
+            Vinyl(
+                id = id,
+                title = title,
+                artistId = artistId,
+                labelId = labelId,
+                genreId = genreId,
+                year = year,
+                conditionMedia = conditionMedia,
+                conditionSleeve = conditionSleeve,
+                createdAt = TimestampUtil.now(),
+                updatedAt = TimestampUtil.now(),
+            )
         vinyls[id] = vinyl
         return vinyl
     }
@@ -431,6 +459,7 @@ class VinylStoreData {
                 year = year ?: vinyl.year,
                 conditionMedia = conditionMedia ?: vinyl.conditionMedia,
                 conditionSleeve = conditionSleeve ?: vinyl.conditionSleeve,
+                updatedAt = TimestampUtil.now(),
             )
         vinyls[id] = updated
         return updated
@@ -485,7 +514,7 @@ class VinylStoreData {
         listings[id] = listing
 
         val inventoryId = inventoryIdCounter.getAndIncrement()
-        inventory[id] = Inventory(inventoryId, id, initialStock, 0)
+        inventory[id] = Inventory(inventoryId, id, initialStock, 0, now, now)
         return listing
     }
 
@@ -533,6 +562,7 @@ class VinylStoreData {
             existing.copy(
                 totalQuantity = totalQuantity ?: existing.totalQuantity,
                 reservedQuantity = reservedQuantity ?: existing.reservedQuantity,
+                updatedAt = TimestampUtil.now(),
             )
         inventory[listingId] = updated
         return updated

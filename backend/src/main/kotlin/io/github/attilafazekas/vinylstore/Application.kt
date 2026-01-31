@@ -117,14 +117,14 @@ fun Application.vinylStoreApplication(
 
 private fun Application.configureOpenApi() {
     install(OpenApi) {
-        schemas {
-            // configure the schema generator to use the default kotlinx-serializer
-            generator = SchemaGenerator.kotlinx()
-        }
-        examples {
-            // configure the example encoder to encode kotlin objects using kotlinx-serializer
-            exampleEncoder = ExampleEncoder.kotlinx()
-        }
+//        schemas {
+//            // configure the schema generator to use the default kotlinx-serializer
+//            generator = SchemaGenerator.kotlinx()
+//        }
+//        examples {
+//            // configure the example encoder to encode kotlin objects using kotlinx-serializer
+//            exampleEncoder = ExampleEncoder.kotlinx()
+//        }
         outputFormat = OutputFormat.JSON
         info {
             title = "Vinyl Store API"

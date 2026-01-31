@@ -19,6 +19,7 @@ package io.github.attilafazekas.vinylstore.routes.v1
 import io.github.attilafazekas.vinylstore.AUTH_JWT
 import io.github.attilafazekas.vinylstore.BAD_REQUEST
 import io.github.attilafazekas.vinylstore.NOT_FOUND
+import io.github.attilafazekas.vinylstore.TimestampUtil
 import io.github.attilafazekas.vinylstore.V1
 import io.github.attilafazekas.vinylstore.VALIDATION_ERROR
 import io.github.attilafazekas.vinylstore.VinylStoreData
@@ -257,15 +258,17 @@ private fun listAddressesDocumentation(): RouteConfig.() -> Unit =
                                 addresses =
                                     listOf(
                                         Address(
-                                            1,
-                                            1,
-                                            AddressType.SHIPPING,
-                                            "John Doe",
-                                            "123 Main St",
-                                            "New York",
-                                            "10001",
-                                            "USA",
-                                            true,
+                                            id = 1,
+                                            userId = 1,
+                                            type = AddressType.SHIPPING,
+                                            fullName = "John Doe",
+                                            street = "123 Main St",
+                                            city = "New York",
+                                            postalCode = "10001",
+                                            country = "USA",
+                                            isDefault = true,
+                                            createdAt = TimestampUtil.now(),
+                                            updatedAt = TimestampUtil.now(),
                                         ),
                                     ),
                                 total = 1,
@@ -310,15 +313,17 @@ private fun getAddressDocumentation(): RouteConfig.() -> Unit =
                     example("Address details") {
                         value =
                             Address(
-                                1,
-                                1,
-                                AddressType.SHIPPING,
-                                "John Doe",
-                                "123 Main St",
-                                "New York",
-                                "10001",
-                                "USA",
-                                true,
+                                id = 1,
+                                userId = 1,
+                                type = AddressType.SHIPPING,
+                                fullName = "John Doe",
+                                street = "123 Main St",
+                                city = "New York",
+                                postalCode = "10001",
+                                country = "USA",
+                                isDefault = true,
+                                createdAt = TimestampUtil.now(),
+                                updatedAt = TimestampUtil.now(),
                             )
                     }
                 }
@@ -373,15 +378,17 @@ private fun postAddressDocumentation(): RouteConfig.() -> Unit =
                     example("Created address") {
                         value =
                             Address(
-                                1,
-                                1,
-                                AddressType.SHIPPING,
-                                "John Doe",
-                                "123 Main St",
-                                "New York",
-                                "10001",
-                                "USA",
-                                true,
+                                id = 1,
+                                userId = 1,
+                                type = AddressType.SHIPPING,
+                                fullName = "John Doe",
+                                street = "123 Main St",
+                                city = "New York",
+                                postalCode = "10001",
+                                country = "USA",
+                                isDefault = true,
+                                createdAt = TimestampUtil.now(),
+                                updatedAt = TimestampUtil.now(),
                             )
                     }
                 }
@@ -450,15 +457,17 @@ private fun updateAddressDocumentation(): RouteConfig.() -> Unit =
                     example("Updated address") {
                         value =
                             Address(
-                                1,
-                                1,
-                                AddressType.SHIPPING,
-                                "John Doe",
-                                "456 Oak Ave",
-                                "New York",
-                                "10001",
-                                "USA",
-                                true,
+                                id = 1,
+                                userId = 1,
+                                type = AddressType.SHIPPING,
+                                fullName = "John Doe",
+                                street = "456 Oak Ave",
+                                city = "New York",
+                                postalCode = "10001",
+                                country = "USA",
+                                isDefault = true,
+                                createdAt = TimestampUtil.now(),
+                                updatedAt = TimestampUtil.now(),
                             )
                     }
                 }

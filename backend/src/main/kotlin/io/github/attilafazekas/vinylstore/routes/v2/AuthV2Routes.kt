@@ -18,6 +18,7 @@ package io.github.attilafazekas.vinylstore.routes.v2
 
 import io.github.attilafazekas.vinylstore.AUTH_JWT
 import io.github.attilafazekas.vinylstore.Email
+import io.github.attilafazekas.vinylstore.TimestampUtil
 import io.github.attilafazekas.vinylstore.V2
 import io.github.attilafazekas.vinylstore.VinylStoreData
 import io.github.attilafazekas.vinylstore.documentation.notAuthenticatedExample
@@ -95,15 +96,17 @@ private fun getCurrentUserWithDetailsDocumentation(): RouteConfig.() -> Unit =
                                 addresses =
                                     listOf(
                                         Address(
-                                            1,
-                                            1,
-                                            AddressType.SHIPPING,
-                                            "John Doe",
-                                            "123 Main St",
-                                            "New York",
-                                            "10001",
-                                            "USA",
-                                            true,
+                                            id = 1,
+                                            userId = 1,
+                                            type = AddressType.SHIPPING,
+                                            fullName = "John Doe",
+                                            street = "123 Main St",
+                                            city = "New York",
+                                            postalCode = "10001",
+                                            country = "USA",
+                                            isDefault = true,
+                                            createdAt = TimestampUtil.now(),
+                                            updatedAt = TimestampUtil.now(),
                                         ),
                                     ),
                                 stats =

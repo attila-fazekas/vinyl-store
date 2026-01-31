@@ -94,6 +94,14 @@ data class VinylWithDetailsV2(
     val label: Label,
     @Description("The genre associated with this vinyl, with full details embedded.")
     val genre: Genre,
+    @Description(
+        "Timestamp when the vinyl was added to the catalog in ISO 8601 format with UTC timezone (e.g., '2025-01-10T14:30:45.123Z').",
+    )
+    val createdAt: String,
+    @Description(
+        "Timestamp when the vinyl details were last updated in ISO 8601 format with UTC timezone (e.g., '2025-01-10T14:30:45.123Z').",
+    )
+    val updatedAt: String,
 )
 
 @Serializable
@@ -104,6 +112,10 @@ data class InventoryV2(
     val reservedQuantity: Int,
     @Description("Quantity available for purchase (total minus reserved).")
     val availableQuantity: Int,
+    @Description("Timestamp when the inventory record was created in ISO 8601 format with UTC timezone (e.g., '2025-01-10T14:30:45.123Z').")
+    val createdAt: String,
+    @Description("Timestamp when the inventory was last updated in ISO 8601 format with UTC timezone (e.g., '2025-01-10T14:30:45.123Z').")
+    val updatedAt: String,
 )
 
 @Serializable

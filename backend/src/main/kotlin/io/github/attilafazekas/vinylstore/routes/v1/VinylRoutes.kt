@@ -20,6 +20,7 @@ import io.github.attilafazekas.vinylstore.AUTH_JWT
 import io.github.attilafazekas.vinylstore.BAD_REQUEST
 import io.github.attilafazekas.vinylstore.CONFLICT
 import io.github.attilafazekas.vinylstore.NOT_FOUND
+import io.github.attilafazekas.vinylstore.TimestampUtil
 import io.github.attilafazekas.vinylstore.V1
 import io.github.attilafazekas.vinylstore.VALIDATION_ERROR
 import io.github.attilafazekas.vinylstore.VinylStoreData
@@ -346,6 +347,8 @@ private fun listVinylsDocumentation(): RouteConfig.() -> Unit =
                                             year = 2022,
                                             conditionMedia = "M",
                                             conditionSleeve = "M",
+                                            createdAt = TimestampUtil.now(),
+                                            updatedAt = TimestampUtil.now(),
                                         ),
                                         Vinyl(
                                             id = 2,
@@ -356,6 +359,8 @@ private fun listVinylsDocumentation(): RouteConfig.() -> Unit =
                                             year = 2014,
                                             conditionMedia = "M",
                                             conditionSleeve = "NM",
+                                            createdAt = TimestampUtil.now(),
+                                            updatedAt = TimestampUtil.now(),
                                         ),
                                     ),
                                 total = 2,
@@ -419,6 +424,8 @@ private fun getVinylDocumentation(): RouteConfig.() -> Unit =
                                         year = 2022,
                                         conditionMedia = "M",
                                         conditionSleeve = "M",
+                                        createdAt = TimestampUtil.now(),
+                                        updatedAt = TimestampUtil.now(),
                                     ),
                                 artist = Artist(1, "Dominik Eulberg"),
                                 label = Label(1, "!K7 Records"),
@@ -583,6 +590,8 @@ private fun updateVinylDocumentation(): RouteConfig.() -> Unit =
                                 year = 2022,
                                 conditionMedia = "VG",
                                 conditionSleeve = "VG",
+                                createdAt = TimestampUtil.now(),
+                                updatedAt = TimestampUtil.now(),
                             )
                     }
                 }

@@ -37,6 +37,8 @@ data class User(
     val isActive: Boolean,
     @Description("Timestamp when the account was created in ISO 8601 format with UTC timezone (e.g., '2025-01-10T14:30:45.123Z').")
     val createdAt: String,
+    @Description("Timestamp when the account was last updated in ISO 8601 format with UTC timezone (e.g., '2025-01-10T14:30:45.123Z').")
+    val updatedAt: String,
 )
 
 @Serializable
@@ -59,6 +61,10 @@ data class Address(
     val country: String,
     @Description("Whether this is the default address for this type.")
     val isDefault: Boolean,
+    @Description("Timestamp when the address was created in ISO 8601 format with UTC timezone (e.g., '2025-01-10T14:30:45.123Z').")
+    val createdAt: String,
+    @Description("Timestamp when the address was last updated in ISO 8601 format with UTC timezone (e.g., '2025-01-10T14:30:45.123Z').")
+    val updatedAt: String,
 )
 
 @Serializable
@@ -103,6 +109,14 @@ data class Vinyl(
     val conditionMedia: String,
     @Description("The condition rating of the vinyl sleeve (e.g., 'M', 'VG+', 'VG').")
     val conditionSleeve: String,
+    @Description(
+        "Timestamp when the vinyl was added to the catalog in ISO 8601 format with UTC timezone (e.g., '2025-01-10T14:30:45.123Z').",
+    )
+    val createdAt: String,
+    @Description(
+        "Timestamp when the vinyl details were last updated in ISO 8601 format with UTC timezone (e.g., '2025-01-10T14:30:45.123Z').",
+    )
+    val updatedAt: String,
 )
 
 @Serializable
@@ -133,6 +147,10 @@ data class Inventory(
     val totalQuantity: Int,
     @Description("Quantity currently reserved for pending orders.")
     val reservedQuantity: Int,
+    @Description("Timestamp when the inventory record was created in ISO 8601 format with UTC timezone (e.g., '2025-01-10T14:30:45.123Z').")
+    val createdAt: String,
+    @Description("Timestamp when the inventory was last updated in ISO 8601 format with UTC timezone (e.g., '2025-01-10T14:30:45.123Z').")
+    val updatedAt: String,
 ) {
     @Description("Computed quantity available for purchase (total minus reserved).")
     val availableQuantity: Int get() = totalQuantity - reservedQuantity

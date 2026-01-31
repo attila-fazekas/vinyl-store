@@ -17,6 +17,7 @@
 package io.github.attilafazekas.vinylstore.routes.v2
 
 import io.github.attilafazekas.vinylstore.AUTH_JWT
+import io.github.attilafazekas.vinylstore.TimestampUtil
 import io.github.attilafazekas.vinylstore.V2
 import io.github.attilafazekas.vinylstore.VinylStoreData
 import io.github.attilafazekas.vinylstore.documentation.badRequestExample
@@ -63,6 +64,8 @@ fun Route.vinylV2Routes(store: VinylStoreData) {
                             year = vinyl.year,
                             conditionMedia = vinyl.conditionMedia,
                             conditionSleeve = vinyl.conditionSleeve,
+                            createdAt = TimestampUtil.now(),
+                            updatedAt = TimestampUtil.now(),
                         )
                     }
 
@@ -206,6 +209,8 @@ private fun listVinylsV2Documentation(): RouteConfig.() -> Unit =
                                             year = 2022,
                                             conditionMedia = "M",
                                             conditionSleeve = "M",
+                                            createdAt = TimestampUtil.now(),
+                                            updatedAt = TimestampUtil.now(),
                                         ),
                                         VinylWithDetailsV2(
                                             id = 3,
@@ -220,6 +225,8 @@ private fun listVinylsV2Documentation(): RouteConfig.() -> Unit =
                                             year = 2014,
                                             conditionMedia = "M",
                                             conditionSleeve = "NM",
+                                            createdAt = TimestampUtil.now(),
+                                            updatedAt = TimestampUtil.now(),
                                         ),
                                     ),
                                 total = 2,
