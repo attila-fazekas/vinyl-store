@@ -20,6 +20,7 @@ import io.github.attilafazekas.vinylstore.AUTH_JWT
 import io.github.attilafazekas.vinylstore.BAD_REQUEST
 import io.github.attilafazekas.vinylstore.CONFLICT
 import io.github.attilafazekas.vinylstore.NOT_FOUND
+import io.github.attilafazekas.vinylstore.TimestampUtil
 import io.github.attilafazekas.vinylstore.V1
 import io.github.attilafazekas.vinylstore.VALIDATION_ERROR
 import io.github.attilafazekas.vinylstore.VinylStoreData
@@ -236,12 +237,16 @@ private fun listInventoryDocumentation(): RouteConfig.() -> Unit =
                                             listingId = 1,
                                             totalQuantity = 15,
                                             reservedQuantity = 0,
+                                            createdAt = TimestampUtil.now(),
+                                            updatedAt = TimestampUtil.now(),
                                         ),
                                         Inventory(
                                             id = 2,
                                             listingId = 2,
                                             totalQuantity = 5,
                                             reservedQuantity = 2,
+                                            createdAt = TimestampUtil.now(),
+                                            updatedAt = TimestampUtil.now(),
                                         ),
                                     ),
                                 total = 2,
@@ -309,6 +314,8 @@ private fun getInventoryDocumentation(): RouteConfig.() -> Unit =
                                 listingId = 1,
                                 totalQuantity = 10,
                                 reservedQuantity = 1,
+                                createdAt = TimestampUtil.now(),
+                                updatedAt = TimestampUtil.now(),
                             )
                     }
                 }
@@ -401,6 +408,8 @@ private fun updateInventoryDocumentation(): RouteConfig.() -> Unit =
                                 listingId = 1,
                                 totalQuantity = 100,
                                 reservedQuantity = 5,
+                                createdAt = TimestampUtil.now(),
+                                updatedAt = TimestampUtil.now(),
                             )
                     }
                 }

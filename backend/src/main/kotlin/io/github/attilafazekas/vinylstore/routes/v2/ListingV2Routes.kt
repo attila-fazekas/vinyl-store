@@ -18,6 +18,7 @@ package io.github.attilafazekas.vinylstore.routes.v2
 
 import io.github.attilafazekas.vinylstore.BAD_REQUEST
 import io.github.attilafazekas.vinylstore.NOT_FOUND
+import io.github.attilafazekas.vinylstore.TimestampUtil
 import io.github.attilafazekas.vinylstore.V2
 import io.github.attilafazekas.vinylstore.VinylStoreData
 import io.github.attilafazekas.vinylstore.documentation.badRequestExample
@@ -78,6 +79,8 @@ fun Route.listingV2Routes(store: VinylStoreData) {
                                     totalQuantity = inventory.totalQuantity,
                                     reservedQuantity = inventory.reservedQuantity,
                                     availableQuantity = inventory.availableQuantity,
+                                    createdAt = TimestampUtil.now(),
+                                    updatedAt = TimestampUtil.now(),
                                 ),
                             vinyl =
                                 VinylWithDetailsV2(
@@ -89,6 +92,8 @@ fun Route.listingV2Routes(store: VinylStoreData) {
                                     artists = artists,
                                     label = label,
                                     genre = genre,
+                                    createdAt = TimestampUtil.now(),
+                                    updatedAt = TimestampUtil.now(),
                                 ),
                         )
                     } else {
@@ -219,6 +224,8 @@ fun Route.listingV2Routes(store: VinylStoreData) {
                             totalQuantity = inv.totalQuantity,
                             reservedQuantity = inv.reservedQuantity,
                             availableQuantity = inv.availableQuantity,
+                            createdAt = TimestampUtil.now(),
+                            updatedAt = TimestampUtil.now(),
                         ),
                     vinyl =
                         VinylWithDetailsV2(
@@ -230,6 +237,8 @@ fun Route.listingV2Routes(store: VinylStoreData) {
                             artists = artists,
                             label = label,
                             genre = genre,
+                            createdAt = TimestampUtil.now(),
+                            updatedAt = TimestampUtil.now(),
                         ),
                 )
 
@@ -322,6 +331,8 @@ private fun listListingsV2Documentation(): RouteConfig.() -> Unit =
                                                     totalQuantity = 15,
                                                     reservedQuantity = 0,
                                                     availableQuantity = 15,
+                                                    createdAt = TimestampUtil.now(),
+                                                    updatedAt = TimestampUtil.now(),
                                                 ),
                                             vinyl =
                                                 VinylWithDetailsV2(
@@ -333,6 +344,8 @@ private fun listListingsV2Documentation(): RouteConfig.() -> Unit =
                                                     artists = listOf(Artist(1, "Dominik Eulberg")),
                                                     label = Label(1, "!K7 Records"),
                                                     genre = Genre(1, "Electronic"),
+                                                    createdAt = TimestampUtil.now(),
+                                                    updatedAt = TimestampUtil.now(),
                                                 ),
                                         ),
                                         ListingV2Response(
@@ -347,6 +360,8 @@ private fun listListingsV2Documentation(): RouteConfig.() -> Unit =
                                                     totalQuantity = 5,
                                                     reservedQuantity = 2,
                                                     availableQuantity = 3,
+                                                    createdAt = TimestampUtil.now(),
+                                                    updatedAt = TimestampUtil.now(),
                                                 ),
                                             vinyl =
                                                 VinylWithDetailsV2(
@@ -362,6 +377,8 @@ private fun listListingsV2Documentation(): RouteConfig.() -> Unit =
                                                         ),
                                                     label = Label(2, "Cocoon Recordings"),
                                                     genre = Genre(1, "Electronic"),
+                                                    createdAt = TimestampUtil.now(),
+                                                    updatedAt = TimestampUtil.now(),
                                                 ),
                                         ),
                                     ),
@@ -435,6 +452,8 @@ private fun getListingV2Documentation(): RouteConfig.() -> Unit =
                                         totalQuantity = 15,
                                         reservedQuantity = 0,
                                         availableQuantity = 15,
+                                        createdAt = TimestampUtil.now(),
+                                        updatedAt = TimestampUtil.now(),
                                     ),
                                 vinyl =
                                     VinylWithDetailsV2(
@@ -446,6 +465,8 @@ private fun getListingV2Documentation(): RouteConfig.() -> Unit =
                                         artists = listOf(Artist(1, "Dominik Eulberg")),
                                         label = Label(1, "!K7 Records"),
                                         genre = Genre(1, "Electronic"),
+                                        createdAt = TimestampUtil.now(),
+                                        updatedAt = TimestampUtil.now(),
                                     ),
                             )
                     }
@@ -463,6 +484,8 @@ private fun getListingV2Documentation(): RouteConfig.() -> Unit =
                                         totalQuantity = 5,
                                         reservedQuantity = 2,
                                         availableQuantity = 3,
+                                        createdAt = TimestampUtil.now(),
+                                        updatedAt = TimestampUtil.now(),
                                     ),
                                 vinyl =
                                     VinylWithDetailsV2(
@@ -478,6 +501,8 @@ private fun getListingV2Documentation(): RouteConfig.() -> Unit =
                                             ),
                                         label = Label(2, "Cocoon Recordings"),
                                         genre = Genre(1, "Electronic"),
+                                        createdAt = TimestampUtil.now(),
+                                        updatedAt = TimestampUtil.now(),
                                     ),
                             )
                     }

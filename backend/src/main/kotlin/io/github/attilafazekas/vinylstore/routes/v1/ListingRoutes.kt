@@ -20,6 +20,7 @@ import io.github.attilafazekas.vinylstore.AUTH_JWT
 import io.github.attilafazekas.vinylstore.BAD_REQUEST
 import io.github.attilafazekas.vinylstore.CONFLICT
 import io.github.attilafazekas.vinylstore.NOT_FOUND
+import io.github.attilafazekas.vinylstore.TimestampUtil
 import io.github.attilafazekas.vinylstore.V1
 import io.github.attilafazekas.vinylstore.VALIDATION_ERROR
 import io.github.attilafazekas.vinylstore.VinylStoreData
@@ -319,6 +320,8 @@ private fun listListingsDocumentation(): RouteConfig.() -> Unit =
                                                     year = 2022,
                                                     conditionMedia = "M",
                                                     conditionSleeve = "M",
+                                                    createdAt = TimestampUtil.now(),
+                                                    updatedAt = TimestampUtil.now(),
                                                 ),
                                             artist =
                                                 Artist(
@@ -337,6 +340,8 @@ private fun listListingsDocumentation(): RouteConfig.() -> Unit =
                                                     listingId = 1,
                                                     totalQuantity = 15,
                                                     reservedQuantity = 0,
+                                                    TimestampUtil.now(),
+                                                    TimestampUtil.now(),
                                                 ),
                                         ),
                                     ),
@@ -416,6 +421,8 @@ private fun getListingDocumentation(): RouteConfig.() -> Unit =
                                         year = 2022,
                                         conditionMedia = "M",
                                         conditionSleeve = "M",
+                                        createdAt = TimestampUtil.now(),
+                                        updatedAt = TimestampUtil.now(),
                                     ),
                                 artist =
                                     Artist(
@@ -434,6 +441,8 @@ private fun getListingDocumentation(): RouteConfig.() -> Unit =
                                         listingId = 1,
                                         totalQuantity = 15,
                                         reservedQuantity = 0,
+                                        createdAt = TimestampUtil.now(),
+                                        updatedAt = TimestampUtil.now(),
                                     ),
                             )
                     }
