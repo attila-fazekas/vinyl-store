@@ -97,7 +97,7 @@ fun Application.vinylStoreApplication(
             swaggerUI(openApiUrl = "/api.json")
         }
 
-        healthRoutes(store)
+        healthRoutes(store, autoReset)
         authRoutes(store)
         authV2Routes(store)
         userRoutes(store)

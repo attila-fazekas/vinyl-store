@@ -24,13 +24,28 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 
-fun Route.healthRoutes(store: VinylStoreData) {
+fun Route.healthRoutes(
+    store: VinylStoreData,
+    autoReset: Boolean = false,
+) {
     get("/health", healthCheckDocumentation()) {
         val uptime = System.currentTimeMillis() - store.createdAt
-        val oneHour = 60 * 60 * 1000
-        val nextReset = oneHour - uptime
-        call.respond(HealthResponse("OK", uptime, nextReset))
+        val nextReset =
+            if (autoReset) {
+                val oneHour = 60 * 60 * 1000
+                formatDuration(oneHour - uptime)
+            } else {
+                null
+            }
+        call.respond(HealthResponse("OK", formatDuration(uptime), nextReset))
     }
+}
+
+private fun formatDuration(milliseconds: Long): String {
+    val seconds = (milliseconds / 1000) % 60
+    val minutes = (milliseconds / (1000 * 60)) % 60
+    val hours = (milliseconds / (1000 * 60 * 60))
+    return String.format("%02d:%02d:%02d", hours, minutes, seconds)
 }
 
 private fun healthCheckDocumentation(): RouteConfig.() -> Unit =
