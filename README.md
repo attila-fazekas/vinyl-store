@@ -21,7 +21,7 @@ A comprehensive REST API server for managing a vinyl record store, featuring cat
 - 🔍 **Advanced Filtering** and search capabilities across all resources
 - 📚 **API Versioning** with both v1 (standard) and v2 (enhanced with nested entities) endpoints
 - 📖 **OpenAPI/Swagger Documentation** at `/swagger`
-- ⏰ **Auto-Reset** mechanism (resets to bootstrap state every hour)
+- ⏰ **Optional Auto-Reset** mechanism (can reset to bootstrap state every hour when enabled)
 
 ## Technology Stack
 
