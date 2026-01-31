@@ -61,10 +61,10 @@ data class ErrorResponse(
 data class HealthResponse(
     @Description("The health status of the API (typically 'ok').")
     val status: String,
-    @Description("Time in milliseconds since the server started.")
-    val uptime: Long,
-    @Description("Time in milliseconds until the next automatic data reset.")
-    val nextResetIn: Long,
+    @Description("Uptime since the server started (format: HH:MM:SS).")
+    val uptime: String,
+    @Description("Time until the next automatic data reset (format: HH:MM:SS). Only present if auto-reset is enabled.")
+    val nextResetIn: String? = null,
 )
 
 @Serializable
