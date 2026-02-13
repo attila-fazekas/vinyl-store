@@ -22,6 +22,7 @@ import io.github.attilafazekas.vinylstore.CONFLICT
 import io.github.attilafazekas.vinylstore.Email
 import io.github.attilafazekas.vinylstore.NOT_FOUND
 import io.github.attilafazekas.vinylstore.Password
+import io.github.attilafazekas.vinylstore.TimestampUtil
 import io.github.attilafazekas.vinylstore.V1
 import io.github.attilafazekas.vinylstore.VinylStoreData
 import io.github.attilafazekas.vinylstore.documentation.badRequestExample
@@ -62,7 +63,7 @@ fun Route.userRoutes(store: VinylStoreData) {
 
                 var users =
                     store.getAllUsers().map {
-                        UserResponse(it.id, it.email, it.role, it.isActive)
+                        UserResponse(it.id, it.email, it.role, it.isActive, it.createdAt, it.updatedAt)
                     }
 
                 roleParam?.let { role ->
@@ -97,7 +98,16 @@ fun Route.userRoutes(store: VinylStoreData) {
                 if (user == null) {
                     call.respond(HttpStatusCode.NotFound, ErrorResponse(NOT_FOUND, "User not found"))
                 } else {
-                    call.respond(UserResponse(user.id, user.email, user.role, user.isActive))
+                    call.respond(
+                        UserResponse(
+                            user.id,
+                            user.email,
+                            user.role,
+                            user.isActive,
+                            user.createdAt,
+                            user.updatedAt,
+                        ),
+                    )
                 }
             }
 
@@ -118,7 +128,7 @@ fun Route.userRoutes(store: VinylStoreData) {
                 val user = store.createUser(request.email, request.password, request.role)
                 call.respond(
                     HttpStatusCode.Created,
-                    UserResponse(user.id, user.email, user.role, user.isActive),
+                    UserResponse(user.id, user.email, user.role, user.isActive, user.createdAt, user.updatedAt),
                 )
             }
 
@@ -137,7 +147,16 @@ fun Route.userRoutes(store: VinylStoreData) {
                 if (updated == null) {
                     call.respond(HttpStatusCode.NotFound, ErrorResponse(NOT_FOUND, "User not found"))
                 } else {
-                    call.respond(UserResponse(updated.id, updated.email, updated.role, updated.isActive))
+                    call.respond(
+                        UserResponse(
+                            updated.id,
+                            updated.email,
+                            updated.role,
+                            updated.isActive,
+                            updated.createdAt,
+                            updated.updatedAt,
+                        ),
+                    )
                 }
             }
 
@@ -197,9 +216,30 @@ private fun listUsersDocumentation(): RouteConfig.() -> Unit =
                             UsersResponse(
                                 users =
                                     listOf(
-                                        UserResponse(1, Email("admin@vinylstore.com"), Role.ADMIN, true),
-                                        UserResponse(2, Email("staff@vinylstore.com"), Role.STAFF, true),
-                                        UserResponse(3, Email("john@example.com"), Role.CUSTOMER, false),
+                                        UserResponse(
+                                            1,
+                                            Email("admin@vinylstore.com"),
+                                            Role.ADMIN,
+                                            true,
+                                            TimestampUtil.now(),
+                                            TimestampUtil.now(),
+                                        ),
+                                        UserResponse(
+                                            2,
+                                            Email("staff@vinylstore.com"),
+                                            Role.STAFF,
+                                            true,
+                                            TimestampUtil.now(),
+                                            TimestampUtil.now(),
+                                        ),
+                                        UserResponse(
+                                            3,
+                                            Email("john@example.com"),
+                                            Role.CUSTOMER,
+                                            false,
+                                            TimestampUtil.now(),
+                                            TimestampUtil.now(),
+                                        ),
                                     ),
                                 total = 3,
                             )
@@ -249,7 +289,15 @@ private fun getUserDocumentation(): RouteConfig.() -> Unit =
             code(HttpStatusCode.OK) {
                 body<UserResponse> {
                     example("User details") {
-                        value = UserResponse(1, Email("john@example.com"), Role.CUSTOMER, true)
+                        value =
+                            UserResponse(
+                                1,
+                                Email("john@example.com"),
+                                Role.CUSTOMER,
+                                true,
+                                TimestampUtil.now(),
+                                TimestampUtil.now(),
+                            )
                     }
                 }
             }
@@ -313,7 +361,15 @@ private fun createUserDocumentation(): RouteConfig.() -> Unit =
             code(HttpStatusCode.Created) {
                 body<UserResponse> {
                     example("Created user") {
-                        value = UserResponse(3, Email("customer@example.com"), Role.CUSTOMER, true)
+                        value =
+                            UserResponse(
+                                3,
+                                Email("customer@example.com"),
+                                Role.CUSTOMER,
+                                true,
+                                TimestampUtil.now(),
+                                TimestampUtil.now(),
+                            )
                     }
                 }
             }
@@ -366,7 +422,15 @@ private fun updateUserDocumentation(): RouteConfig.() -> Unit =
             code(HttpStatusCode.OK) {
                 body<UserResponse> {
                     example("Updated user") {
-                        value = UserResponse(1, Email("john@example.com"), Role.STAFF, true)
+                        value =
+                            UserResponse(
+                                1,
+                                Email("john@example.com"),
+                                Role.STAFF,
+                                true,
+                                TimestampUtil.now(),
+                                TimestampUtil.now(),
+                            )
                     }
                 }
             }

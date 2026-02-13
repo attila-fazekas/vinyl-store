@@ -68,6 +68,8 @@ fun Route.inventoryV2Routes(store: VinylStoreData) {
                                 totalQuantity = inv.totalQuantity,
                                 reservedQuantity = inv.reservedQuantity,
                                 availableQuantity = inv.availableQuantity,
+                                createdAt = inv.createdAt,
+                                updatedAt = inv.updatedAt,
                                 listing =
                                     ListingContextV2(
                                         id = listing.id,
@@ -159,6 +161,8 @@ fun Route.inventoryV2Routes(store: VinylStoreData) {
                         totalQuantity = inv.totalQuantity,
                         reservedQuantity = inv.reservedQuantity,
                         availableQuantity = inv.availableQuantity,
+                        createdAt = inv.createdAt,
+                        updatedAt = inv.updatedAt,
                         listing =
                             ListingContextV2(
                                 id = listing.id,
@@ -248,6 +252,8 @@ private fun listInventoryV2Documentation(): RouteConfig.() -> Unit =
                                             totalQuantity = 15,
                                             reservedQuantity = 2,
                                             availableQuantity = 13,
+                                            createdAt = "2025-01-10T14:30:45.123Z",
+                                            updatedAt = "2025-01-10T14:30:45.123Z",
                                             listing =
                                                 ListingContextV2(
                                                     id = 1,
@@ -270,6 +276,8 @@ private fun listInventoryV2Documentation(): RouteConfig.() -> Unit =
                                             totalQuantity = 3,
                                             reservedQuantity = 0,
                                             availableQuantity = 3,
+                                            createdAt = "2025-01-10T14:30:45.123Z",
+                                            updatedAt = "2025-01-10T14:30:45.123Z",
                                             listing =
                                                 ListingContextV2(
                                                     id = 3,
@@ -302,6 +310,8 @@ private fun listInventoryV2Documentation(): RouteConfig.() -> Unit =
                                             totalQuantity = 3,
                                             reservedQuantity = 0,
                                             availableQuantity = 3,
+                                            createdAt = "2025-01-10T14:30:45.123Z",
+                                            updatedAt = "2025-01-10T14:30:45.123Z",
                                             listing =
                                                 ListingContextV2(
                                                     id = 3,
@@ -387,6 +397,8 @@ private fun getInventoryWithContextDocumentation(): RouteConfig.() -> Unit =
                                 totalQuantity = 10,
                                 reservedQuantity = 1,
                                 availableQuantity = 9,
+                                createdAt = "2025-01-10T14:30:45.123Z",
+                                updatedAt = "2025-01-10T14:30:45.123Z",
                                 listing =
                                     ListingContextV2(
                                         id = 1,
@@ -415,6 +427,8 @@ private fun getInventoryWithContextDocumentation(): RouteConfig.() -> Unit =
                                 totalQuantity = 5,
                                 reservedQuantity = 0,
                                 availableQuantity = 5,
+                                createdAt = "2025-01-10T14:30:45.123Z",
+                                updatedAt = "2025-01-10T14:30:45.123Z",
                                 listing =
                                     ListingContextV2(
                                         id = 3,

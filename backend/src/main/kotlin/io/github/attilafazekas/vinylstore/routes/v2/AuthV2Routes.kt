@@ -53,6 +53,8 @@ fun Route.authV2Routes(store: VinylStoreData) {
                         email = user.email,
                         role = user.role,
                         isActive = user.isActive,
+                        createdAt = user.createdAt,
+                        updatedAt = user.updatedAt,
                         addresses = addresses,
                         stats =
                             UserStatsV2(
@@ -93,6 +95,8 @@ private fun getCurrentUserWithDetailsDocumentation(): RouteConfig.() -> Unit =
                                 email = Email("john@example.com"),
                                 role = Role.CUSTOMER,
                                 isActive = true,
+                                createdAt = "2025-01-10T14:30:45.123Z",
+                                updatedAt = "2025-01-10T14:30:45.123Z",
                                 addresses =
                                     listOf(
                                         Address(
@@ -123,6 +127,8 @@ private fun getCurrentUserWithDetailsDocumentation(): RouteConfig.() -> Unit =
                                 email = Email("admin@vinylstore.com"),
                                 role = Role.ADMIN,
                                 isActive = true,
+                                createdAt = "2025-01-10T14:30:45.123Z",
+                                updatedAt = "2025-01-10T14:30:45.123Z",
                                 addresses = emptyList(),
                                 stats =
                                     UserStatsV2(

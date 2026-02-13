@@ -23,6 +23,7 @@ import io.github.attilafazekas.vinylstore.FORBIDDEN
 import io.github.attilafazekas.vinylstore.JwtConfig
 import io.github.attilafazekas.vinylstore.Password
 import io.github.attilafazekas.vinylstore.PasswordUtil
+import io.github.attilafazekas.vinylstore.TimestampUtil
 import io.github.attilafazekas.vinylstore.UNAUTHORIZED
 import io.github.attilafazekas.vinylstore.V1
 import io.github.attilafazekas.vinylstore.VALIDATION_ERROR
@@ -78,7 +79,15 @@ fun Route.authRoutes(store: VinylStoreData) {
                 HttpStatusCode.Created,
                 LoginResponse(
                     token = token,
-                    user = UserResponse(user.id, user.email, user.role, user.isActive),
+                    user =
+                        UserResponse(
+                            id = user.id,
+                            email = user.email,
+                            role = user.role,
+                            isActive = user.isActive,
+                            createdAt = user.createdAt,
+                            updatedAt = user.updatedAt,
+                        ),
                 ),
             )
         }
@@ -98,14 +107,35 @@ fun Route.authRoutes(store: VinylStoreData) {
             }
 
             val token = JwtConfig.generateToken(user.id, user.email, user.role)
-            call.respond(LoginResponse(token, UserResponse(user.id, user.email, user.role, true)))
+            call.respond(
+                LoginResponse(
+                    token,
+                    UserResponse(
+                        id = user.id,
+                        email = user.email,
+                        role = user.role,
+                        isActive = true,
+                        createdAt = user.createdAt,
+                        updatedAt = user.updatedAt,
+                    ),
+                ),
+            )
         }
 
         authenticate(AUTH_JWT) {
             get("/me", getCurrentUserDocumentation()) {
                 val principal = call.principal<UserPrincipal>()!!
                 val user = store.getUserById(principal.userId)!!
-                call.respond(UserResponse(user.id, user.email, user.role, user.isActive))
+                call.respond(
+                    UserResponse(
+                        id = user.id,
+                        email = user.email,
+                        role = user.role,
+                        isActive = user.isActive,
+                        createdAt = user.createdAt,
+                        updatedAt = user.updatedAt,
+                    ),
+                )
             }
         }
     }
@@ -131,10 +161,26 @@ private fun getCurrentUserDocumentation(): RouteConfig.() -> Unit =
             code(HttpStatusCode.OK) {
                 body<UserResponse> {
                     example("Customer user") {
-                        value = UserResponse(1, Email("john@example.com"), Role.CUSTOMER, true)
+                        value =
+                            UserResponse(
+                                1,
+                                Email("john@example.com"),
+                                Role.CUSTOMER,
+                                true,
+                                TimestampUtil.now(),
+                                TimestampUtil.now(),
+                            )
                     }
                     example("Admin user") {
-                        value = UserResponse(2, Email("admin@vinylstore.com"), Role.ADMIN, true)
+                        value =
+                            UserResponse(
+                                2,
+                                Email("admin@vinylstore.com"),
+                                Role.ADMIN,
+                                true,
+                                TimestampUtil.now(),
+                                TimestampUtil.now(),
+                            )
                     }
                 }
             }
@@ -184,6 +230,8 @@ private fun registerUserDocumentation(): RouteConfig.() -> Unit =
                                         email = Email("john@example.com"),
                                         role = Role.CUSTOMER,
                                         isActive = true,
+                                        createdAt = TimestampUtil.now(),
+                                        updatedAt = TimestampUtil.now(),
                                     ),
                             )
                     }
@@ -236,7 +284,15 @@ private fun userLoginDocumentation(): RouteConfig.() -> Unit =
                         value =
                             LoginResponse(
                                 token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-                                user = UserResponse(1, Email("john@example.com"), Role.CUSTOMER, true),
+                                user =
+                                    UserResponse(
+                                        1,
+                                        Email("john@example.com"),
+                                        Role.CUSTOMER,
+                                        true,
+                                        TimestampUtil.now(),
+                                        TimestampUtil.now(),
+                                    ),
                             )
                     }
                 }
