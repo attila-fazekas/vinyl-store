@@ -64,6 +64,8 @@ fun main(args: Array<String>) {
     println("Vinyl Store API running on http://localhost:8080")
     println("Admin credentials: admin@vinylstore.com / admin123")
     println("Try: http://localhost:8080/v1/listings")
+    println("Swagger UI: http://localhost:8080/swagger")
+    if (autoReset) println("Auto-reset enabled")
     startVinylStoreServer(autoReset)
 }
 
