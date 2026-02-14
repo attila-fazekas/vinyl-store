@@ -135,6 +135,7 @@ fun Route.labelRoutes(store: VinylStoreData) {
 
 private fun deleteLabelDocumentation(): RouteConfig.() -> Unit =
     {
+        operationId = "deleteLabel"
         summary = "Delete Label"
         description =
             """
@@ -183,6 +184,7 @@ private fun deleteLabelDocumentation(): RouteConfig.() -> Unit =
 
 private fun listLabelsDocumentation(): RouteConfig.() -> Unit =
     {
+        operationId = "listLabels"
         summary = "List Labels"
         description =
             """
@@ -235,6 +237,7 @@ private fun listLabelsDocumentation(): RouteConfig.() -> Unit =
 
 private fun createLabelDocumentation(): RouteConfig.() -> Unit =
     {
+        operationId = "createLabel"
         summary = "Create Label"
         description =
             """
@@ -282,6 +285,7 @@ private fun createLabelDocumentation(): RouteConfig.() -> Unit =
 
 private fun updateLabelDocumentation(): RouteConfig.() -> Unit =
     {
+        operationId = "updateLabel"
         summary = "Update Label"
         description =
             """
@@ -336,6 +340,7 @@ private fun updateLabelDocumentation(): RouteConfig.() -> Unit =
 
 private fun getLabelDocumentation(): RouteConfig.() -> Unit =
     {
+        operationId = "getLabel"
         summary = "Get Label"
         description =
             """

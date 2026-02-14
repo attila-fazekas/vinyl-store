@@ -177,6 +177,7 @@ fun Route.inventoryRoutes(store: VinylStoreData) {
 
 private fun listInventoryDocumentation(): RouteConfig.() -> Unit =
     {
+        operationId = "listInventory"
         summary = "List Inventory"
         description =
             """
@@ -268,6 +269,7 @@ private fun listInventoryDocumentation(): RouteConfig.() -> Unit =
 
 private fun getInventoryDocumentation(): RouteConfig.() -> Unit =
     {
+        operationId = "getInventory"
         summary = "Get Inventory"
         description =
             """
@@ -345,6 +347,7 @@ private fun getInventoryDocumentation(): RouteConfig.() -> Unit =
 
 private fun updateInventoryDocumentation(): RouteConfig.() -> Unit =
     {
+        operationId = "updateInventory"
         summary = "Update Inventory"
         description =
             """

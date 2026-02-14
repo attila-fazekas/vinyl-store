@@ -182,6 +182,7 @@ fun Route.userRoutes(store: VinylStoreData) {
 
 private fun listUsersDocumentation(): RouteConfig.() -> Unit =
     {
+        operationId = "listUsers"
         summary = "List Users"
         description =
             """
@@ -260,6 +261,7 @@ private fun listUsersDocumentation(): RouteConfig.() -> Unit =
 
 private fun getUserDocumentation(): RouteConfig.() -> Unit =
     {
+        operationId = "getUser"
         summary = "Get User"
         description =
             """
@@ -310,6 +312,7 @@ private fun getUserDocumentation(): RouteConfig.() -> Unit =
 
 private fun createUserDocumentation(): RouteConfig.() -> Unit =
     {
+        operationId = "createUser"
         summary = "Create User"
         description =
             """
@@ -381,6 +384,7 @@ private fun createUserDocumentation(): RouteConfig.() -> Unit =
 
 private fun updateUserDocumentation(): RouteConfig.() -> Unit =
     {
+        operationId = "updateUser"
         summary = "Update User"
         description =
             """
@@ -443,6 +447,7 @@ private fun updateUserDocumentation(): RouteConfig.() -> Unit =
 
 private fun deleteUserDocumentation(): RouteConfig.() -> Unit =
     {
+        operationId = "deleteUser"
         summary = "Delete User"
         description =
             """

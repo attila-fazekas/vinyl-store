@@ -249,6 +249,7 @@ fun Route.listingV2Routes(store: VinylStoreData) {
 
 private fun listListingsV2Documentation(): RouteConfig.() -> Unit =
     {
+        operationId = "listListingsV2"
         summary = "List Listings (V2)"
         description =
             """
@@ -401,6 +402,7 @@ private fun listListingsV2Documentation(): RouteConfig.() -> Unit =
 
 private fun getListingV2Documentation(): RouteConfig.() -> Unit =
     {
+        operationId = "getListingV2"
         summary = "Get Listing (V2)"
         description =
             """

@@ -16,7 +16,6 @@
 
 package io.github.attilafazekas.vinylstore
 
-import com.sun.tools.javac.tree.TreeInfo.args
 import io.github.attilafazekas.vinylstore.models.UserPrincipal
 import io.github.attilafazekas.vinylstore.routes.adminRoutes
 import io.github.attilafazekas.vinylstore.routes.healthRoutes
@@ -36,9 +35,7 @@ import io.github.attilafazekas.vinylstore.routes.v2.vinylV2Routes
 import io.github.smiley4.ktoropenapi.OpenApi
 import io.github.smiley4.ktoropenapi.config.AuthScheme
 import io.github.smiley4.ktoropenapi.config.AuthType
-import io.github.smiley4.ktoropenapi.config.ExampleEncoder
 import io.github.smiley4.ktoropenapi.config.OutputFormat
-import io.github.smiley4.ktoropenapi.config.SchemaGenerator
 import io.github.smiley4.ktoropenapi.openApi
 import io.github.smiley4.ktoropenapi.route
 import io.github.smiley4.ktorswaggerui.swaggerUI

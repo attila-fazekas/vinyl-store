@@ -130,6 +130,7 @@ fun Route.vinylV2Routes(store: VinylStoreData) {
 
 private fun listVinylsV2Documentation(): RouteConfig.() -> Unit =
     {
+        operationId = "listVinylsV2"
         summary = "List Vinyls (V2)"
         description =
             """
