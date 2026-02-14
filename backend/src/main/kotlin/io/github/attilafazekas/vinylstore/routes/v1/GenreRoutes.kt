@@ -135,6 +135,7 @@ fun Route.genreRoutes(store: VinylStoreData) {
 
 private fun listGenresDocumentation(): RouteConfig.() -> Unit =
     {
+        operationId = "listGenres"
         summary = "List Genres"
         description =
             """
@@ -187,6 +188,7 @@ private fun listGenresDocumentation(): RouteConfig.() -> Unit =
 
 private fun createGenreDocumentation(): RouteConfig.() -> Unit =
     {
+        operationId = "createGenre"
         summary = "Create Genre"
         description =
             """
@@ -234,6 +236,7 @@ private fun createGenreDocumentation(): RouteConfig.() -> Unit =
 
 private fun getGenreDocumentation(): RouteConfig.() -> Unit =
     {
+        operationId = "getGenre"
         summary = "Get Genre"
         description =
             """
@@ -277,6 +280,7 @@ private fun getGenreDocumentation(): RouteConfig.() -> Unit =
 
 private fun updateGenreDocumentation(): RouteConfig.() -> Unit =
     {
+        operationId = "updateGenre"
         summary = "Update Genre"
         description =
             """
@@ -331,6 +335,7 @@ private fun updateGenreDocumentation(): RouteConfig.() -> Unit =
 
 private fun deleteGenreDocumentation(): RouteConfig.() -> Unit =
     {
+        operationId = "deleteGenre"
         summary = "Delete Genre"
         description =
             """

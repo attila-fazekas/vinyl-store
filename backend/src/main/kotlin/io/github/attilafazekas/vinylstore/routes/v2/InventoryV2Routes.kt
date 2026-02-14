@@ -186,6 +186,7 @@ fun Route.inventoryV2Routes(store: VinylStoreData) {
 
 private fun listInventoryV2Documentation(): RouteConfig.() -> Unit =
     {
+        operationId = "listInventoryV2"
         summary = "List Inventory (V2)"
         description =
             """
@@ -350,6 +351,7 @@ private fun listInventoryV2Documentation(): RouteConfig.() -> Unit =
 
 private fun getInventoryWithContextDocumentation(): RouteConfig.() -> Unit =
     {
+        operationId = "getInventoryWithContext"
         summary = "Get Inventory with Context (V2)"
         description =
             """

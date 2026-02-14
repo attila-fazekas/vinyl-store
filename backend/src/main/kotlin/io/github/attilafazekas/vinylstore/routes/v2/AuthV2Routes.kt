@@ -71,6 +71,7 @@ fun Route.authV2Routes(store: VinylStoreData) {
 
 private fun getCurrentUserWithDetailsDocumentation(): RouteConfig.() -> Unit =
     {
+        operationId = "getCurrentUserWithDetails"
         summary = "Get Current User with Details (V2)"
         description =
             """

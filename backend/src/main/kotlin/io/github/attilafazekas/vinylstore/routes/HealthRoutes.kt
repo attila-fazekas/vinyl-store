@@ -50,6 +50,7 @@ private fun formatDuration(milliseconds: Long): String {
 
 private fun healthCheckDocumentation(): RouteConfig.() -> Unit =
     {
+        operationId = "healthCheck"
         summary = "Health Check"
         description =
             """

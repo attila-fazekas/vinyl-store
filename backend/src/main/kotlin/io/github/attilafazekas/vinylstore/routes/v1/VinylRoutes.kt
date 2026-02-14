@@ -266,6 +266,7 @@ fun Route.vinylRoutes(store: VinylStoreData) {
 
 private fun listVinylsDocumentation(): RouteConfig.() -> Unit =
     {
+        operationId = "listVinyls"
         summary = "List Vinyls"
         description =
             """
@@ -375,6 +376,7 @@ private fun listVinylsDocumentation(): RouteConfig.() -> Unit =
 
 private fun getVinylDocumentation(): RouteConfig.() -> Unit =
     {
+        operationId = "getVinyl"
         summary = "Get Vinyl"
         description =
             """
@@ -442,6 +444,7 @@ private fun getVinylDocumentation(): RouteConfig.() -> Unit =
 
 private fun createVinylDocumentation(): RouteConfig.() -> Unit =
     {
+        operationId = "createVinyl"
         summary = "Create Vinyl"
         description =
             """
@@ -518,6 +521,7 @@ private fun createVinylDocumentation(): RouteConfig.() -> Unit =
 
 private fun updateVinylDocumentation(): RouteConfig.() -> Unit =
     {
+        operationId = "updateVinyl"
         summary = "Update Vinyl"
         description =
             """
@@ -605,6 +609,7 @@ private fun updateVinylDocumentation(): RouteConfig.() -> Unit =
 
 private fun deleteVinylDocumentation(): RouteConfig.() -> Unit =
     {
+        operationId = "deleteVinyl"
         summary = "Delete Vinyl"
         description =
             """
@@ -661,6 +666,7 @@ private fun deleteVinylDocumentation(): RouteConfig.() -> Unit =
 
 private fun createListingDocumentation(): RouteConfig.() -> Unit =
     {
+        operationId = "createListing"
         summary = "Create Listing for Vinyl"
         description =
             """

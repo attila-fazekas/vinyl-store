@@ -99,7 +99,7 @@ fun Route.addressRoutes(store: VinylStoreData) {
                 call.respond(address)
             }
 
-            post(postAddressDocumentation()) {
+            post(createAddressDocumentation()) {
                 val principal = call.principal<UserPrincipal>()!!
                 val request = call.receive<CreateAddressRequest>()
 
@@ -222,6 +222,7 @@ fun Route.addressRoutes(store: VinylStoreData) {
 
 private fun listAddressesDocumentation(): RouteConfig.() -> Unit =
     {
+        operationId = "listAddresses"
         summary = "List My Addresses"
         description =
             """
@@ -282,6 +283,7 @@ private fun listAddressesDocumentation(): RouteConfig.() -> Unit =
 
 private fun getAddressDocumentation(): RouteConfig.() -> Unit =
     {
+        operationId = "getAddress"
         summary = "Get Address"
         description =
             """
@@ -334,8 +336,9 @@ private fun getAddressDocumentation(): RouteConfig.() -> Unit =
         }
     }
 
-private fun postAddressDocumentation(): RouteConfig.() -> Unit =
+private fun createAddressDocumentation(): RouteConfig.() -> Unit =
     {
+        operationId = "createAddress"
         summary = "Create Address"
         description =
             """
@@ -407,6 +410,7 @@ private fun postAddressDocumentation(): RouteConfig.() -> Unit =
 
 private fun updateAddressDocumentation(): RouteConfig.() -> Unit =
     {
+        operationId = "updateAddress"
         summary = "Update Address"
         description =
             """
@@ -480,6 +484,7 @@ private fun updateAddressDocumentation(): RouteConfig.() -> Unit =
 
 private fun deleteAddressDocumentation(): RouteConfig.() -> Unit =
     {
+        operationId = "deleteAddress"
         summary = "Delete Address"
         description =
             """

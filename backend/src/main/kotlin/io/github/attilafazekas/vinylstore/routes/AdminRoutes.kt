@@ -42,6 +42,7 @@ fun Route.adminRoutes(store: VinylStoreData) {
 
 private fun adminDocumentation(): RouteConfig.() -> Unit =
     {
+        operationId = "resetData"
         summary = "Reset Data"
         description =
             """

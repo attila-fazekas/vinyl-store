@@ -92,7 +92,7 @@ fun Route.authRoutes(store: VinylStoreData) {
             )
         }
 
-        post("/login", userLoginDocumentation()) {
+        post("/login", loginDocumentation()) {
             val request = call.receive<LoginRequest>()
             val user = store.getUserByEmail(request.email)
 
@@ -143,6 +143,7 @@ fun Route.authRoutes(store: VinylStoreData) {
 
 private fun getCurrentUserDocumentation(): RouteConfig.() -> Unit =
     {
+        operationId = "getCurrentUser"
         summary = "Get Current User"
         description =
             """
@@ -190,6 +191,7 @@ private fun getCurrentUserDocumentation(): RouteConfig.() -> Unit =
 
 private fun registerUserDocumentation(): RouteConfig.() -> Unit =
     {
+        operationId = "registerUser"
         summary = "Register User"
         description =
             """
@@ -242,8 +244,9 @@ private fun registerUserDocumentation(): RouteConfig.() -> Unit =
         }
     }
 
-private fun userLoginDocumentation(): RouteConfig.() -> Unit =
+private fun loginDocumentation(): RouteConfig.() -> Unit =
     {
+        operationId = "login"
         summary = "User Login"
         description =
             """

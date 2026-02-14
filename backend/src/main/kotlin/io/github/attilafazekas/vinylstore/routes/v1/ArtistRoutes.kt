@@ -135,6 +135,7 @@ fun Route.artistRoutes(store: VinylStoreData) {
 
 private fun getArtistDocumentation(): RouteConfig.() -> Unit =
     {
+        operationId = "getArtist"
         summary = "Get Artist"
         description =
             """
@@ -178,6 +179,7 @@ private fun getArtistDocumentation(): RouteConfig.() -> Unit =
 
 private fun listArtistsDocumentation(): RouteConfig.() -> Unit =
     {
+        operationId = "listArtists"
         summary = "List Artists"
         description =
             """
@@ -230,6 +232,7 @@ private fun listArtistsDocumentation(): RouteConfig.() -> Unit =
 
 private fun createArtistDocumentation(): RouteConfig.() -> Unit =
     {
+        operationId = "createArtist"
         summary = "Create Artist"
         description =
             """
@@ -277,6 +280,7 @@ private fun createArtistDocumentation(): RouteConfig.() -> Unit =
 
 private fun updateArtistDocumentation(): RouteConfig.() -> Unit =
     {
+        operationId = "updateArtist"
         summary = "Update Artist"
         description =
             """
@@ -331,6 +335,7 @@ private fun updateArtistDocumentation(): RouteConfig.() -> Unit =
 
 private fun deleteArtistDocumentation(): RouteConfig.() -> Unit =
     {
+        operationId = "deleteArtist"
         summary = "Delete Artist"
         description =
             """
