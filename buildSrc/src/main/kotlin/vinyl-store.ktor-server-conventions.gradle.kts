@@ -30,6 +30,7 @@ dependencies {
     implementation("io.ktor:ktor-server-core-jvm:_")
     implementation("io.ktor:ktor-server-html-builder-jvm:_")
     implementation("io.ktor:ktor-server-netty-jvm:_")
+    implementation("io.ktor:ktor-server-status-pages:_")
     implementation("io.ktor:ktor-server-test-host-jvm:_")
     implementation("org.komapper:kova-core:_")
     implementation("org.komapper:kova-ktor:_")

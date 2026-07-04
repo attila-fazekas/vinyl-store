@@ -22,18 +22,15 @@ import io.github.attilafazekas.vinylstore.CONFLICT
 import io.github.attilafazekas.vinylstore.NOT_FOUND
 import io.github.attilafazekas.vinylstore.TimestampUtil
 import io.github.attilafazekas.vinylstore.V1
-import io.github.attilafazekas.vinylstore.VALIDATION_ERROR
 import io.github.attilafazekas.vinylstore.VinylStoreData
 import io.github.attilafazekas.vinylstore.documentation.badRequestExample
 import io.github.attilafazekas.vinylstore.documentation.conflictExample
 import io.github.attilafazekas.vinylstore.documentation.insufficientPermissionsExample
 import io.github.attilafazekas.vinylstore.documentation.notAuthenticatedExample
 import io.github.attilafazekas.vinylstore.documentation.notFoundExample
-import io.github.attilafazekas.vinylstore.documentation.validationErrorExample
 import io.github.attilafazekas.vinylstore.enums.ListingStatus
 import io.github.attilafazekas.vinylstore.enums.Role
 import io.github.attilafazekas.vinylstore.models.Artist
-import io.github.attilafazekas.vinylstore.models.CreateListingRequest
 import io.github.attilafazekas.vinylstore.models.ErrorResponse
 import io.github.attilafazekas.vinylstore.models.Genre
 import io.github.attilafazekas.vinylstore.models.Inventory
@@ -47,7 +44,6 @@ import io.github.attilafazekas.vinylstore.requireRole
 import io.github.smiley4.ktoropenapi.config.RouteConfig
 import io.github.smiley4.ktoropenapi.delete
 import io.github.smiley4.ktoropenapi.get
-import io.github.smiley4.ktoropenapi.post
 import io.github.smiley4.ktoropenapi.put
 import io.github.smiley4.ktoropenapi.route
 import io.ktor.http.HttpStatusCode

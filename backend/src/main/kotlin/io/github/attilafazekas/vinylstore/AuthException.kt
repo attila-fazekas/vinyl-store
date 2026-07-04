@@ -16,17 +16,10 @@
 
 package io.github.attilafazekas.vinylstore
 
-import io.github.attilafazekas.vinylstore.enums.Role
-import io.github.attilafazekas.vinylstore.models.UserPrincipal
-import io.ktor.server.application.ApplicationCall
-import io.ktor.server.auth.principal
+sealed class AuthException(
+    message: String,
+) : RuntimeException(message) {
+    class Unauthenticated : AuthException("Not authenticated")
 
-fun ApplicationCall.requireRole(vararg allowedRoles: Role) {
-    val principal =
-        principal<UserPrincipal>()
-            ?: throw AuthException.Unauthenticated()
-
-    if (principal.role !in allowedRoles.map { it.name }) {
-        throw AuthException.InsufficientPermissions()
-    }
+    class InsufficientPermissions : AuthException("Insufficient permissions")
 }

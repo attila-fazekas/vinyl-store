@@ -16,6 +16,7 @@
 
 package io.github.attilafazekas.vinylstore
 
+import io.github.attilafazekas.vinylstore.models.ErrorResponse
 import io.github.attilafazekas.vinylstore.models.UserPrincipal
 import io.github.attilafazekas.vinylstore.routes.adminRoutes
 import io.github.attilafazekas.vinylstore.routes.healthRoutes
@@ -39,6 +40,7 @@ import io.github.smiley4.ktoropenapi.config.OutputFormat
 import io.github.smiley4.ktoropenapi.openApi
 import io.github.smiley4.ktoropenapi.route
 import io.github.smiley4.ktorswaggerui.swaggerUI
+import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationCallPipeline
@@ -48,6 +50,8 @@ import io.ktor.server.auth.jwt.jwt
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.plugins.statuspages.StatusPages
+import io.ktor.server.response.respond
 import io.ktor.server.routing.routing
 import kotlinx.serialization.json.Json
 
@@ -196,6 +200,15 @@ fun Application.configurePlugins() {
                 val role = credential.payload.getClaim("role").asString()
                 UserPrincipal(userId, email, role)
             }
+        }
+    }
+
+    install(StatusPages) {
+        exception<AuthException.Unauthenticated> { call, cause ->
+            call.respond(HttpStatusCode.Unauthorized, ErrorResponse(UNAUTHORIZED, cause.message!!))
+        }
+        exception<AuthException.InsufficientPermissions> { call, cause ->
+            call.respond(HttpStatusCode.Forbidden, ErrorResponse(FORBIDDEN, cause.message!!))
         }
     }
 }
