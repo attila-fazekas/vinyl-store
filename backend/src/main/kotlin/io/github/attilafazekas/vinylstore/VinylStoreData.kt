@@ -94,6 +94,7 @@ class VinylStoreData {
     private fun bootstrap() {
         createUser(Email("admin@vinylstore.com"), Password("admin123"), Role.ADMIN)
         createUser(Email("staff@vinylstore.com"), Password("staff123"), Role.STAFF)
+        createUser(Email("customer@vinylstore.com"), Password("customer123"), Role.CUSTOMER)
         loadVinylsFromCsv()
     }
 
@@ -514,7 +515,16 @@ class VinylStoreData {
         listings[id] = listing
 
         val inventoryId = inventoryIdCounter.getAndIncrement()
-        inventory[id] = Inventory(inventoryId, id, initialStock, 0, now, now)
+        inventory[id] =
+            Inventory(
+                id = inventoryId,
+                listingId = id,
+                totalQuantity = initialStock,
+                reservedQuantity = 0,
+                availableQuantity = initialStock,
+                createdAt = now,
+                updatedAt = now,
+            )
         return listing
     }
 

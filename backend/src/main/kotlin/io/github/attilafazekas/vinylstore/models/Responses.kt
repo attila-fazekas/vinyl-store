@@ -27,6 +27,7 @@ import io.github.attilafazekas.vinylstore.Vinyls
 import io.github.attilafazekas.vinylstore.enums.ListingStatus
 import io.github.attilafazekas.vinylstore.enums.Role
 import io.github.smiley4.schemakenerator.core.annotations.Description
+import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -114,8 +115,9 @@ data class InventoryV2(
     val totalQuantity: Int,
     @Description("Quantity currently reserved for pending orders.")
     val reservedQuantity: Int,
+    @EncodeDefault
     @Description("Quantity available for purchase (total minus reserved).")
-    val availableQuantity: Int,
+    val availableQuantity: Int = totalQuantity - reservedQuantity,
     @Description("Timestamp when the inventory record was created in ISO 8601 format with UTC timezone (e.g., '2025-01-10T14:30:45.123Z').")
     val createdAt: String,
     @Description("Timestamp when the inventory was last updated in ISO 8601 format with UTC timezone (e.g., '2025-01-10T14:30:45.123Z').")
@@ -281,8 +283,9 @@ data class InventoryWithListingV2Response(
     val totalQuantity: Int,
     @Description("Quantity currently reserved for pending orders.")
     val reservedQuantity: Int,
+    @EncodeDefault
     @Description("Quantity available for purchase.")
-    val availableQuantity: Int,
+    val availableQuantity: Int = totalQuantity - reservedQuantity,
     @Description("Timestamp when the inventory record was created in ISO 8601 format with UTC timezone (e.g., '2025-01-10T14:30:45.123Z').")
     val createdAt: String,
     @Description("Timestamp when the inventory was last updated in ISO 8601 format with UTC timezone (e.g., '2025-01-10T14:30:45.123Z').")

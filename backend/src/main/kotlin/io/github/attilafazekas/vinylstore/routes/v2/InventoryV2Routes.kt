@@ -67,7 +67,6 @@ fun Route.inventoryV2Routes(store: VinylStoreData) {
                                 id = inv.id,
                                 totalQuantity = inv.totalQuantity,
                                 reservedQuantity = inv.reservedQuantity,
-                                availableQuantity = inv.availableQuantity,
                                 createdAt = inv.createdAt,
                                 updatedAt = inv.updatedAt,
                                 listing =
@@ -160,7 +159,6 @@ fun Route.inventoryV2Routes(store: VinylStoreData) {
                         id = inv.id,
                         totalQuantity = inv.totalQuantity,
                         reservedQuantity = inv.reservedQuantity,
-                        availableQuantity = inv.availableQuantity,
                         createdAt = inv.createdAt,
                         updatedAt = inv.updatedAt,
                         listing =
