@@ -48,6 +48,7 @@ import io.ktor.server.auth.principal
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
+import kotlin.uuid.Uuid
 
 fun Route.authRoutes(store: VinylStoreData) {
     route("$V1/auth") {
@@ -164,7 +165,7 @@ private fun getCurrentUserDocumentation(): RouteConfig.() -> Unit =
                     example("Customer user") {
                         value =
                             UserResponse(
-                                1,
+                                Uuid.random(),
                                 Email("john@example.com"),
                                 Role.CUSTOMER,
                                 true,
@@ -175,7 +176,7 @@ private fun getCurrentUserDocumentation(): RouteConfig.() -> Unit =
                     example("Admin user") {
                         value =
                             UserResponse(
-                                2,
+                                Uuid.random(),
                                 Email("admin@vinylstore.com"),
                                 Role.ADMIN,
                                 true,
@@ -228,7 +229,7 @@ private fun registerUserDocumentation(): RouteConfig.() -> Unit =
                                 token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
                                 user =
                                     UserResponse(
-                                        id = 2,
+                                        id = Uuid.random(),
                                         email = Email("john@example.com"),
                                         role = Role.CUSTOMER,
                                         isActive = true,
@@ -289,7 +290,7 @@ private fun loginDocumentation(): RouteConfig.() -> Unit =
                                 token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
                                 user =
                                     UserResponse(
-                                        1,
+                                        Uuid.random(),
                                         Email("john@example.com"),
                                         Role.CUSTOMER,
                                         true,

@@ -21,6 +21,7 @@ import com.auth0.jwt.JWTVerifier
 import com.auth0.jwt.algorithms.Algorithm
 import io.github.attilafazekas.vinylstore.enums.Role
 import java.util.Date
+import kotlin.uuid.Uuid
 
 object JwtConfig {
     private const val SECRET = "vinyl-store-secret-key-for-testing"
@@ -36,7 +37,7 @@ object JwtConfig {
             .build()
 
     fun generateToken(
-        userId: Int,
+        userId: Uuid,
         email: Email,
         role: Role,
     ): String =
@@ -44,7 +45,7 @@ object JwtConfig {
             .create()
             .withIssuer(ISSUER)
             .withAudience(AUDIENCE)
-            .withClaim("userId", userId)
+            .withClaim("userId", userId.toString())
             .withClaim("email", email.value)
             .withClaim("role", role.name)
             .withExpiresAt(Date(System.currentTimeMillis() + VALIDITY_MS))

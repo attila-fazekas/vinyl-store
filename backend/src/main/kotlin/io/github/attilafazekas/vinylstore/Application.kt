@@ -54,6 +54,7 @@ import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.response.respond
 import io.ktor.server.routing.routing
 import kotlinx.serialization.json.Json
+import kotlin.uuid.Uuid
 
 const val USER_AUTH = "UserAuth"
 const val V1 = "v1"
@@ -195,7 +196,7 @@ fun Application.configurePlugins() {
         jwt(AUTH_JWT) {
             verifier(JwtConfig.verifier)
             validate { credential ->
-                val userId = credential.payload.getClaim("userId").asInt()
+                val userId = Uuid.parse(credential.payload.getClaim("userId").asString())
                 val email = credential.payload.getClaim("email").asString()
                 val role = credential.payload.getClaim("role").asString()
                 UserPrincipal(userId, email, role)

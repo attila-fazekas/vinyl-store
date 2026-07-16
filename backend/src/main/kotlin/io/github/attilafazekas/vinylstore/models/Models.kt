@@ -23,11 +23,12 @@ import io.github.attilafazekas.vinylstore.enums.Role
 import io.github.smiley4.schemakenerator.core.annotations.Description
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.Serializable
+import kotlin.uuid.Uuid
 
 @Serializable
 data class User(
     @Description("Unique identifier for the user.")
-    val id: Int,
+    val id: Uuid,
     @Description("User's email address.")
     val email: Email,
     @Description("Hashed password for authentication.")
@@ -45,9 +46,9 @@ data class User(
 @Serializable
 data class Address(
     @Description("Unique identifier for the address.")
-    val id: Int,
+    val id: Uuid,
     @Description("ID of the user who owns this address.")
-    val userId: Int,
+    val userId: Uuid,
     @Description("The type of address (SHIPPING or BILLING).")
     val type: AddressType,
     @Description("The full name of the recipient.")
@@ -71,7 +72,7 @@ data class Address(
 @Serializable
 data class Artist(
     @Description("Unique identifier for the artist.")
-    val id: Int,
+    val id: Uuid,
     @Description("The name of the artist.")
     val name: String,
 )
@@ -79,7 +80,7 @@ data class Artist(
 @Serializable
 data class Genre(
     @Description("Unique identifier for the genre.")
-    val id: Int,
+    val id: Uuid,
     @Description("The name of the genre.")
     val name: String,
 )
@@ -87,7 +88,7 @@ data class Genre(
 @Serializable
 data class Label(
     @Description("Unique identifier for the record label.")
-    val id: Int,
+    val id: Uuid,
     @Description("The name of the record label.")
     val name: String,
 )
@@ -95,15 +96,15 @@ data class Label(
 @Serializable
 data class Vinyl(
     @Description("Unique identifier for the vinyl record.")
-    val id: Int,
+    val id: Uuid,
     @Description("The title of the vinyl record.")
     val title: String,
     @Description("ID of the artist who created this vinyl.")
-    val artistId: Int,
+    val artistId: Uuid,
     @Description("ID of the record label that released this vinyl.")
-    val labelId: Int,
+    val labelId: Uuid,
     @Description("ID of the genre associated with this vinyl.")
-    val genreId: Int,
+    val genreId: Uuid,
     @Description("The year the vinyl was released.")
     val year: Int,
     @Description("The condition rating of the vinyl media (e.g., 'M', 'VG+', 'VG').")
@@ -123,9 +124,9 @@ data class Vinyl(
 @Serializable
 data class Listing(
     @Description("Unique identifier for the listing.")
-    val id: Int,
+    val id: Uuid,
     @Description("ID of the vinyl record being listed.")
-    val vinylId: Int,
+    val vinylId: Uuid,
     @Description("Current status of the listing (DRAFT, PUBLISHED, or ARCHIVED).")
     val status: ListingStatus,
     @Description("The listing price.")
@@ -141,9 +142,9 @@ data class Listing(
 @Serializable
 data class Inventory(
     @Description("Unique identifier for the inventory record.")
-    val id: Int,
+    val id: Uuid,
     @Description("ID of the listing this inventory belongs to.")
-    val listingId: Int,
+    val listingId: Uuid,
     @Description("Total quantity in stock.")
     val totalQuantity: Int,
     @Description("Quantity currently reserved for pending orders.")
@@ -160,15 +161,15 @@ data class Inventory(
 @Serializable
 data class VinylGenre(
     @Description("ID of the vinyl record.")
-    val vinylId: Int,
+    val vinylId: Uuid,
     @Description("ID of the genre associated with the vinyl.")
-    val genreId: Int,
+    val genreId: Uuid,
 )
 
 @Serializable
 data class VinylArtist(
     @Description("ID of the vinyl record.")
-    val vinylId: Int,
+    val vinylId: Uuid,
     @Description("ID of the artist associated with the vinyl.")
-    val artistId: Int,
+    val artistId: Uuid,
 )

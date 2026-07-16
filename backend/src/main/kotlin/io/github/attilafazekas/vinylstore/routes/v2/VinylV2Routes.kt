@@ -34,7 +34,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.server.auth.authenticate
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
-import kotlin.text.toIntOrNull
+import kotlin.uuid.Uuid
 
 fun Route.vinylV2Routes(store: VinylStoreData) {
     authenticate(AUTH_JWT) {
@@ -70,7 +70,7 @@ fun Route.vinylV2Routes(store: VinylStoreData) {
                     }
 
                 artistParam?.let { artist ->
-                    val artistId = artist.toIntOrNull()
+                    val artistId = runCatching { Uuid.parse(artist) }.getOrNull()
                     vinylsWithDetails =
                         vinylsWithDetails.filter { vinyl ->
                             if (artistId != null) {
@@ -89,7 +89,7 @@ fun Route.vinylV2Routes(store: VinylStoreData) {
                 }
 
                 labelParam?.let { label ->
-                    val labelId = label.toIntOrNull()
+                    val labelId = runCatching { Uuid.parse(label) }.getOrNull()
                     vinylsWithDetails =
                         vinylsWithDetails.filter { vinyl ->
                             if (labelId != null) {
@@ -202,11 +202,11 @@ private fun listVinylsV2Documentation(): RouteConfig.() -> Unit =
                                 vinyls =
                                     listOf(
                                         VinylWithDetailsV2(
-                                            id = 1,
+                                            id = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
                                             title = "Avichrom",
-                                            artists = listOf(Artist(1, "Dominik Eulberg")),
-                                            label = Label(1, "!K7 Records"),
-                                            genre = Genre(1, "Electronic"),
+                                            artists = listOf(Artist(Uuid.parse("550e8400-e29b-41d4-a716-446655440001"), "Dominik Eulberg")),
+                                            label = Label(Uuid.parse("550e8400-e29b-41d4-a716-446655440002"), "!K7 Records"),
+                                            genre = Genre(Uuid.parse("550e8400-e29b-41d4-a716-446655440003"), "Electronic"),
                                             year = 2022,
                                             conditionMedia = "M",
                                             conditionSleeve = "M",
@@ -214,15 +214,15 @@ private fun listVinylsV2Documentation(): RouteConfig.() -> Unit =
                                             updatedAt = TimestampUtil.now(),
                                         ),
                                         VinylWithDetailsV2(
-                                            id = 3,
+                                            id = Uuid.parse("550e8400-e29b-41d4-a716-446655440004"),
                                             title = "...A Little Further",
                                             artists =
                                                 listOf(
-                                                    Artist(1, "Dominik Eulberg"),
-                                                    Artist(2, "Extrawelt"),
+                                                    Artist(Uuid.parse("550e8400-e29b-41d4-a716-446655440001"), "Dominik Eulberg"),
+                                                    Artist(Uuid.parse("550e8400-e29b-41d4-a716-446655440005"), "Extrawelt"),
                                                 ),
-                                            label = Label(2, "Cocoon Recordings"),
-                                            genre = Genre(1, "Electronic"),
+                                            label = Label(Uuid.parse("550e8400-e29b-41d4-a716-446655440006"), "Cocoon Recordings"),
+                                            genre = Genre(Uuid.parse("550e8400-e29b-41d4-a716-446655440003"), "Electronic"),
                                             year = 2014,
                                             conditionMedia = "M",
                                             conditionSleeve = "NM",

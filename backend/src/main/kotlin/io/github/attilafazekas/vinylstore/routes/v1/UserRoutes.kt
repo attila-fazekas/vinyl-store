@@ -49,8 +49,8 @@ import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import kotlin.text.toBooleanStrictOrNull
-import kotlin.text.toIntOrNull
 import kotlin.text.uppercase
+import kotlin.uuid.Uuid
 
 fun Route.userRoutes(store: VinylStoreData) {
     authenticate(AUTH_JWT) {
@@ -88,7 +88,7 @@ fun Route.userRoutes(store: VinylStoreData) {
             get("/{id}", getUserDocumentation()) {
                 call.requireRole(Role.ADMIN)
 
-                val id = call.parameters["id"]?.toIntOrNull()
+                val id = call.parameters["id"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
                 if (id == null) {
                     call.respond(HttpStatusCode.BadRequest, ErrorResponse(BAD_REQUEST, "Invalid user ID"))
                     return@get
@@ -135,7 +135,7 @@ fun Route.userRoutes(store: VinylStoreData) {
             put("/{id}", updateUserDocumentation()) {
                 call.requireRole(Role.ADMIN)
 
-                val id = call.parameters["id"]?.toIntOrNull()
+                val id = call.parameters["id"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
                 if (id == null) {
                     call.respond(HttpStatusCode.BadRequest, ErrorResponse(BAD_REQUEST, "Invalid user ID"))
                     return@put
@@ -163,7 +163,7 @@ fun Route.userRoutes(store: VinylStoreData) {
             delete("/{id}", deleteUserDocumentation()) {
                 call.requireRole(Role.ADMIN)
 
-                val id = call.parameters["id"]?.toIntOrNull()
+                val id = call.parameters["id"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
                 if (id == null) {
                     call.respond(HttpStatusCode.BadRequest, ErrorResponse(BAD_REQUEST, "Invalid user ID"))
                     return@delete
@@ -218,7 +218,7 @@ private fun listUsersDocumentation(): RouteConfig.() -> Unit =
                                 users =
                                     listOf(
                                         UserResponse(
-                                            1,
+                                            Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
                                             Email("admin@vinylstore.com"),
                                             Role.ADMIN,
                                             true,
@@ -226,7 +226,7 @@ private fun listUsersDocumentation(): RouteConfig.() -> Unit =
                                             TimestampUtil.now(),
                                         ),
                                         UserResponse(
-                                            2,
+                                            Uuid.parse("550e8400-e29b-41d4-a716-446655440001"),
                                             Email("staff@vinylstore.com"),
                                             Role.STAFF,
                                             true,
@@ -234,7 +234,7 @@ private fun listUsersDocumentation(): RouteConfig.() -> Unit =
                                             TimestampUtil.now(),
                                         ),
                                         UserResponse(
-                                            3,
+                                            Uuid.parse("550e8400-e29b-41d4-a716-446655440002"),
                                             Email("john@example.com"),
                                             Role.CUSTOMER,
                                             false,
@@ -280,10 +280,10 @@ private fun getUserDocumentation(): RouteConfig.() -> Unit =
             """.trimIndent()
         tags = listOf("users")
         request {
-            pathParameter<String>("id") {
-                description = "User ID"
+            pathParameter<Uuid>("id") {
+                description = "User UUID"
                 example("User details") {
-                    value = "1"
+                    value = "550e8400-e29b-41d4-a716-446655440000"
                 }
             }
         }
@@ -293,7 +293,7 @@ private fun getUserDocumentation(): RouteConfig.() -> Unit =
                     example("User details") {
                         value =
                             UserResponse(
-                                1,
+                                Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
                                 Email("john@example.com"),
                                 Role.CUSTOMER,
                                 true,
@@ -303,7 +303,7 @@ private fun getUserDocumentation(): RouteConfig.() -> Unit =
                     }
                 }
             }
-            badRequestExample("Invalid user ID")
+            badRequestExample("Invalid user UUID")
             notAuthenticatedExample()
             insufficientPermissionsExample("Only ADMIN role can view user details")
             notFoundExample("User not found")
@@ -366,7 +366,7 @@ private fun createUserDocumentation(): RouteConfig.() -> Unit =
                     example("Created user") {
                         value =
                             UserResponse(
-                                3,
+                                Uuid.parse("550e8400-e29b-41d4-a716-446655440002"),
                                 Email("customer@example.com"),
                                 Role.CUSTOMER,
                                 true,
@@ -403,10 +403,10 @@ private fun updateUserDocumentation(): RouteConfig.() -> Unit =
             """.trimIndent()
         tags = listOf("users")
         request {
-            pathParameter<String>("id") {
-                description = "User ID"
+            pathParameter<Uuid>("id") {
+                description = "User UUID"
                 example("Update user") {
-                    value = "1"
+                    value = "550e8400-e29b-41d4-a716-446655440000"
                 }
             }
             body<UpdateUserRequest> {
@@ -428,7 +428,7 @@ private fun updateUserDocumentation(): RouteConfig.() -> Unit =
                     example("Updated user") {
                         value =
                             UserResponse(
-                                1,
+                                Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
                                 Email("john@example.com"),
                                 Role.STAFF,
                                 true,
@@ -438,7 +438,7 @@ private fun updateUserDocumentation(): RouteConfig.() -> Unit =
                     }
                 }
             }
-            badRequestExample("Invalid user ID")
+            badRequestExample("Invalid user UUID")
             notAuthenticatedExample()
             insufficientPermissionsExample("Only ADMIN role can delete users")
             notFoundExample("User not found")
@@ -465,10 +465,10 @@ private fun deleteUserDocumentation(): RouteConfig.() -> Unit =
             """.trimIndent()
         tags = listOf("users")
         request {
-            pathParameter<String>("id") {
-                description = "User ID"
+            pathParameter<Uuid>("id") {
+                description = "User UUID"
                 example("Delete user") {
-                    value = "1"
+                    value = "550e8400-e29b-41d4-a716-446655440000"
                 }
             }
         }
@@ -476,7 +476,7 @@ private fun deleteUserDocumentation(): RouteConfig.() -> Unit =
             code(HttpStatusCode.NoContent) {
                 description = "User deleted successfully"
             }
-            badRequestExample("Invalid user ID")
+            badRequestExample("Invalid user UUID")
             notAuthenticatedExample()
             insufficientPermissionsExample("Only ADMIN role can update users")
             notFoundExample("User not found")

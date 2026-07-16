@@ -40,8 +40,8 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import kotlin.text.toDoubleOrNull
-import kotlin.text.toIntOrNull
 import kotlin.text.uppercase
+import kotlin.uuid.Uuid
 
 fun Route.listingV2Routes(store: VinylStoreData) {
     route("$V2/listings") {
@@ -120,7 +120,7 @@ fun Route.listingV2Routes(store: VinylStoreData) {
             }
 
             artistParam?.let { artist ->
-                val artistId = artist.toIntOrNull()
+                val artistId = runCatching { Uuid.parse(artist) }.getOrNull()
                 details =
                     details.filter {
                         if (artistId != null) {
@@ -140,7 +140,7 @@ fun Route.listingV2Routes(store: VinylStoreData) {
             }
 
             labelParam?.let { label ->
-                val labelId = label.toIntOrNull()
+                val labelId = runCatching { Uuid.parse(label) }.getOrNull()
                 details =
                     details.filter {
                         if (labelId != null) {
@@ -168,7 +168,7 @@ fun Route.listingV2Routes(store: VinylStoreData) {
         }
 
         get("/{id}", getListingV2Documentation()) {
-            val id = call.parameters["id"]?.toIntOrNull()
+            val id = call.parameters["id"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
             if (id == null) {
                 call.respond(HttpStatusCode.BadRequest, ErrorResponse(BAD_REQUEST, "Invalid listing ID"))
                 return@get
@@ -319,7 +319,7 @@ private fun listListingsV2Documentation(): RouteConfig.() -> Unit =
                                 listings =
                                     listOf(
                                         ListingV2Response(
-                                            id = 1,
+                                            id = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
                                             status = ListingStatus.PUBLISHED,
                                             price = 99.99,
                                             currency = "EUR",
@@ -335,20 +335,23 @@ private fun listListingsV2Documentation(): RouteConfig.() -> Unit =
                                                 ),
                                             vinyl =
                                                 VinylWithDetailsV2(
-                                                    id = 1,
+                                                    id = Uuid.parse("550e8400-e29b-41d4-a716-446655440001"),
                                                     title = "Avichrom",
                                                     year = 2022,
                                                     conditionMedia = "M",
                                                     conditionSleeve = "M",
-                                                    artists = listOf(Artist(1, "Dominik Eulberg")),
-                                                    label = Label(1, "!K7 Records"),
-                                                    genre = Genre(1, "Electronic"),
+                                                    artists =
+                                                        listOf(
+                                                            Artist(Uuid.parse("550e8400-e29b-41d4-a716-446655440002"), "Dominik Eulberg"),
+                                                        ),
+                                                    label = Label(Uuid.parse("550e8400-e29b-41d4-a716-446655440003"), "!K7 Records"),
+                                                    genre = Genre(Uuid.parse("550e8400-e29b-41d4-a716-446655440004"), "Electronic"),
                                                     createdAt = TimestampUtil.now(),
                                                     updatedAt = TimestampUtil.now(),
                                                 ),
                                         ),
                                         ListingV2Response(
-                                            id = 2,
+                                            id = Uuid.parse("550e8400-e29b-41d4-a716-446655440005"),
                                             status = ListingStatus.PUBLISHED,
                                             price = 149.99,
                                             currency = "EUR",
@@ -364,18 +367,18 @@ private fun listListingsV2Documentation(): RouteConfig.() -> Unit =
                                                 ),
                                             vinyl =
                                                 VinylWithDetailsV2(
-                                                    id = 3,
+                                                    id = Uuid.parse("550e8400-e29b-41d4-a716-446655440006"),
                                                     title = "...A Little Further",
                                                     year = 2014,
                                                     conditionMedia = "M",
                                                     conditionSleeve = "NM",
                                                     artists =
                                                         listOf(
-                                                            Artist(1, "Dominik Eulberg"),
-                                                            Artist(2, "Extrawelt"),
+                                                            Artist(Uuid.parse("550e8400-e29b-41d4-a716-446655440002"), "Dominik Eulberg"),
+                                                            Artist(Uuid.parse("550e8400-e29b-41d4-a716-446655440007"), "Extrawelt"),
                                                         ),
-                                                    label = Label(2, "Cocoon Recordings"),
-                                                    genre = Genre(1, "Electronic"),
+                                                    label = Label(Uuid.parse("550e8400-e29b-41d4-a716-446655440008"), "Cocoon Recordings"),
+                                                    genre = Genre(Uuid.parse("550e8400-e29b-41d4-a716-446655440004"), "Electronic"),
                                                     createdAt = TimestampUtil.now(),
                                                     updatedAt = TimestampUtil.now(),
                                                 ),
@@ -428,10 +431,10 @@ private fun getListingV2Documentation(): RouteConfig.() -> Unit =
             """.trimIndent()
         tags = listOf("listings-v2")
         request {
-            pathParameter<String>("id") {
-                description = "Listing ID"
+            pathParameter<Uuid>("id") {
+                description = "Listing UUID"
                 example("Listing details") {
-                    value = "1"
+                    value = "550e8400-e29b-41d4-a716-446655440000"
                 }
             }
         }
@@ -441,7 +444,7 @@ private fun getListingV2Documentation(): RouteConfig.() -> Unit =
                     example("Listing with full details") {
                         value =
                             ListingV2Response(
-                                id = 1,
+                                id = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
                                 status = ListingStatus.PUBLISHED,
                                 price = 99.99,
                                 currency = "EUR",
@@ -457,14 +460,14 @@ private fun getListingV2Documentation(): RouteConfig.() -> Unit =
                                     ),
                                 vinyl =
                                     VinylWithDetailsV2(
-                                        id = 1,
+                                        id = Uuid.parse("550e8400-e29b-41d4-a716-446655440001"),
                                         title = "Avichrom",
                                         year = 2022,
                                         conditionMedia = "M",
                                         conditionSleeve = "M",
-                                        artists = listOf(Artist(1, "Dominik Eulberg")),
-                                        label = Label(1, "!K7 Records"),
-                                        genre = Genre(1, "Electronic"),
+                                        artists = listOf(Artist(Uuid.parse("550e8400-e29b-41d4-a716-446655440002"), "Dominik Eulberg")),
+                                        label = Label(Uuid.parse("550e8400-e29b-41d4-a716-446655440003"), "!K7 Records"),
+                                        genre = Genre(Uuid.parse("550e8400-e29b-41d4-a716-446655440004"), "Electronic"),
                                         createdAt = TimestampUtil.now(),
                                         updatedAt = TimestampUtil.now(),
                                     ),
@@ -473,7 +476,7 @@ private fun getListingV2Documentation(): RouteConfig.() -> Unit =
                     example("Listing with collaboration and low inventory") {
                         value =
                             ListingV2Response(
-                                id = 2,
+                                id = Uuid.parse("550e8400-e29b-41d4-a716-446655440005"),
                                 status = ListingStatus.PUBLISHED,
                                 price = 149.99,
                                 currency = "EUR",
@@ -489,18 +492,18 @@ private fun getListingV2Documentation(): RouteConfig.() -> Unit =
                                     ),
                                 vinyl =
                                     VinylWithDetailsV2(
-                                        id = 3,
+                                        id = Uuid.parse("550e8400-e29b-41d4-a716-446655440006"),
                                         title = "...A Little Further",
                                         year = 2014,
                                         conditionMedia = "M",
                                         conditionSleeve = "NM",
                                         artists =
                                             listOf(
-                                                Artist(1, "Dominik Eulberg"),
-                                                Artist(2, "Extrawelt"),
+                                                Artist(Uuid.parse("550e8400-e29b-41d4-a716-446655440002"), "Dominik Eulberg"),
+                                                Artist(Uuid.parse("550e8400-e29b-41d4-a716-446655440007"), "Extrawelt"),
                                             ),
-                                        label = Label(2, "Cocoon Recordings"),
-                                        genre = Genre(1, "Electronic"),
+                                        label = Label(Uuid.parse("550e8400-e29b-41d4-a716-446655440008"), "Cocoon Recordings"),
+                                        genre = Genre(Uuid.parse("550e8400-e29b-41d4-a716-446655440004"), "Electronic"),
                                         createdAt = TimestampUtil.now(),
                                         updatedAt = TimestampUtil.now(),
                                     ),
@@ -508,7 +511,7 @@ private fun getListingV2Documentation(): RouteConfig.() -> Unit =
                     }
                 }
             }
-            badRequestExample("Invalid listing ID")
+            badRequestExample("Invalid listing UUID")
             notAuthenticatedExample()
             notFoundExample("Listing not found")
         }

@@ -31,31 +31,22 @@ import io.github.attilafazekas.vinylstore.models.VinylArtist
 import io.github.attilafazekas.vinylstore.models.VinylGenre
 import io.github.oshai.kotlinlogging.KotlinLogging
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.atomic.AtomicInteger
 import kotlin.collections.set
+import kotlin.uuid.Uuid
 
 private val logger = KotlinLogging.logger {}
 
 class VinylStoreData {
-    val users = ConcurrentHashMap<Int, User>()
-    val addresses = ConcurrentHashMap<Int, Address>()
-    val artists = ConcurrentHashMap<Int, Artist>()
-    val genres = ConcurrentHashMap<Int, Genre>()
-    val labels = ConcurrentHashMap<Int, Label>()
-    val vinyls = ConcurrentHashMap<Int, Vinyl>()
+    val users = ConcurrentHashMap<Uuid, User>()
+    val addresses = ConcurrentHashMap<Uuid, Address>()
+    val artists = ConcurrentHashMap<Uuid, Artist>()
+    val genres = ConcurrentHashMap<Uuid, Genre>()
+    val labels = ConcurrentHashMap<Uuid, Label>()
+    val vinyls = ConcurrentHashMap<Uuid, Vinyl>()
     val vinylArtists = ConcurrentHashMap<String, VinylArtist>()
     val vinylGenres = ConcurrentHashMap<String, VinylGenre>()
-    val listings = ConcurrentHashMap<Int, Listing>()
-    val inventory = ConcurrentHashMap<Int, Inventory>()
-
-    val userIdCounter = AtomicInteger(1)
-    val addressIdCounter = AtomicInteger(1)
-    val artistIdCounter = AtomicInteger(1)
-    val genreIdCounter = AtomicInteger(1)
-    val labelIdCounter = AtomicInteger(1)
-    val vinylIdCounter = AtomicInteger(1)
-    val listingIdCounter = AtomicInteger(1)
-    val inventoryIdCounter = AtomicInteger(1)
+    val listings = ConcurrentHashMap<Uuid, Listing>()
+    val inventory = ConcurrentHashMap<Uuid, Inventory>()
 
     val createdAt = System.currentTimeMillis()
 
@@ -78,15 +69,6 @@ class VinylStoreData {
         vinylGenres.clear()
         listings.clear()
         inventory.clear()
-
-        userIdCounter.set(1)
-        addressIdCounter.set(1)
-        artistIdCounter.set(1)
-        genreIdCounter.set(1)
-        labelIdCounter.set(1)
-        vinylIdCounter.set(1)
-        listingIdCounter.set(1)
-        inventoryIdCounter.set(1)
 
         bootstrap()
     }
@@ -226,7 +208,7 @@ class VinylStoreData {
         password: Password,
         role: Role,
     ): User {
-        val id = userIdCounter.getAndIncrement()
+        val id = Uuid.random()
         val user =
             User(
                 id = id,
@@ -242,7 +224,7 @@ class VinylStoreData {
     }
 
     fun updateUser(
-        id: Int,
+        id: Uuid,
         role: Role?,
         isActive: Boolean?,
     ): User? {
@@ -257,16 +239,16 @@ class VinylStoreData {
         return updated
     }
 
-    fun deleteUser(id: Int): Boolean = users.remove(id) != null
+    fun deleteUser(id: Uuid): Boolean = users.remove(id) != null
 
     fun getUserByEmail(email: Email): User? = users.values.find { it.email == email }
 
-    fun getUserById(id: Int): User? = users[id]
+    fun getUserById(id: Uuid): User? = users[id]
 
-    fun getAllUsers(): List<User> = users.values.sortedBy { it.id }
+    fun getAllUsers(): List<User> = users.values.sortedBy { it.id.toString() }
 
     fun createAddress(
-        userId: Int,
+        userId: Uuid,
         type: AddressType,
         fullName: String,
         street: String,
@@ -280,7 +262,7 @@ class VinylStoreData {
                 addresses[it.id] = it.copy(isDefault = false)
             }
         }
-        val id = addressIdCounter.getAndIncrement()
+        val id = Uuid.random()
         val address =
             Address(
                 id = id,
@@ -299,12 +281,12 @@ class VinylStoreData {
         return address
     }
 
-    fun getAddressesByUserId(userId: Int): Addresses = addresses.values.filter { it.userId == userId }.sortedBy { it.id }
+    fun getAddressesByUserId(userId: Uuid): Addresses = addresses.values.filter { it.userId == userId }.sortedBy { it.id.toString() }
 
-    fun getAddressById(id: Int): Address? = addresses[id]
+    fun getAddressById(id: Uuid): Address? = addresses[id]
 
     fun updateAddress(
-        id: Int,
+        id: Uuid,
         type: AddressType?,
         fullName: String?,
         street: String?,
@@ -329,10 +311,10 @@ class VinylStoreData {
         return updated
     }
 
-    fun deleteAddress(id: Int): Boolean = addresses.remove(id) != null
+    fun deleteAddress(id: Uuid): Boolean = addresses.remove(id) != null
 
     fun unsetDefaultAddresses(
-        userId: Int,
+        userId: Uuid,
         type: AddressType,
     ) {
         addresses.values
@@ -347,14 +329,14 @@ class VinylStoreData {
             return existing
         }
 
-        val id = artistIdCounter.getAndIncrement()
+        val id = Uuid.random()
         val artist = Artist(id, name)
         artists[id] = artist
         return artist
     }
 
     fun updateArtist(
-        id: Int,
+        id: Uuid,
         name: String,
     ): Artist? {
         val artist = artists[id] ?: return null
@@ -363,7 +345,7 @@ class VinylStoreData {
         return updated
     }
 
-    fun deleteArtist(id: Int): Boolean = artists.remove(id) != null
+    fun deleteArtist(id: Uuid): Boolean = artists.remove(id) != null
 
     fun createGenre(name: String): Genre {
         // Check if genre with this name already exists (case-insensitive)
@@ -372,14 +354,14 @@ class VinylStoreData {
             return existing
         }
 
-        val id = genreIdCounter.getAndIncrement()
+        val id = Uuid.random()
         val genre = Genre(id, name)
         genres[id] = genre
         return genre
     }
 
     fun updateGenre(
-        id: Int,
+        id: Uuid,
         name: String,
     ): Genre? {
         val genre = genres[id] ?: return null
@@ -388,7 +370,7 @@ class VinylStoreData {
         return updated
     }
 
-    fun deleteGenre(id: Int): Boolean = genres.remove(id) != null
+    fun deleteGenre(id: Uuid): Boolean = genres.remove(id) != null
 
     fun createLabel(name: String): Label {
         // Check if label with this name already exists (case-insensitive)
@@ -397,14 +379,14 @@ class VinylStoreData {
             return existing
         }
 
-        val id = labelIdCounter.getAndIncrement()
+        val id = Uuid.random()
         val label = Label(id, name)
         labels[id] = label
         return label
     }
 
     fun updateLabel(
-        id: Int,
+        id: Uuid,
         name: String,
     ): Label? {
         val label = labels[id] ?: return null
@@ -413,18 +395,18 @@ class VinylStoreData {
         return updated
     }
 
-    fun deleteLabel(id: Int): Boolean = labels.remove(id) != null
+    fun deleteLabel(id: Uuid): Boolean = labels.remove(id) != null
 
     fun createVinyl(
         title: String,
-        artistId: Int,
-        labelId: Int,
-        genreId: Int,
+        artistId: Uuid,
+        labelId: Uuid,
+        genreId: Uuid,
         year: Int,
         conditionMedia: String,
         conditionSleeve: String,
     ): Vinyl {
-        val id = vinylIdCounter.getAndIncrement()
+        val id = Uuid.random()
         val vinyl =
             Vinyl(
                 id = id,
@@ -443,10 +425,10 @@ class VinylStoreData {
     }
 
     fun updateVinyl(
-        id: Int,
+        id: Uuid,
         title: String?,
-        artistId: Int?,
-        labelId: Int?,
+        artistId: Uuid?,
+        labelId: Uuid?,
         year: Int?,
         conditionMedia: String?,
         conditionSleeve: String?,
@@ -466,55 +448,55 @@ class VinylStoreData {
         return updated
     }
 
-    fun deleteVinyl(id: Int): Boolean {
+    fun deleteVinyl(id: Uuid): Boolean {
         // Also remove associated vinyl-genre links
         vinylGenres.entries.removeIf { it.value.vinylId == id }
         return vinyls.remove(id) != null
     }
 
     fun linkVinylArtist(
-        vinylId: Int,
-        artistId: Int,
+        vinylId: Uuid,
+        artistId: Uuid,
     ) {
         vinylArtists["$vinylId-$artistId"] = VinylArtist(vinylId, artistId)
     }
 
     fun linkVinylGenre(
-        vinylId: Int,
-        genreId: Int,
+        vinylId: Uuid,
+        genreId: Uuid,
     ) {
         vinylGenres["$vinylId-$genreId"] = VinylGenre(vinylId, genreId)
     }
 
-    fun unlinkAllVinylGenres(vinylId: Int) {
+    fun unlinkAllVinylGenres(vinylId: Uuid) {
         vinylGenres.entries.removeIf { it.value.vinylId == vinylId }
     }
 
-    fun getGenreForVinyl(vinylId: Int): Genre? {
+    fun getGenreForVinyl(vinylId: Uuid): Genre? {
         val genreId = vinylGenres.values.firstOrNull { it.vinylId == vinylId }?.genreId
         return genreId?.let { genres[it] }
     }
 
-    fun getArtistsForVinyl(vinylId: Int): List<Artist> {
+    fun getArtistsForVinyl(vinylId: Uuid): List<Artist> {
         val artistIds =
             vinylArtists.values
                 .filter { it.vinylId == vinylId }
                 .map { it.artistId }
-        return artistIds.mapNotNull { artists[it] }.sortedBy { it.id }
+        return artistIds.mapNotNull { artists[it] }.sortedBy { it.id.toString() }
     }
 
     fun createListing(
-        vinylId: Int,
+        vinylId: Uuid,
         price: Double,
         currency: String,
         initialStock: Int,
     ): Listing {
-        val id = listingIdCounter.getAndIncrement()
+        val id = Uuid.random()
         val now = TimestampUtil.now()
         val listing = Listing(id, vinylId, ListingStatus.PUBLISHED, price, currency, now, now)
         listings[id] = listing
 
-        val inventoryId = inventoryIdCounter.getAndIncrement()
+        val inventoryId = Uuid.random()
         inventory[id] =
             Inventory(
                 id = inventoryId,
@@ -529,7 +511,7 @@ class VinylStoreData {
     }
 
     fun updateListing(
-        id: Int,
+        id: Uuid,
         price: Double?,
         status: ListingStatus?,
     ): Listing? {
@@ -544,26 +526,26 @@ class VinylStoreData {
         return updated
     }
 
-    fun getListingById(id: Int): Listing? = listings[id]
+    fun getListingById(id: Uuid): Listing? = listings[id]
 
-    fun getAllPublishedListings(): Listings = listings.values.filter { it.status == ListingStatus.PUBLISHED }.sortedBy { it.id }
+    fun getAllPublishedListings(): Listings = listings.values.filter { it.status == ListingStatus.PUBLISHED }.sortedBy { it.id.toString() }
 
-    fun deleteListing(id: Int): Boolean {
+    fun deleteListing(id: Uuid): Boolean {
         // Also remove associated inventory
         inventory.remove(id)
         return listings.remove(id) != null
     }
 
-    fun hasActiveOrders(listingId: Int): Boolean {
+    fun hasActiveOrders(listingId: Uuid): Boolean {
         // TODO: Implement when orders are added
         // For now, return false to allow deletion
         return false
     }
 
-    fun getInventoryByListingId(listingId: Int): Inventory? = inventory[listingId]
+    fun getInventoryByListingId(listingId: Uuid): Inventory? = inventory[listingId]
 
     fun updateInventory(
-        listingId: Int,
+        listingId: Uuid,
         totalQuantity: Int?,
         reservedQuantity: Int?,
     ): Inventory? {

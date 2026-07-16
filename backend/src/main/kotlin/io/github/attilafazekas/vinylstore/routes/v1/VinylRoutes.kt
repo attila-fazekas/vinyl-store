@@ -55,6 +55,7 @@ import io.ktor.server.auth.authenticate
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
+import kotlin.uuid.Uuid
 
 fun Route.vinylRoutes(store: VinylStoreData) {
     authenticate(AUTH_JWT) {
@@ -71,7 +72,7 @@ fun Route.vinylRoutes(store: VinylStoreData) {
                 var vinyls = store.vinyls.values.sortedBy { it.id }
 
                 artistParam?.let { artist ->
-                    val artistId = artist.toIntOrNull()
+                    val artistId = runCatching { Uuid.parse(artist) }.getOrNull()
                     vinyls =
                         vinyls.filter { vinyl ->
                             if (artistId != null) {
@@ -92,7 +93,7 @@ fun Route.vinylRoutes(store: VinylStoreData) {
                 }
 
                 labelParam?.let { label ->
-                    val labelId = label.toIntOrNull()
+                    val labelId = runCatching { Uuid.parse(label) }.getOrNull()
                     vinyls =
                         vinyls.filter { vinyl ->
                             if (labelId != null) {
@@ -125,7 +126,7 @@ fun Route.vinylRoutes(store: VinylStoreData) {
             }
 
             get("/{id}", getVinylDocumentation()) {
-                val id = call.parameters["id"]?.toIntOrNull()
+                val id = call.parameters["id"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
                 if (id == null) {
                     call.respond(HttpStatusCode.BadRequest, ErrorResponse(BAD_REQUEST, "Invalid vinyl ID"))
                     return@get
@@ -167,7 +168,7 @@ fun Route.vinylRoutes(store: VinylStoreData) {
             put("/{id}", updateVinylDocumentation()) {
                 call.requireRole(Role.ADMIN, Role.STAFF)
 
-                val id = call.parameters["id"]?.toIntOrNull()
+                val id = call.parameters["id"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
                 if (id == null) {
                     call.respond(HttpStatusCode.BadRequest, ErrorResponse(BAD_REQUEST, "Invalid vinyl ID"))
                     return@put
@@ -204,7 +205,7 @@ fun Route.vinylRoutes(store: VinylStoreData) {
             delete("/{id}", deleteVinylDocumentation()) {
                 call.requireRole(Role.ADMIN, Role.STAFF)
 
-                val id = call.parameters["id"]?.toIntOrNull()
+                val id = call.parameters["id"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
                 if (id == null) {
                     call.respond(HttpStatusCode.BadRequest, ErrorResponse(BAD_REQUEST, "Invalid vinyl ID"))
                     return@delete
@@ -231,7 +232,7 @@ fun Route.vinylRoutes(store: VinylStoreData) {
             post("/{vinylId}/listings", createListingDocumentation()) {
                 call.requireRole(Role.ADMIN, Role.STAFF)
 
-                val vinylId = call.parameters["vinylId"]?.toIntOrNull()
+                val vinylId = call.parameters["vinylId"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
                 if (vinylId == null) {
                     call.respond(HttpStatusCode.BadRequest, ErrorResponse(BAD_REQUEST, "Invalid vinyl ID"))
                     return@post
@@ -340,11 +341,11 @@ private fun listVinylsDocumentation(): RouteConfig.() -> Unit =
                                 vinyls =
                                     listOf(
                                         Vinyl(
-                                            id = 1,
+                                            id = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
                                             title = "Avichrom",
-                                            artistId = 1,
-                                            labelId = 1,
-                                            genreId = 1,
+                                            artistId = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
+                                            labelId = Uuid.parse("550e8400-e29b-41d4-a716-446655440001"),
+                                            genreId = Uuid.parse("550e8400-e29b-41d4-a716-446655440002"),
                                             year = 2022,
                                             conditionMedia = "M",
                                             conditionSleeve = "M",
@@ -352,11 +353,11 @@ private fun listVinylsDocumentation(): RouteConfig.() -> Unit =
                                             updatedAt = TimestampUtil.now(),
                                         ),
                                         Vinyl(
-                                            id = 2,
+                                            id = Uuid.parse("550e8400-e29b-41d4-a716-446655440004"),
                                             title = "...A Little Further",
-                                            artistId = 1,
-                                            labelId = 2,
-                                            genreId = 1,
+                                            artistId = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
+                                            labelId = Uuid.parse("550e8400-e29b-41d4-a716-446655440005"),
+                                            genreId = Uuid.parse("550e8400-e29b-41d4-a716-446655440002"),
                                             year = 2014,
                                             conditionMedia = "M",
                                             conditionSleeve = "NM",
@@ -403,10 +404,10 @@ private fun getVinylDocumentation(): RouteConfig.() -> Unit =
             """.trimIndent()
         tags = listOf("vinyls")
         request {
-            pathParameter<String>("id") {
-                description = "Vinyl ID"
+            pathParameter<Uuid>("id") {
+                description = "Vinyl UUID"
                 example("Vinyl details") {
-                    value = "1"
+                    value = "550e8400-e29b-41d4-a716-446655440000"
                 }
             }
         }
@@ -418,25 +419,25 @@ private fun getVinylDocumentation(): RouteConfig.() -> Unit =
                             VinylDetailResponse(
                                 vinyl =
                                     Vinyl(
-                                        id = 1,
+                                        id = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
                                         title = "Avichrom",
-                                        artistId = 1,
-                                        labelId = 1,
-                                        genreId = 1,
+                                        artistId = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
+                                        labelId = Uuid.parse("550e8400-e29b-41d4-a716-446655440001"),
+                                        genreId = Uuid.parse("550e8400-e29b-41d4-a716-446655440002"),
                                         year = 2022,
                                         conditionMedia = "M",
                                         conditionSleeve = "M",
                                         createdAt = TimestampUtil.now(),
                                         updatedAt = TimestampUtil.now(),
                                     ),
-                                artist = Artist(1, "Dominik Eulberg"),
-                                label = Label(1, "!K7 Records"),
-                                genre = Genre(1, "Electronic"),
+                                artist = Artist(Uuid.parse("550e8400-e29b-41d4-a716-446655440000"), "Dominik Eulberg"),
+                                label = Label(Uuid.parse("550e8400-e29b-41d4-a716-446655440001"), "!K7 Records"),
+                                genre = Genre(Uuid.parse("550e8400-e29b-41d4-a716-446655440002"), "Electronic"),
                             )
                     }
                 }
             }
-            badRequestExample("Invalid vinyl ID")
+            badRequestExample("Invalid vinyl UUID")
             notAuthenticatedExample()
             notFoundExample("Vinyl not found")
         }
@@ -486,9 +487,9 @@ private fun createVinylDocumentation(): RouteConfig.() -> Unit =
                     value =
                         CreateVinylRequest(
                             title = "The Loud Silence",
-                            artistId = 1,
-                            labelId = 1,
-                            genreId = 1,
+                            artistId = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
+                            labelId = Uuid.parse("550e8400-e29b-41d4-a716-446655440001"),
+                            genreId = Uuid.parse("550e8400-e29b-41d4-a716-446655440002"),
                             year = 2015,
                             conditionMedia = "VG",
                             conditionSleeve = "VG+",
@@ -503,9 +504,9 @@ private fun createVinylDocumentation(): RouteConfig.() -> Unit =
                         value =
                             CreateVinylRequest(
                                 title = "The Loud Silence",
-                                artistId = 1,
-                                labelId = 1,
-                                genreId = 1,
+                                artistId = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
+                                labelId = Uuid.parse("550e8400-e29b-41d4-a716-446655440001"),
+                                genreId = Uuid.parse("550e8400-e29b-41d4-a716-446655440002"),
                                 year = 2015,
                                 conditionMedia = "VG",
                                 conditionSleeve = "VG+",
@@ -557,10 +558,10 @@ private fun updateVinylDocumentation(): RouteConfig.() -> Unit =
             """.trimIndent()
         tags = listOf("vinyls")
         request {
-            pathParameter<String>("id") {
-                description = "Vinyl ID"
+            pathParameter<Uuid>("id") {
+                description = "Vinyl UUID"
                 example("Update vinyl") {
-                    value = "1"
+                    value = "550e8400-e29b-41d4-a716-446655440000"
                 }
             }
             body<UpdateVinylRequest> {
@@ -576,7 +577,15 @@ private fun updateVinylDocumentation(): RouteConfig.() -> Unit =
                     value = UpdateVinylRequest(year = 2015)
                 }
                 example("Update genres") {
-                    value = UpdateVinylRequest(genreIds = listOf(1, 7, 9))
+                    value =
+                        UpdateVinylRequest(
+                            genreIds =
+                                listOf(
+                                    Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
+                                    Uuid.parse("550e8400-e29b-41d4-a716-446655440001"),
+                                    Uuid.parse("550e8400-e29b-41d4-a716-446655440002"),
+                                ),
+                        )
                 }
             }
         }
@@ -586,11 +595,11 @@ private fun updateVinylDocumentation(): RouteConfig.() -> Unit =
                     example("Updated vinyl") {
                         value =
                             Vinyl(
-                                id = 1,
+                                id = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
                                 title = "Avichrom",
-                                artistId = 1,
-                                labelId = 1,
-                                genreId = 1,
+                                artistId = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
+                                labelId = Uuid.parse("550e8400-e29b-41d4-a716-446655440001"),
+                                genreId = Uuid.parse("550e8400-e29b-41d4-a716-446655440002"),
                                 year = 2022,
                                 conditionMedia = "VG",
                                 conditionSleeve = "VG",
@@ -600,7 +609,7 @@ private fun updateVinylDocumentation(): RouteConfig.() -> Unit =
                     }
                 }
             }
-            badRequestExample("Invalid vinyl ID")
+            badRequestExample("Invalid vinyl UUID")
             notAuthenticatedExample()
             insufficientPermissionsExample("Only ADMIN and STAFF roles can update vinyls")
             notFoundExample("Vinyl not found")
@@ -638,10 +647,10 @@ private fun deleteVinylDocumentation(): RouteConfig.() -> Unit =
             """.trimIndent()
         tags = listOf("vinyls")
         request {
-            pathParameter<String>("id") {
-                description = "Vinyl ID"
+            pathParameter<Uuid>("id") {
+                description = "Vinyl UUID"
                 example("Delete vinyl") {
-                    value = "1"
+                    value = "550e8400-e29b-41d4-a716-446655440000"
                 }
             }
         }
@@ -649,7 +658,7 @@ private fun deleteVinylDocumentation(): RouteConfig.() -> Unit =
             code(HttpStatusCode.NoContent) {
                 description = "Vinyl deleted successfully"
             }
-            badRequestExample("Invalid vinyl ID")
+            badRequestExample("Invalid vinyl UUID")
             notAuthenticatedExample()
             insufficientPermissionsExample("Only ADMIN and STAFF roles can delete vinyls")
             notFoundExample("Vinyl not found")
@@ -700,9 +709,9 @@ private fun createListingDocumentation(): RouteConfig.() -> Unit =
         tags = listOf("vinyls", "listings")
         request {
             pathParameter<String>("vinylId") {
-                description = "ID of the vinyl record to create a listing for"
+                description = "UUID of the vinyl record to create a listing for"
                 example("Create listing") {
-                    value = "1"
+                    value = "550e8400-e29b-41d4-a716-446655440000"
                 }
             }
             body<CreateListingRequest> {
@@ -723,8 +732,8 @@ private fun createListingDocumentation(): RouteConfig.() -> Unit =
                     example("Created listing") {
                         value =
                             Listing(
-                                id = 1,
-                                vinylId = 1,
+                                id = Uuid.parse("550e8400-e29b-41d4-a716-446655440003"),
+                                vinylId = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
                                 status = ListingStatus.PUBLISHED,
                                 price = 29.99,
                                 currency = "EUR",
@@ -736,8 +745,8 @@ private fun createListingDocumentation(): RouteConfig.() -> Unit =
             }
             code(HttpStatusCode.BadRequest) {
                 body<ErrorResponse> {
-                    example("Invalid vinyl ID") {
-                        value = ErrorResponse(BAD_REQUEST, "Invalid vinyl ID")
+                    example("Invalid vinyl UUID") {
+                        value = ErrorResponse(BAD_REQUEST, "Invalid vinyl UUID")
                     }
                     example("Price must be positive") {
                         value = ErrorResponse(VALIDATION_ERROR, "Price must be positive")

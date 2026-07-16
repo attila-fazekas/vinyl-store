@@ -66,4 +66,5 @@ bin/
 .junie
 .aiassistant
 
-context-parameters.md
+*.md
+!README.md

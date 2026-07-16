@@ -24,6 +24,7 @@ import io.github.attilafazekas.vinylstore.enums.ListingStatus
 import io.github.attilafazekas.vinylstore.enums.Role
 import io.github.smiley4.schemakenerator.core.annotations.Description
 import kotlinx.serialization.Serializable
+import kotlin.uuid.Uuid
 
 @Serializable
 data class RegisterRequest(
@@ -64,9 +65,9 @@ data class UpdateVinylRequest(
     @Description("Optional. The new title for the vinyl. If omitted, title remains unchanged.")
     val title: String? = null,
     @Description("Optional. The new artist ID. If omitted, artist remains unchanged.")
-    val artistId: Int? = null,
+    val artistId: Uuid? = null,
     @Description("Optional. The new label ID. If omitted, label remains unchanged.")
-    val labelId: Int? = null,
+    val labelId: Uuid? = null,
     @Description("Optional. The new release year. If omitted, year remains unchanged.")
     val year: Int? = null,
     @Description("Optional. The new media condition rating. If omitted, media condition remains unchanged.")
@@ -74,7 +75,7 @@ data class UpdateVinylRequest(
     @Description("Optional. The new sleeve condition rating. If omitted, sleeve condition remains unchanged.")
     val conditionSleeve: String? = null,
     @Description("Optional. The new list of genre IDs. If omitted, genres remain unchanged. If provided, replaces all existing genres.")
-    val genreIds: List<Int>? = null,
+    val genreIds: List<Uuid>? = null,
 )
 
 @Serializable
@@ -100,11 +101,11 @@ data class CreateVinylRequest(
     @Description("The title of the vinyl record.")
     val title: String,
     @Description("The ID of the artist who created this vinyl.")
-    val artistId: Int,
+    val artistId: Uuid,
     @Description("The ID of the record label that released this vinyl.")
-    val labelId: Int,
+    val labelId: Uuid,
     @Description("The genre ID to associate with this vinyl.")
-    val genreId: Int,
+    val genreId: Uuid,
     @Description("The year the vinyl was released.")
     val year: Int,
     @Description("The condition rating of the vinyl media (e.g., 'M', 'VG+', 'VG').")

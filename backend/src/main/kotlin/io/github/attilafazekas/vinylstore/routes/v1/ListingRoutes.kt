@@ -52,8 +52,8 @@ import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import kotlin.text.toDoubleOrNull
-import kotlin.text.toIntOrNull
 import kotlin.text.uppercase
+import kotlin.uuid.Uuid
 
 fun Route.listingRoutes(store: VinylStoreData) {
     route("$V1/listings") {
@@ -104,7 +104,7 @@ fun Route.listingRoutes(store: VinylStoreData) {
             }
 
             artistParam?.let { artist ->
-                val artistId = artist.toIntOrNull()
+                val artistId = runCatching { Uuid.parse(artist) }.getOrNull()
                 details =
                     details.filter {
                         if (artistId != null) {
@@ -123,7 +123,7 @@ fun Route.listingRoutes(store: VinylStoreData) {
             }
 
             labelParam?.let { label ->
-                val labelId = label.toIntOrNull()
+                val labelId = runCatching { Uuid.parse(label) }.getOrNull()
                 details =
                     details.filter {
                         if (labelId != null) {
@@ -150,7 +150,7 @@ fun Route.listingRoutes(store: VinylStoreData) {
         }
 
         get("/{id}", getListingDocumentation()) {
-            val id = call.parameters["id"]?.toIntOrNull()
+            val id = call.parameters["id"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
             if (id == null) {
                 call.respond(HttpStatusCode.BadRequest, ErrorResponse(BAD_REQUEST, "Invalid listing ID"))
                 return@get
@@ -175,7 +175,7 @@ fun Route.listingRoutes(store: VinylStoreData) {
             put("/{id}", updateListingDocumentation()) {
                 call.requireRole(Role.ADMIN, Role.STAFF)
 
-                val id = call.parameters["id"]?.toIntOrNull()
+                val id = call.parameters["id"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
                 if (id == null) {
                     call.respond(HttpStatusCode.BadRequest, ErrorResponse(BAD_REQUEST, "Invalid listing ID"))
                     return@put
@@ -194,7 +194,7 @@ fun Route.listingRoutes(store: VinylStoreData) {
             delete("/{id}", deleteListingDocumentation()) {
                 call.requireRole(Role.ADMIN, Role.STAFF)
 
-                val id = call.parameters["id"]?.toIntOrNull()
+                val id = call.parameters["id"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
                 if (id == null) {
                     call.respond(HttpStatusCode.BadRequest, ErrorResponse(BAD_REQUEST, "Invalid listing ID"))
                     return@delete
@@ -299,8 +299,8 @@ private fun listListingsDocumentation(): RouteConfig.() -> Unit =
                                         ListingDetailResponse(
                                             listing =
                                                 Listing(
-                                                    id = 1,
-                                                    vinylId = 1,
+                                                    id = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
+                                                    vinylId = Uuid.parse("550e8400-e29b-41d4-a716-446655440001"),
                                                     status = ListingStatus.PUBLISHED,
                                                     price = 99.99,
                                                     currency = "EUR",
@@ -309,11 +309,11 @@ private fun listListingsDocumentation(): RouteConfig.() -> Unit =
                                                 ),
                                             vinyl =
                                                 Vinyl(
-                                                    id = 1,
+                                                    id = Uuid.parse("550e8400-e29b-41d4-a716-446655440001"),
                                                     title = "Avichrom",
-                                                    artistId = 1,
-                                                    labelId = 1,
-                                                    genreId = 1,
+                                                    artistId = Uuid.parse("550e8400-e29b-41d4-a716-446655440002"),
+                                                    labelId = Uuid.parse("550e8400-e29b-41d4-a716-446655440003"),
+                                                    genreId = Uuid.parse("550e8400-e29b-41d4-a716-446655440004"),
                                                     year = 2022,
                                                     conditionMedia = "M",
                                                     conditionSleeve = "M",
@@ -322,19 +322,19 @@ private fun listListingsDocumentation(): RouteConfig.() -> Unit =
                                                 ),
                                             artist =
                                                 Artist(
-                                                    id = 1,
+                                                    id = Uuid.parse("550e8400-e29b-41d4-a716-446655440002"),
                                                     name = "Dominik Eulberg",
                                                 ),
-                                            genre = Genre(id = 1, name = "Electronic"),
+                                            genre = Genre(id = Uuid.parse("550e8400-e29b-41d4-a716-446655440004"), name = "Electronic"),
                                             label =
                                                 Label(
-                                                    id = 1,
+                                                    id = Uuid.parse("550e8400-e29b-41d4-a716-446655440003"),
                                                     name = "!K7 Records",
                                                 ),
                                             inventory =
                                                 Inventory(
-                                                    id = 1,
-                                                    listingId = 1,
+                                                    id = Uuid.parse("550e8400-e29b-41d4-a716-446655440005"),
+                                                    listingId = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
                                                     totalQuantity = 15,
                                                     reservedQuantity = 0,
                                                     availableQuantity = 15,
@@ -387,10 +387,10 @@ private fun getListingDocumentation(): RouteConfig.() -> Unit =
             """.trimIndent()
         tags = listOf("listings")
         request {
-            pathParameter<String>("id") {
-                description = "Listing ID"
+            pathParameter<Uuid>("id") {
+                description = "Listing UUID"
                 example("Listing details") {
-                    value = "1"
+                    value = "550e8400-e29b-41d4-a716-446655440000"
                 }
             }
         }
@@ -402,8 +402,8 @@ private fun getListingDocumentation(): RouteConfig.() -> Unit =
                             ListingDetailResponse(
                                 listing =
                                     Listing(
-                                        id = 1,
-                                        vinylId = 1,
+                                        id = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
+                                        vinylId = Uuid.parse("550e8400-e29b-41d4-a716-446655440001"),
                                         status = ListingStatus.PUBLISHED,
                                         price = 99.99,
                                         currency = "EUR",
@@ -412,11 +412,11 @@ private fun getListingDocumentation(): RouteConfig.() -> Unit =
                                     ),
                                 vinyl =
                                     Vinyl(
-                                        id = 1,
+                                        id = Uuid.parse("550e8400-e29b-41d4-a716-446655440001"),
                                         title = "Avichrom",
-                                        artistId = 1,
-                                        labelId = 1,
-                                        genreId = 1,
+                                        artistId = Uuid.parse("550e8400-e29b-41d4-a716-446655440002"),
+                                        labelId = Uuid.parse("550e8400-e29b-41d4-a716-446655440003"),
+                                        genreId = Uuid.parse("550e8400-e29b-41d4-a716-446655440004"),
                                         year = 2022,
                                         conditionMedia = "M",
                                         conditionSleeve = "M",
@@ -425,19 +425,19 @@ private fun getListingDocumentation(): RouteConfig.() -> Unit =
                                     ),
                                 artist =
                                     Artist(
-                                        id = 1,
+                                        id = Uuid.parse("550e8400-e29b-41d4-a716-446655440002"),
                                         name = "Dominik Eulberg",
                                     ),
-                                genre = Genre(id = 1, name = "Electronic"),
+                                genre = Genre(id = Uuid.parse("550e8400-e29b-41d4-a716-446655440004"), name = "Electronic"),
                                 label =
                                     Label(
-                                        id = 1,
+                                        id = Uuid.parse("550e8400-e29b-41d4-a716-446655440003"),
                                         name = "!K7 Records",
                                     ),
                                 inventory =
                                     Inventory(
-                                        id = 1,
-                                        listingId = 1,
+                                        id = Uuid.parse("550e8400-e29b-41d4-a716-446655440005"),
+                                        listingId = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
                                         totalQuantity = 15,
                                         reservedQuantity = 0,
                                         createdAt = TimestampUtil.now(),
@@ -447,7 +447,7 @@ private fun getListingDocumentation(): RouteConfig.() -> Unit =
                     }
                 }
             }
-            badRequestExample("Invalid listing ID")
+            badRequestExample("Invalid listing UUID")
             notAuthenticatedExample()
             notFoundExample("Listing not found")
         }
@@ -487,10 +487,10 @@ private fun updateListingDocumentation(): RouteConfig.() -> Unit =
             """.trimIndent()
         tags = listOf("listings")
         request {
-            pathParameter<String>("id") {
-                description = "Listing ID"
+            pathParameter<Uuid>("id") {
+                description = "Listing UUID"
                 example("Update listing") {
-                    value = "1"
+                    value = "550e8400-e29b-41d4-a716-446655440000"
                 }
             }
             body<UpdateListingRequest> {
@@ -516,8 +516,8 @@ private fun updateListingDocumentation(): RouteConfig.() -> Unit =
                         description = "Example of an updated listing with new price"
                         value =
                             Listing(
-                                id = 1,
-                                vinylId = 1,
+                                id = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
+                                vinylId = Uuid.parse("550e8400-e29b-41d4-a716-446655440001"),
                                 status = ListingStatus.PUBLISHED,
                                 price = 34.99,
                                 currency = "EUR",
@@ -527,7 +527,7 @@ private fun updateListingDocumentation(): RouteConfig.() -> Unit =
                     }
                 }
             }
-            badRequestExample("Invalid listing ID")
+            badRequestExample("Invalid listing UUID")
             notAuthenticatedExample()
             insufficientPermissionsExample("Only ADMIN and STAFF roles can update listings")
             notFoundExample("Listing not found")
@@ -564,10 +564,10 @@ private fun deleteListingDocumentation(): RouteConfig.() -> Unit =
             """.trimIndent()
         tags = listOf("listings")
         request {
-            pathParameter<String>("id") {
-                description = "Listing ID"
+            pathParameter<Uuid>("id") {
+                description = "Listing UUID"
                 example("Delete listing") {
-                    value = "1"
+                    value = "550e8400-e29b-41d4-a716-446655440000"
                 }
             }
         }
@@ -575,7 +575,7 @@ private fun deleteListingDocumentation(): RouteConfig.() -> Unit =
             code(HttpStatusCode.NoContent) {
                 description = "Listing deleted successfully"
             }
-            badRequestExample("Invalid listing ID")
+            badRequestExample("Invalid listing UUID")
             notAuthenticatedExample()
             insufficientPermissionsExample("Only ADMIN and STAFF roles can delete listings")
             notFoundExample("Listing not found")
