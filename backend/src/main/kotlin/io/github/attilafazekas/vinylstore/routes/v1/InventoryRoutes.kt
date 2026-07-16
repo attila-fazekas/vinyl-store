@@ -46,8 +46,8 @@ import io.ktor.server.auth.authenticate
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
-import kotlin.text.toIntOrNull
 import kotlin.text.uppercase
+import kotlin.uuid.Uuid
 
 fun Route.inventoryRoutes(store: VinylStoreData) {
     authenticate(AUTH_JWT) {
@@ -96,7 +96,7 @@ fun Route.inventoryRoutes(store: VinylStoreData) {
             get("/{listingId}", getInventoryDocumentation()) {
                 call.requireRole(Role.ADMIN, Role.STAFF)
 
-                val listingId = call.parameters["listingId"]?.toIntOrNull()
+                val listingId = call.parameters["listingId"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
                 if (listingId == null) {
                     call.respond(HttpStatusCode.BadRequest, ErrorResponse(BAD_REQUEST, "Invalid listing ID"))
                     return@get
@@ -113,7 +113,7 @@ fun Route.inventoryRoutes(store: VinylStoreData) {
             put("/{listingId}", updateInventoryDocumentation()) {
                 call.requireRole(Role.ADMIN, Role.STAFF)
 
-                val listingId = call.parameters["listingId"]?.toIntOrNull()
+                val listingId = call.parameters["listingId"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
                 if (listingId == null) {
                     call.respond(HttpStatusCode.BadRequest, ErrorResponse(BAD_REQUEST, "Invalid listing ID"))
                     return@put
@@ -234,16 +234,16 @@ private fun listInventoryDocumentation(): RouteConfig.() -> Unit =
                                 inventory =
                                     listOf(
                                         Inventory(
-                                            id = 1,
-                                            listingId = 1,
+                                            id = Uuid.parse("550e8400-e29b-41d4-a716-446655440001"),
+                                            listingId = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
                                             totalQuantity = 15,
                                             reservedQuantity = 0,
                                             createdAt = TimestampUtil.now(),
                                             updatedAt = TimestampUtil.now(),
                                         ),
                                         Inventory(
-                                            id = 2,
-                                            listingId = 2,
+                                            id = Uuid.parse("550e8400-e29b-41d4-a716-446655440003"),
+                                            listingId = Uuid.parse("550e8400-e29b-41d4-a716-446655440002"),
                                             totalQuantity = 5,
                                             reservedQuantity = 2,
                                             createdAt = TimestampUtil.now(),
@@ -300,9 +300,9 @@ private fun getInventoryDocumentation(): RouteConfig.() -> Unit =
         tags = listOf("inventory")
         request {
             pathParameter<String>("listingId") {
-                description = "Listing ID"
+                description = "Listing UUID"
                 example("Inventory") {
-                    value = "1"
+                    value = "550e8400-e29b-41d4-a716-446655440000"
                 }
             }
         }
@@ -312,8 +312,8 @@ private fun getInventoryDocumentation(): RouteConfig.() -> Unit =
                     example("Inventory for listing") {
                         value =
                             Inventory(
-                                id = 1,
-                                listingId = 1,
+                                id = Uuid.parse("550e8400-e29b-41d4-a716-446655440001"),
+                                listingId = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
                                 totalQuantity = 10,
                                 reservedQuantity = 1,
                                 createdAt = TimestampUtil.now(),
@@ -324,8 +324,8 @@ private fun getInventoryDocumentation(): RouteConfig.() -> Unit =
             }
             code(HttpStatusCode.BadRequest) {
                 body<ErrorResponse> {
-                    example("Invalid ID") {
-                        value = ErrorResponse(BAD_REQUEST, "Invalid listing ID")
+                    example("Invalid UUID") {
+                        value = ErrorResponse(BAD_REQUEST, "Invalid listing UUID")
                     }
                     example("Negative total quantity") {
                         value = ErrorResponse(VALIDATION_ERROR, "Total quantity cannot be negative")
@@ -385,9 +385,9 @@ private fun updateInventoryDocumentation(): RouteConfig.() -> Unit =
         tags = listOf("inventory")
         request {
             pathParameter<String>("listingId") {
-                description = "Listing ID"
+                description = "Listing UUID"
                 example("Inventory") {
-                    value = "1"
+                    value = "550e8400-e29b-41d4-a716-446655440000"
                 }
             }
             body<UpdateInventoryRequest> {
@@ -407,8 +407,8 @@ private fun updateInventoryDocumentation(): RouteConfig.() -> Unit =
                     example("Inventory for listing") {
                         value =
                             Inventory(
-                                id = 1,
-                                listingId = 1,
+                                id = Uuid.parse("550e8400-e29b-41d4-a716-446655440001"),
+                                listingId = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
                                 totalQuantity = 100,
                                 reservedQuantity = 5,
                                 createdAt = TimestampUtil.now(),
@@ -417,7 +417,7 @@ private fun updateInventoryDocumentation(): RouteConfig.() -> Unit =
                     }
                 }
             }
-            badRequestExample("Invalid listing ID")
+            badRequestExample("Invalid listing UUID")
             notAuthenticatedExample()
             insufficientPermissionsExample("Only ADMIN and STAFF roles can view inventory")
             notFoundExample("Inventory not found")

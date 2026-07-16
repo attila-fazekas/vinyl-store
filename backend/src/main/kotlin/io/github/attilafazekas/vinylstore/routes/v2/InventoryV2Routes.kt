@@ -41,7 +41,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.server.auth.authenticate
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
-import kotlin.text.toIntOrNull
+import kotlin.uuid.Uuid
 
 fun Route.inventoryV2Routes(store: VinylStoreData) {
     authenticate(AUTH_JWT) {
@@ -97,7 +97,7 @@ fun Route.inventoryV2Routes(store: VinylStoreData) {
                 }
 
                 artistParam?.let { artist ->
-                    val artistId = artist.toIntOrNull()
+                    val artistId = runCatching { Uuid.parse(artist) }.getOrNull()
                     inventoryList =
                         inventoryList.filter { inv ->
                             if (artistId != null) {
@@ -124,7 +124,7 @@ fun Route.inventoryV2Routes(store: VinylStoreData) {
             get("/{listingId}", getInventoryWithContextDocumentation()) {
                 call.requireRole(Role.ADMIN, Role.STAFF)
 
-                val listingId = call.parameters["listingId"]?.toIntOrNull()
+                val listingId = call.parameters["listingId"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
                 if (listingId == null) {
                     call.respond(HttpStatusCode.BadRequest, ErrorResponse(BAD_REQUEST, "Invalid listing ID"))
                     return@get
@@ -247,7 +247,7 @@ private fun listInventoryV2Documentation(): RouteConfig.() -> Unit =
                                 inventory =
                                     listOf(
                                         InventoryWithListingV2Response(
-                                            id = 1,
+                                            id = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
                                             totalQuantity = 15,
                                             reservedQuantity = 2,
                                             availableQuantity = 13,
@@ -255,23 +255,26 @@ private fun listInventoryV2Documentation(): RouteConfig.() -> Unit =
                                             updatedAt = "2025-01-10T14:30:45.123Z",
                                             listing =
                                                 ListingContextV2(
-                                                    id = 1,
+                                                    id = Uuid.parse("550e8400-e29b-41d4-a716-446655440001"),
                                                     status = ListingStatus.PUBLISHED,
                                                     price = 99.99,
                                                     currency = "EUR",
                                                     vinyl =
                                                         VinylContextV2(
-                                                            id = 1,
+                                                            id = Uuid.parse("550e8400-e29b-41d4-a716-446655440002"),
                                                             title = "Avichrom",
                                                             artists =
                                                                 listOf(
-                                                                    Artist(id = 1, name = "Dominik Eulberg"),
+                                                                    Artist(
+                                                                        id = Uuid.parse("550e8400-e29b-41d4-a716-446655440003"),
+                                                                        name = "Dominik Eulberg",
+                                                                    ),
                                                                 ),
                                                         ),
                                                 ),
                                         ),
                                         InventoryWithListingV2Response(
-                                            id = 2,
+                                            id = Uuid.parse("550e8400-e29b-41d4-a716-446655440004"),
                                             totalQuantity = 3,
                                             reservedQuantity = 0,
                                             availableQuantity = 3,
@@ -279,18 +282,24 @@ private fun listInventoryV2Documentation(): RouteConfig.() -> Unit =
                                             updatedAt = "2025-01-10T14:30:45.123Z",
                                             listing =
                                                 ListingContextV2(
-                                                    id = 3,
+                                                    id = Uuid.parse("550e8400-e29b-41d4-a716-446655440005"),
                                                     status = ListingStatus.PUBLISHED,
                                                     price = 65.05,
                                                     currency = "EUR",
                                                     vinyl =
                                                         VinylContextV2(
-                                                            id = 3,
+                                                            id = Uuid.parse("550e8400-e29b-41d4-a716-446655440006"),
                                                             title = "...A Little Further",
                                                             artists =
                                                                 listOf(
-                                                                    Artist(id = 1, name = "Dominik Eulberg"),
-                                                                    Artist(id = 2, name = "Extrawelt"),
+                                                                    Artist(
+                                                                        id = Uuid.parse("550e8400-e29b-41d4-a716-446655440003"),
+                                                                        name = "Dominik Eulberg",
+                                                                    ),
+                                                                    Artist(
+                                                                        id = Uuid.parse("550e8400-e29b-41d4-a716-446655440007"),
+                                                                        name = "Extrawelt",
+                                                                    ),
                                                                 ),
                                                         ),
                                                 ),
@@ -305,7 +314,7 @@ private fun listInventoryV2Documentation(): RouteConfig.() -> Unit =
                                 inventory =
                                     listOf(
                                         InventoryWithListingV2Response(
-                                            id = 2,
+                                            id = Uuid.parse("550e8400-e29b-41d4-a716-446655440004"),
                                             totalQuantity = 3,
                                             reservedQuantity = 0,
                                             availableQuantity = 3,
@@ -313,18 +322,24 @@ private fun listInventoryV2Documentation(): RouteConfig.() -> Unit =
                                             updatedAt = "2025-01-10T14:30:45.123Z",
                                             listing =
                                                 ListingContextV2(
-                                                    id = 3,
+                                                    id = Uuid.parse("550e8400-e29b-41d4-a716-446655440005"),
                                                     status = ListingStatus.PUBLISHED,
                                                     price = 65.05,
                                                     currency = "EUR",
                                                     vinyl =
                                                         VinylContextV2(
-                                                            id = 3,
+                                                            id = Uuid.parse("550e8400-e29b-41d4-a716-446655440006"),
                                                             title = "...A Little Further",
                                                             artists =
                                                                 listOf(
-                                                                    Artist(id = 1, name = "Dominik Eulberg"),
-                                                                    Artist(id = 2, name = "Extrawelt"),
+                                                                    Artist(
+                                                                        id = Uuid.parse("550e8400-e29b-41d4-a716-446655440003"),
+                                                                        name = "Dominik Eulberg",
+                                                                    ),
+                                                                    Artist(
+                                                                        id = Uuid.parse("550e8400-e29b-41d4-a716-446655440007"),
+                                                                        name = "Extrawelt",
+                                                                    ),
                                                                 ),
                                                         ),
                                                 ),
@@ -381,9 +396,9 @@ private fun getInventoryWithContextDocumentation(): RouteConfig.() -> Unit =
         tags = listOf("inventory-v2")
         request {
             pathParameter<String>("listingId") {
-                description = "Listing ID"
+                description = "Listing UUID"
                 example("Inventory with listing context") {
-                    value = "1"
+                    value = "550e8400-e29b-41d4-a716-446655440001"
                 }
             }
         }
@@ -393,7 +408,7 @@ private fun getInventoryWithContextDocumentation(): RouteConfig.() -> Unit =
                     example("Inventory with listing context") {
                         value =
                             InventoryWithListingV2Response(
-                                id = 1,
+                                id = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
                                 totalQuantity = 10,
                                 reservedQuantity = 1,
                                 availableQuantity = 9,
@@ -401,18 +416,18 @@ private fun getInventoryWithContextDocumentation(): RouteConfig.() -> Unit =
                                 updatedAt = "2025-01-10T14:30:45.123Z",
                                 listing =
                                     ListingContextV2(
-                                        id = 1,
+                                        id = Uuid.parse("550e8400-e29b-41d4-a716-446655440001"),
                                         status = ListingStatus.PUBLISHED,
                                         price = 99.99,
                                         currency = "EUR",
                                         vinyl =
                                             VinylContextV2(
-                                                id = 1,
+                                                id = Uuid.parse("550e8400-e29b-41d4-a716-446655440002"),
                                                 title = "Avichrom",
                                                 artists =
                                                     listOf(
                                                         Artist(
-                                                            id = 1,
+                                                            id = Uuid.parse("550e8400-e29b-41d4-a716-446655440003"),
                                                             name = "Dominik Eulberg",
                                                         ),
                                                     ),
@@ -423,7 +438,7 @@ private fun getInventoryWithContextDocumentation(): RouteConfig.() -> Unit =
                     example("Inventory with collaboration") {
                         value =
                             InventoryWithListingV2Response(
-                                id = 3,
+                                id = Uuid.parse("550e8400-e29b-41d4-a716-446655440004"),
                                 totalQuantity = 5,
                                 reservedQuantity = 0,
                                 availableQuantity = 5,
@@ -431,22 +446,22 @@ private fun getInventoryWithContextDocumentation(): RouteConfig.() -> Unit =
                                 updatedAt = "2025-01-10T14:30:45.123Z",
                                 listing =
                                     ListingContextV2(
-                                        id = 3,
+                                        id = Uuid.parse("550e8400-e29b-41d4-a716-446655440005"),
                                         status = ListingStatus.PUBLISHED,
                                         price = 65.05,
                                         currency = "EUR",
                                         vinyl =
                                             VinylContextV2(
-                                                id = 3,
+                                                id = Uuid.parse("550e8400-e29b-41d4-a716-446655440006"),
                                                 title = "...A Little Further",
                                                 artists =
                                                     listOf(
                                                         Artist(
-                                                            id = 1,
+                                                            id = Uuid.parse("550e8400-e29b-41d4-a716-446655440003"),
                                                             name = "Dominik Eulberg",
                                                         ),
                                                         Artist(
-                                                            id = 2,
+                                                            id = Uuid.parse("550e8400-e29b-41d4-a716-446655440007"),
                                                             name = "Extrawelt",
                                                         ),
                                                     ),
@@ -456,7 +471,7 @@ private fun getInventoryWithContextDocumentation(): RouteConfig.() -> Unit =
                     }
                 }
             }
-            badRequestExample("Invalid listing ID")
+            badRequestExample("Invalid listing UUID")
             notAuthenticatedExample()
             insufficientPermissionsExample("Only ADMIN and STAFF roles can view inventory details")
             notFoundExample("Inventory not found", "Listing not found")

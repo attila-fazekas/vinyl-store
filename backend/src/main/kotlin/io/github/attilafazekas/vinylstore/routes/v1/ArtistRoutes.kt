@@ -45,7 +45,7 @@ import io.ktor.server.auth.authenticate
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
-import kotlin.text.toIntOrNull
+import kotlin.uuid.Uuid
 
 fun Route.artistRoutes(store: VinylStoreData) {
     authenticate(AUTH_JWT) {
@@ -70,7 +70,7 @@ fun Route.artistRoutes(store: VinylStoreData) {
             }
 
             get("/{id}", getArtistDocumentation()) {
-                val id = call.parameters["id"]?.toIntOrNull()
+                val id = call.parameters["id"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
                 if (id == null) {
                     call.respond(HttpStatusCode.BadRequest, ErrorResponse(BAD_REQUEST, "Invalid artist ID"))
                     return@get
@@ -87,7 +87,7 @@ fun Route.artistRoutes(store: VinylStoreData) {
             put("/{id}", updateArtistDocumentation()) {
                 call.requireRole(Role.ADMIN, Role.STAFF)
 
-                val id = call.parameters["id"]?.toIntOrNull()
+                val id = call.parameters["id"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
                 if (id == null) {
                     call.respond(HttpStatusCode.BadRequest, ErrorResponse(BAD_REQUEST, "Invalid artist ID"))
                     return@put
@@ -106,7 +106,7 @@ fun Route.artistRoutes(store: VinylStoreData) {
             delete("/{id}", deleteArtistDocumentation()) {
                 call.requireRole(Role.ADMIN, Role.STAFF)
 
-                val id = call.parameters["id"]?.toIntOrNull()
+                val id = call.parameters["id"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
                 if (id == null) {
                     call.respond(HttpStatusCode.BadRequest, ErrorResponse(BAD_REQUEST, "Invalid artist ID"))
                     return@delete
@@ -156,10 +156,10 @@ private fun getArtistDocumentation(): RouteConfig.() -> Unit =
             """.trimIndent()
         tags = listOf("artists")
         request {
-            pathParameter<String>("id") {
-                description = "Artist ID"
+            pathParameter<Uuid>("id") {
+                description = "Artist UUID"
                 example("Artist details") {
-                    value = "1"
+                    value = "550e8400-e29b-41d4-a716-446655440000"
                 }
             }
         }
@@ -167,11 +167,11 @@ private fun getArtistDocumentation(): RouteConfig.() -> Unit =
             code(HttpStatusCode.OK) {
                 body<Artist> {
                     example("Artist details") {
-                        value = Artist(1, "Dominik Eulberg")
+                        value = Artist(Uuid.parse("550e8400-e29b-41d4-a716-446655440000"), "Dominik Eulberg")
                     }
                 }
             }
-            badRequestExample("Invalid artist ID")
+            badRequestExample("Invalid artist UUID")
             notAuthenticatedExample()
             notFoundExample("Artist not found")
         }
@@ -218,8 +218,8 @@ private fun listArtistsDocumentation(): RouteConfig.() -> Unit =
                             ArtistsResponse(
                                 artists =
                                     listOf(
-                                        Artist(1, "Dominik Eulberg"),
-                                        Artist(2, "Extrawelt"),
+                                        Artist(Uuid.parse("550e8400-e29b-41d4-a716-446655440000"), "Dominik Eulberg"),
+                                        Artist(Uuid.parse("550e8400-e29b-41d4-a716-446655440001"), "Extrawelt"),
                                     ),
                                 total = 2,
                             )
@@ -269,7 +269,7 @@ private fun createArtistDocumentation(): RouteConfig.() -> Unit =
             code(HttpStatusCode.Created) {
                 body<Artist> {
                     example("Created artist") {
-                        value = Artist(3, "Kollektiv Turmstrasse")
+                        value = Artist(Uuid.parse("550e8400-e29b-41d4-a716-446655440002"), "Kollektiv Turmstrasse")
                     }
                 }
             }
@@ -306,10 +306,10 @@ private fun updateArtistDocumentation(): RouteConfig.() -> Unit =
             """.trimIndent()
         tags = listOf("artists")
         request {
-            pathParameter<String>("id") {
-                description = "Artist ID"
+            pathParameter<Uuid>("id") {
+                description = "Artist UUID"
                 example("Update artist") {
-                    value = "1"
+                    value = "550e8400-e29b-41d4-a716-446655440000"
                 }
             }
             body<UpdateArtistRequest> {
@@ -322,11 +322,11 @@ private fun updateArtistDocumentation(): RouteConfig.() -> Unit =
             code(HttpStatusCode.OK) {
                 body<Artist> {
                     example("Updated artist") {
-                        value = Artist(1, "Donato Dozzy & Nuel")
+                        value = Artist(Uuid.parse("550e8400-e29b-41d4-a716-446655440000"), "Donato Dozzy & Nuel")
                     }
                 }
             }
-            badRequestExample("Invalid artist ID")
+            badRequestExample("Invalid artist UUID")
             notAuthenticatedExample()
             insufficientPermissionsExample("Only ADMIN and STAFF roles can update artists")
             notFoundExample("Artist not found")
@@ -363,10 +363,10 @@ private fun deleteArtistDocumentation(): RouteConfig.() -> Unit =
             """.trimIndent()
         tags = listOf("artists")
         request {
-            pathParameter<String>("id") {
-                description = "Artist ID"
+            pathParameter<Uuid>("id") {
+                description = "Artist UUID"
                 example("Delete artist") {
-                    value = "1"
+                    value = "550e8400-e29b-41d4-a716-446655440000"
                 }
             }
         }

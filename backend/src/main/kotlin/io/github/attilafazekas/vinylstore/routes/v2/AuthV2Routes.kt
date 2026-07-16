@@ -36,6 +36,7 @@ import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.principal
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
+import kotlin.uuid.Uuid
 
 fun Route.authV2Routes(store: VinylStoreData) {
     authenticate(AUTH_JWT) {
@@ -92,7 +93,7 @@ private fun getCurrentUserWithDetailsDocumentation(): RouteConfig.() -> Unit =
                     example("Customer user with addresses") {
                         value =
                             UserV2Response(
-                                id = 1,
+                                id = Uuid.random(),
                                 email = Email("john@example.com"),
                                 role = Role.CUSTOMER,
                                 isActive = true,
@@ -101,8 +102,8 @@ private fun getCurrentUserWithDetailsDocumentation(): RouteConfig.() -> Unit =
                                 addresses =
                                     listOf(
                                         Address(
-                                            id = 1,
-                                            userId = 1,
+                                            id = Uuid.random(),
+                                            userId = Uuid.random(),
                                             type = AddressType.SHIPPING,
                                             fullName = "John Doe",
                                             street = "123 Main St",
@@ -124,7 +125,7 @@ private fun getCurrentUserWithDetailsDocumentation(): RouteConfig.() -> Unit =
                     example("Admin user") {
                         value =
                             UserV2Response(
-                                id = 2,
+                                id = Uuid.random(),
                                 email = Email("admin@vinylstore.com"),
                                 role = Role.ADMIN,
                                 isActive = true,

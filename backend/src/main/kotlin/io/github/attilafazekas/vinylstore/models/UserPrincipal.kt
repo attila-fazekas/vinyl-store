@@ -16,8 +16,10 @@
 
 package io.github.attilafazekas.vinylstore.models
 
+import kotlin.uuid.Uuid
+
 data class UserPrincipal(
-    val userId: Int,
+    val userId: Uuid,
     val email: String,
     val role: String,
 )

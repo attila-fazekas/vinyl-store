@@ -47,8 +47,8 @@ import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import kotlin.text.toBooleanStrictOrNull
-import kotlin.text.toIntOrNull
 import kotlin.text.uppercase
+import kotlin.uuid.Uuid
 
 fun Route.addressRoutes(store: VinylStoreData) {
     authenticate(AUTH_JWT) {
@@ -83,7 +83,7 @@ fun Route.addressRoutes(store: VinylStoreData) {
             get("/{id}", getAddressDocumentation()) {
                 val principal = call.principal<UserPrincipal>()!!
 
-                val id = call.parameters["id"]?.toIntOrNull()
+                val id = call.parameters["id"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
                 if (id == null) {
                     call.respond(HttpStatusCode.BadRequest, ErrorResponse(BAD_REQUEST, "Invalid address ID"))
                     return@get
@@ -161,7 +161,7 @@ fun Route.addressRoutes(store: VinylStoreData) {
             put("/{id}", updateAddressDocumentation()) {
                 val principal = call.principal<UserPrincipal>()!!
 
-                val id = call.parameters["id"]?.toIntOrNull()
+                val id = call.parameters["id"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
                 if (id == null) {
                     call.respond(HttpStatusCode.BadRequest, ErrorResponse(BAD_REQUEST, "Invalid address ID"))
                     return@put
@@ -200,7 +200,7 @@ fun Route.addressRoutes(store: VinylStoreData) {
             delete("/{id}", deleteAddressDocumentation()) {
                 val principal = call.principal<UserPrincipal>()!!
 
-                val id = call.parameters["id"]?.toIntOrNull()
+                val id = call.parameters["id"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
                 if (id == null) {
                     call.respond(HttpStatusCode.BadRequest, ErrorResponse(BAD_REQUEST, "Invalid address ID"))
                     return@delete
@@ -259,8 +259,8 @@ private fun listAddressesDocumentation(): RouteConfig.() -> Unit =
                                 addresses =
                                     listOf(
                                         Address(
-                                            id = 1,
-                                            userId = 1,
+                                            id = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
+                                            userId = Uuid.parse("550e8400-e29b-41d4-a716-446655440001"),
                                             type = AddressType.SHIPPING,
                                             fullName = "John Doe",
                                             street = "123 Main St",
@@ -302,10 +302,10 @@ private fun getAddressDocumentation(): RouteConfig.() -> Unit =
             """.trimIndent()
         tags = listOf("users")
         request {
-            pathParameter<String>("id") {
-                description = "Address ID"
+            pathParameter<Uuid>("id") {
+                description = "Address UUID"
                 example("Address details") {
-                    value = "1"
+                    value = "550e8400-e29b-41d4-a716-446655440000"
                 }
             }
         }
@@ -315,8 +315,8 @@ private fun getAddressDocumentation(): RouteConfig.() -> Unit =
                     example("Address details") {
                         value =
                             Address(
-                                id = 1,
-                                userId = 1,
+                                id = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
+                                userId = Uuid.parse("550e8400-e29b-41d4-a716-446655440001"),
                                 type = AddressType.SHIPPING,
                                 fullName = "John Doe",
                                 street = "123 Main St",
@@ -330,7 +330,7 @@ private fun getAddressDocumentation(): RouteConfig.() -> Unit =
                     }
                 }
             }
-            badRequestExample("Invalid address ID")
+            badRequestExample("Invalid address UUID")
             notAuthenticatedExample()
             notFoundExample("Address not found")
         }
@@ -381,8 +381,8 @@ private fun createAddressDocumentation(): RouteConfig.() -> Unit =
                     example("Created address") {
                         value =
                             Address(
-                                id = 1,
-                                userId = 1,
+                                id = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
+                                userId = Uuid.parse("550e8400-e29b-41d4-a716-446655440001"),
                                 type = AddressType.SHIPPING,
                                 fullName = "John Doe",
                                 street = "123 Main St",
@@ -431,10 +431,10 @@ private fun updateAddressDocumentation(): RouteConfig.() -> Unit =
             """.trimIndent()
         tags = listOf("users")
         request {
-            pathParameter<String>("id") {
-                description = "Address ID"
+            pathParameter<Uuid>("id") {
+                description = "Address UUID"
                 example("Update address") {
-                    value = "1"
+                    value = "550e8400-e29b-41d4-a716-446655440000"
                 }
             }
             body<UpdateAddressRequest> {
@@ -461,8 +461,8 @@ private fun updateAddressDocumentation(): RouteConfig.() -> Unit =
                     example("Updated address") {
                         value =
                             Address(
-                                id = 1,
-                                userId = 1,
+                                id = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
+                                userId = Uuid.parse("550e8400-e29b-41d4-a716-446655440001"),
                                 type = AddressType.SHIPPING,
                                 fullName = "John Doe",
                                 street = "456 Oak Ave",
@@ -476,7 +476,7 @@ private fun updateAddressDocumentation(): RouteConfig.() -> Unit =
                     }
                 }
             }
-            badRequestExample("Invalid address ID")
+            badRequestExample("Invalid address UUID")
             notAuthenticatedExample()
             notFoundExample("Address not found")
         }
@@ -500,10 +500,10 @@ private fun deleteAddressDocumentation(): RouteConfig.() -> Unit =
             """.trimIndent()
         tags = listOf("users")
         request {
-            pathParameter<String>("id") {
-                description = "Address ID"
+            pathParameter<Uuid>("id") {
+                description = "Address UUID"
                 example("Delete address") {
-                    value = "1"
+                    value = "550e8400-e29b-41d4-a716-446655440000"
                 }
             }
         }
@@ -511,7 +511,7 @@ private fun deleteAddressDocumentation(): RouteConfig.() -> Unit =
             code(HttpStatusCode.NoContent) {
                 description = "Address deleted successfully"
             }
-            badRequestExample("Invalid address ID")
+            badRequestExample("Invalid address UUID")
             notAuthenticatedExample()
             notFoundExample("Address not found")
         }

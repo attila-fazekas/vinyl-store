@@ -45,7 +45,7 @@ import io.ktor.server.auth.authenticate
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
-import kotlin.text.toIntOrNull
+import kotlin.uuid.Uuid
 
 fun Route.labelRoutes(store: VinylStoreData) {
     authenticate(AUTH_JWT) {
@@ -70,7 +70,7 @@ fun Route.labelRoutes(store: VinylStoreData) {
             }
 
             get("/{id}", getLabelDocumentation()) {
-                val id = call.parameters["id"]?.toIntOrNull()
+                val id = call.parameters["id"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
                 if (id == null) {
                     call.respond(HttpStatusCode.BadRequest, ErrorResponse(BAD_REQUEST, "Invalid label ID"))
                     return@get
@@ -87,7 +87,7 @@ fun Route.labelRoutes(store: VinylStoreData) {
             put("/{id}", updateLabelDocumentation()) {
                 call.requireRole(Role.ADMIN, Role.STAFF)
 
-                val id = call.parameters["id"]?.toIntOrNull()
+                val id = call.parameters["id"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
                 if (id == null) {
                     call.respond(HttpStatusCode.BadRequest, ErrorResponse(BAD_REQUEST, "Invalid label ID"))
                     return@put
@@ -106,7 +106,7 @@ fun Route.labelRoutes(store: VinylStoreData) {
             delete("/{id}", deleteLabelDocumentation()) {
                 call.requireRole(Role.ADMIN, Role.STAFF)
 
-                val id = call.parameters["id"]?.toIntOrNull()
+                val id = call.parameters["id"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
                 if (id == null) {
                     call.respond(HttpStatusCode.BadRequest, ErrorResponse(BAD_REQUEST, "Invalid label ID"))
                     return@delete
@@ -163,10 +163,10 @@ private fun deleteLabelDocumentation(): RouteConfig.() -> Unit =
             """.trimIndent()
         tags = listOf("labels")
         request {
-            pathParameter<String>("id") {
-                description = "Label ID"
+            pathParameter<Uuid>("id") {
+                description = "Label UUID"
                 example("Delete label") {
-                    value = "1"
+                    value = "550e8400-e29b-41d4-a716-446655440000"
                 }
             }
         }
@@ -174,7 +174,7 @@ private fun deleteLabelDocumentation(): RouteConfig.() -> Unit =
             code(HttpStatusCode.NoContent) {
                 description = "Label deleted successfully"
             }
-            badRequestExample("Invalid label ID")
+            badRequestExample("Invalid label UUID")
             notAuthenticatedExample()
             insufficientPermissionsExample("Only ADMIN and STAFF roles can delete labels")
             notFoundExample("Label not found")
@@ -223,8 +223,8 @@ private fun listLabelsDocumentation(): RouteConfig.() -> Unit =
                             LabelsResponse(
                                 labels =
                                     listOf(
-                                        Label(1, "Further Records"),
-                                        Label(2, "!K7 Records"),
+                                        Label(Uuid.parse("550e8400-e29b-41d4-a716-446655440000"), "Further Records"),
+                                        Label(Uuid.parse("550e8400-e29b-41d4-a716-446655440001"), "!K7 Records"),
                                     ),
                                 total = 2,
                             )
@@ -274,7 +274,7 @@ private fun createLabelDocumentation(): RouteConfig.() -> Unit =
             code(HttpStatusCode.Created) {
                 body<Label> {
                     example("Created label") {
-                        value = Label(3, "Spazio Disponibile")
+                        value = Label(Uuid.parse("550e8400-e29b-41d4-a716-446655440002"), "Spazio Disponibile")
                     }
                 }
             }
@@ -311,10 +311,10 @@ private fun updateLabelDocumentation(): RouteConfig.() -> Unit =
             """.trimIndent()
         tags = listOf("labels")
         request {
-            pathParameter<String>("id") {
-                description = "Label ID"
+            pathParameter<Uuid>("id") {
+                description = "Label UUID"
                 example("Update label") {
-                    value = "1"
+                    value = "550e8400-e29b-41d4-a716-446655440000"
                 }
             }
             body<UpdateLabelRequest> {
@@ -327,11 +327,11 @@ private fun updateLabelDocumentation(): RouteConfig.() -> Unit =
             code(HttpStatusCode.OK) {
                 body<Label> {
                     example("Updated label") {
-                        value = Label(1, "Further Records Ltd")
+                        value = Label(Uuid.parse("550e8400-e29b-41d4-a716-446655440000"), "Further Records Ltd")
                     }
                 }
             }
-            badRequestExample("Invalid label ID")
+            badRequestExample("Invalid label UUID")
             notAuthenticatedExample()
             insufficientPermissionsExample("Only ADMIN and STAFF roles can update labels")
             notFoundExample("Label not found")
@@ -361,10 +361,10 @@ private fun getLabelDocumentation(): RouteConfig.() -> Unit =
             """.trimIndent()
         tags = listOf("labels")
         request {
-            pathParameter<String>("id") {
-                description = "Label ID"
+            pathParameter<Uuid>("id") {
+                description = "Label UUID"
                 example("Label details") {
-                    value = "1"
+                    value = "550e8400-e29b-41d4-a716-446655440000"
                 }
             }
         }
@@ -372,11 +372,11 @@ private fun getLabelDocumentation(): RouteConfig.() -> Unit =
             code(HttpStatusCode.OK) {
                 body<Label> {
                     example("Label details") {
-                        value = Label(1, "!K7 Records")
+                        value = Label(Uuid.parse("550e8400-e29b-41d4-a716-446655440001"), "!K7 Records")
                     }
                 }
             }
-            badRequestExample("Invalid label ID")
+            badRequestExample("Invalid label UUID")
             notAuthenticatedExample()
             notFoundExample("Label not found")
         }

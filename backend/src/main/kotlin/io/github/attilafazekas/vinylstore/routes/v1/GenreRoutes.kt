@@ -45,7 +45,7 @@ import io.ktor.server.auth.authenticate
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
-import kotlin.text.toIntOrNull
+import kotlin.uuid.Uuid
 
 fun Route.genreRoutes(store: VinylStoreData) {
     authenticate(AUTH_JWT) {
@@ -70,7 +70,7 @@ fun Route.genreRoutes(store: VinylStoreData) {
             }
 
             get("/{id}", getGenreDocumentation()) {
-                val id = call.parameters["id"]?.toIntOrNull()
+                val id = call.parameters["id"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
                 if (id == null) {
                     call.respond(HttpStatusCode.BadRequest, ErrorResponse(BAD_REQUEST, "Invalid genre ID"))
                     return@get
@@ -87,7 +87,7 @@ fun Route.genreRoutes(store: VinylStoreData) {
             put("/{id}", updateGenreDocumentation()) {
                 call.requireRole(Role.ADMIN, Role.STAFF)
 
-                val id = call.parameters["id"]?.toIntOrNull()
+                val id = call.parameters["id"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
                 if (id == null) {
                     call.respond(HttpStatusCode.BadRequest, ErrorResponse(BAD_REQUEST, "Invalid genre ID"))
                     return@put
@@ -106,7 +106,7 @@ fun Route.genreRoutes(store: VinylStoreData) {
             delete("/{id}", deleteGenreDocumentation()) {
                 call.requireRole(Role.ADMIN, Role.STAFF)
 
-                val id = call.parameters["id"]?.toIntOrNull()
+                val id = call.parameters["id"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
                 if (id == null) {
                     call.respond(HttpStatusCode.BadRequest, ErrorResponse(BAD_REQUEST, "Invalid genre ID"))
                     return@delete
@@ -174,8 +174,8 @@ private fun listGenresDocumentation(): RouteConfig.() -> Unit =
                             GenresResponse(
                                 genres =
                                     listOf(
-                                        Genre(1, "Electronic"),
-                                        Genre(2, "Hip Hop"),
+                                        Genre(Uuid.parse("550e8400-e29b-41d4-a716-446655440000"), "Electronic"),
+                                        Genre(Uuid.parse("550e8400-e29b-41d4-a716-446655440001"), "Hip Hop"),
                                     ),
                                 total = 2,
                             )
@@ -225,7 +225,7 @@ private fun createGenreDocumentation(): RouteConfig.() -> Unit =
             code(HttpStatusCode.Created) {
                 body<Genre> {
                     example("Created genre") {
-                        value = Genre(2, "Hip Hop")
+                        value = Genre(Uuid.parse("550e8400-e29b-41d4-a716-446655440001"), "Hip Hop")
                     }
                 }
             }
@@ -257,10 +257,10 @@ private fun getGenreDocumentation(): RouteConfig.() -> Unit =
             """.trimIndent()
         tags = listOf("genres")
         request {
-            pathParameter<String>("id") {
-                description = "Genre ID"
+            pathParameter<Uuid>("id") {
+                description = "Genre UUID"
                 example("Genre details") {
-                    value = "1"
+                    value = "550e8400-e29b-41d4-a716-446655440000"
                 }
             }
         }
@@ -268,11 +268,11 @@ private fun getGenreDocumentation(): RouteConfig.() -> Unit =
             code(HttpStatusCode.OK) {
                 body<Genre> {
                     example("Genre details") {
-                        value = Genre(1, "Electronic")
+                        value = Genre(Uuid.parse("550e8400-e29b-41d4-a716-446655440000"), "Electronic")
                     }
                 }
             }
-            badRequestExample("Invalid genre ID")
+            badRequestExample("Invalid genre UUID")
             notAuthenticatedExample()
             notFoundExample("Genre not found")
         }
@@ -306,10 +306,10 @@ private fun updateGenreDocumentation(): RouteConfig.() -> Unit =
             """.trimIndent()
         tags = listOf("genres")
         request {
-            pathParameter<String>("id") {
-                description = "Genre ID"
+            pathParameter<Uuid>("id") {
+                description = "Genre UUID"
                 example("Update genre") {
-                    value = "1"
+                    value = "550e8400-e29b-41d4-a716-446655440000"
                 }
             }
             body<UpdateGenreRequest> {
@@ -322,11 +322,11 @@ private fun updateGenreDocumentation(): RouteConfig.() -> Unit =
             code(HttpStatusCode.OK) {
                 body<Genre> {
                     example("Updated genre") {
-                        value = Genre(1, "Jazz")
+                        value = Genre(Uuid.parse("550e8400-e29b-41d4-a716-446655440000"), "Jazz")
                     }
                 }
             }
-            badRequestExample("Invalid genre ID")
+            badRequestExample("Invalid genre UUID")
             notAuthenticatedExample()
             insufficientPermissionsExample("Only ADMIN and STAFF roles can update genres")
             notFoundExample("Genre not found")
@@ -363,10 +363,10 @@ private fun deleteGenreDocumentation(): RouteConfig.() -> Unit =
             """.trimIndent()
         tags = listOf("genres")
         request {
-            pathParameter<String>("id") {
-                description = "Genre ID"
+            pathParameter<Uuid>("id") {
+                description = "Genre UUID"
                 example("Delete genre") {
-                    value = "1"
+                    value = "550e8400-e29b-41d4-a716-446655440000"
                 }
             }
         }
@@ -374,7 +374,7 @@ private fun deleteGenreDocumentation(): RouteConfig.() -> Unit =
             code(HttpStatusCode.NoContent) {
                 description = "Genre deleted successfully"
             }
-            badRequestExample("Invalid genre ID")
+            badRequestExample("Invalid genre UUID")
             notAuthenticatedExample()
             insufficientPermissionsExample("Only ADMIN and STAFF roles can delete genres")
             notFoundExample("Genre not found")

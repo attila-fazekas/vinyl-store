@@ -29,6 +29,7 @@ import io.github.attilafazekas.vinylstore.enums.Role
 import io.github.smiley4.schemakenerator.core.annotations.Description
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.Serializable
+import kotlin.uuid.Uuid
 
 @Serializable
 data class LoginResponse(
@@ -41,7 +42,7 @@ data class LoginResponse(
 @Serializable
 data class UserResponse(
     @Description("Unique identifier for the user.")
-    val id: Int,
+    val id: Uuid,
     @Description("User's email address.")
     val email: Email,
     @Description("User's role in the system (CUSTOMER, STAFF, or ADMIN).")
@@ -84,7 +85,7 @@ data class ListingsResponse(
 @Serializable
 data class VinylWithDetailsV2(
     @Description("Unique identifier for the vinyl record.")
-    val id: Int,
+    val id: Uuid,
     @Description("The title of the vinyl record.")
     val title: String,
     @Description("The year the vinyl was released.")
@@ -127,7 +128,7 @@ data class InventoryV2(
 @Serializable
 data class ListingV2Response(
     @Description("Unique identifier for the listing.")
-    val id: Int,
+    val id: Uuid,
     @Description("Current status of the listing (DRAFT, PUBLISHED, or ARCHIVED).")
     val status: ListingStatus,
     @Description("The listing price.")
@@ -254,7 +255,7 @@ data class InventoryResponse(
 @Serializable
 data class VinylContextV2(
     @Description("Unique identifier for the vinyl record.")
-    val id: Int,
+    val id: Uuid,
     @Description("The title of the vinyl record.")
     val title: String,
     @Description("The artists who created this vinyl, with basic details embedded. Contains multiple artists for collaborations.")
@@ -264,7 +265,7 @@ data class VinylContextV2(
 @Serializable
 data class ListingContextV2(
     @Description("Unique identifier for the listing.")
-    val id: Int,
+    val id: Uuid,
     @Description("Current status of the listing.")
     val status: ListingStatus,
     @Description("The listing price.")
@@ -278,7 +279,7 @@ data class ListingContextV2(
 @Serializable
 data class InventoryWithListingV2Response(
     @Description("Unique identifier for the inventory record.")
-    val id: Int,
+    val id: Uuid,
     @Description("Total quantity in stock.")
     val totalQuantity: Int,
     @Description("Quantity currently reserved for pending orders.")
@@ -314,7 +315,7 @@ data class UserStatsV2(
 @Serializable
 data class UserV2Response(
     @Description("Unique identifier for the user.")
-    val id: Int,
+    val id: Uuid,
     @Description("User's email address.")
     val email: Email,
     @Description("User's role in the system.")
