@@ -12,7 +12,7 @@ COPY buildSrc/src ./buildSrc/src
 COPY backend/build.gradle.kts ./backend/build.gradle.kts
 
 # Warm the dependency cache as its own layer — doesn't need app source,
-# so this layer is reused whenever only source (not dependencies) changes
+# so this layer is reused whenever only source changes
 RUN ./gradlew :backend:dependencies --no-daemon
 
 # Now copy the actual source and build the fat jar
