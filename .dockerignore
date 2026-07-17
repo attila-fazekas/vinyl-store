@@ -1,0 +1,13 @@
+.git
+.gradle
+.idea
+.kotlin
+.junie
+.aiassistant
+.DS_Store
+build
+backend/build
+buildSrc/build
+buildSrc/.gradle
+*.md
+!README.md
