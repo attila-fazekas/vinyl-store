@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-plugins {
-    id("org.jlleitschuh.gradle.ktlint")
-}
+package io.github.attilafazekas.vinylstore.db
 
-ktlint {
-    version = "1.8.0"
-    debug = true
-    verbose = true
-    outputToConsole = true
-    outputColorName = "RED"
-    ignoreFailures = false
-    enableExperimentalRules = false
-    filter {
-        exclude { entry -> entry.file.path.contains("${File.separator}generated${File.separator}") }
+import org.komapper.r2dbc.R2dbcDatabase
+
+object DatabaseFactory {
+    fun create(): R2dbcDatabase {
+        val host = System.getenv("POSTGRES_HOST") ?: "localhost"
+        val port = System.getenv("POSTGRES_PORT") ?: "5432"
+        val database = System.getenv("POSTGRES_DB") ?: "vinylstore"
+        val user = System.getenv("POSTGRES_USER") ?: "vinylstore"
+        val password = System.getenv("POSTGRES_PASSWORD") ?: "vinylstore"
+        val url = "r2dbc:postgresql://$user:$password@$host:$port/$database"
+        return R2dbcDatabase(url)
     }
 }

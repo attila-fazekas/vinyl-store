@@ -16,8 +16,12 @@
 
 package io.github.attilafazekas.vinylstore.routes.v1
 
+import io.github.attilafazekas.vinylstore.ADMIN_EMAIL
+import io.github.attilafazekas.vinylstore.ADMIN_PASSWORD
 import io.github.attilafazekas.vinylstore.AUTH_JWT
 import io.github.attilafazekas.vinylstore.CONFLICT
+import io.github.attilafazekas.vinylstore.CUSTOMER_EMAIL
+import io.github.attilafazekas.vinylstore.CUSTOMER_PASSWORD
 import io.github.attilafazekas.vinylstore.Email
 import io.github.attilafazekas.vinylstore.FORBIDDEN
 import io.github.attilafazekas.vinylstore.JwtConfig
@@ -27,7 +31,7 @@ import io.github.attilafazekas.vinylstore.TimestampUtil
 import io.github.attilafazekas.vinylstore.UNAUTHORIZED
 import io.github.attilafazekas.vinylstore.V1
 import io.github.attilafazekas.vinylstore.VALIDATION_ERROR
-import io.github.attilafazekas.vinylstore.VinylStoreData
+import io.github.attilafazekas.vinylstore.VinylStoreRepository
 import io.github.attilafazekas.vinylstore.documentation.conflictExample
 import io.github.attilafazekas.vinylstore.documentation.notAuthenticatedExample
 import io.github.attilafazekas.vinylstore.documentation.validationErrorExample
@@ -50,7 +54,7 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import kotlin.uuid.Uuid
 
-fun Route.authRoutes(store: VinylStoreData) {
+fun Route.authRoutes(store: VinylStoreRepository) {
     route("$V1/auth") {
         post("/register", registerUserDocumentation()) {
             val request = call.receive<RegisterRequest>()
@@ -166,7 +170,7 @@ private fun getCurrentUserDocumentation(): RouteConfig.() -> Unit =
                         value =
                             UserResponse(
                                 Uuid.random(),
-                                Email("john@example.com"),
+                                Email(CUSTOMER_EMAIL),
                                 Role.CUSTOMER,
                                 true,
                                 TimestampUtil.now(),
@@ -177,7 +181,7 @@ private fun getCurrentUserDocumentation(): RouteConfig.() -> Unit =
                         value =
                             UserResponse(
                                 Uuid.random(),
-                                Email("admin@vinylstore.com"),
+                                Email(ADMIN_EMAIL),
                                 Role.ADMIN,
                                 true,
                                 TimestampUtil.now(),
@@ -214,8 +218,8 @@ private fun registerUserDocumentation(): RouteConfig.() -> Unit =
                 example("Basic") {
                     value =
                         RegisterRequest(
-                            email = Email("john@example.com"),
-                            password = Password("test1234"),
+                            email = Email(CUSTOMER_EMAIL),
+                            password = Password(CUSTOMER_PASSWORD),
                         )
                 }
             }
@@ -230,7 +234,7 @@ private fun registerUserDocumentation(): RouteConfig.() -> Unit =
                                 user =
                                     UserResponse(
                                         id = Uuid.random(),
-                                        email = Email("john@example.com"),
+                                        email = Email(CUSTOMER_EMAIL),
                                         role = Role.CUSTOMER,
                                         isActive = true,
                                         createdAt = TimestampUtil.now(),
@@ -268,15 +272,15 @@ private fun loginDocumentation(): RouteConfig.() -> Unit =
                 example("Basic") {
                     value =
                         LoginRequest(
-                            email = Email("john@example.com"),
-                            password = Password("test1234"),
+                            email = Email(CUSTOMER_EMAIL),
+                            password = Password(CUSTOMER_PASSWORD),
                         )
                 }
                 example("Admin") {
                     value =
                         LoginRequest(
-                            email = Email("admin@vinylstore.com"),
-                            password = Password("admin123"),
+                            email = Email(ADMIN_EMAIL),
+                            password = Password(ADMIN_PASSWORD),
                         )
                 }
             }
@@ -291,7 +295,7 @@ private fun loginDocumentation(): RouteConfig.() -> Unit =
                                 user =
                                     UserResponse(
                                         Uuid.random(),
-                                        Email("john@example.com"),
+                                        Email(CUSTOMER_EMAIL),
                                         Role.CUSTOMER,
                                         true,
                                         TimestampUtil.now(),

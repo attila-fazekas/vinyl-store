@@ -20,7 +20,7 @@ import io.github.attilafazekas.vinylstore.AUTH_JWT
 import io.github.attilafazekas.vinylstore.BAD_REQUEST
 import io.github.attilafazekas.vinylstore.NOT_FOUND
 import io.github.attilafazekas.vinylstore.V2
-import io.github.attilafazekas.vinylstore.VinylStoreData
+import io.github.attilafazekas.vinylstore.VinylStoreRepository
 import io.github.attilafazekas.vinylstore.documentation.badRequestExample
 import io.github.attilafazekas.vinylstore.documentation.insufficientPermissionsExample
 import io.github.attilafazekas.vinylstore.documentation.notAuthenticatedExample
@@ -43,7 +43,7 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import kotlin.uuid.Uuid
 
-fun Route.inventoryV2Routes(store: VinylStoreData) {
+fun Route.inventoryV2Routes(store: VinylStoreRepository) {
     authenticate(AUTH_JWT) {
         route("$V2/inventory") {
             get(listInventoryV2Documentation()) {
@@ -56,10 +56,11 @@ fun Route.inventoryV2Routes(store: VinylStoreData) {
                 val maxAvailableParam = call.parameters["maxAvailable"]?.toIntOrNull()
 
                 var inventoryList =
-                    store.inventory.values
+                    store
+                        .getAllInventory()
                         .mapNotNull { inv ->
                             val listing = store.getListingById(inv.listingId) ?: return@mapNotNull null
-                            val vinyl = store.vinyls[listing.vinylId] ?: return@mapNotNull null
+                            val vinyl = store.getVinylById(listing.vinylId) ?: return@mapNotNull null
                             val artists = store.getArtistsForVinyl(vinyl.id)
                             if (artists.isEmpty()) return@mapNotNull null
 
@@ -142,7 +143,7 @@ fun Route.inventoryV2Routes(store: VinylStoreData) {
                     return@get
                 }
 
-                val vinyl = store.vinyls[listing.vinylId]
+                val vinyl = store.getVinylById(listing.vinylId)
                 if (vinyl == null) {
                     call.respond(HttpStatusCode.NotFound, ErrorResponse(NOT_FOUND, "Vinyl not found"))
                     return@get

@@ -17,7 +17,7 @@
 package io.github.attilafazekas.vinylstore.routes
 
 import io.github.attilafazekas.vinylstore.AUTH_JWT
-import io.github.attilafazekas.vinylstore.VinylStoreData
+import io.github.attilafazekas.vinylstore.VinylStoreRepository
 import io.github.attilafazekas.vinylstore.documentation.insufficientPermissionsExample
 import io.github.attilafazekas.vinylstore.documentation.notAuthenticatedExample
 import io.github.attilafazekas.vinylstore.enums.Role
@@ -30,7 +30,7 @@ import io.ktor.server.auth.authenticate
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 
-fun Route.adminRoutes(store: VinylStoreData) {
+fun Route.adminRoutes(store: VinylStoreRepository) {
     authenticate(AUTH_JWT) {
         post("/admin/reset", adminDocumentation()) {
             call.requireRole(Role.ADMIN)

@@ -22,7 +22,7 @@ import io.github.attilafazekas.vinylstore.CONFLICT
 import io.github.attilafazekas.vinylstore.NOT_FOUND
 import io.github.attilafazekas.vinylstore.TimestampUtil
 import io.github.attilafazekas.vinylstore.V1
-import io.github.attilafazekas.vinylstore.VinylStoreData
+import io.github.attilafazekas.vinylstore.VinylStoreRepository
 import io.github.attilafazekas.vinylstore.documentation.badRequestExample
 import io.github.attilafazekas.vinylstore.documentation.conflictExample
 import io.github.attilafazekas.vinylstore.documentation.insufficientPermissionsExample
@@ -55,7 +55,7 @@ import kotlin.text.toDoubleOrNull
 import kotlin.text.uppercase
 import kotlin.uuid.Uuid
 
-fun Route.listingRoutes(store: VinylStoreData) {
+fun Route.listingRoutes(store: VinylStoreRepository) {
     route("$V1/listings") {
         get(listListingsDocumentation()) {
             val statusParam = call.parameters["status"]
@@ -71,9 +71,9 @@ fun Route.listingRoutes(store: VinylStoreData) {
 
             var details =
                 allListings.mapNotNull { listing ->
-                    val vinyl = store.vinyls[listing.vinylId] ?: return@mapNotNull null
-                    val artist = store.artists[vinyl.artistId] ?: return@mapNotNull null
-                    val label = store.labels[vinyl.labelId] ?: return@mapNotNull null
+                    val vinyl = store.getVinylById(listing.vinylId) ?: return@mapNotNull null
+                    val artist = store.getArtistById(vinyl.artistId) ?: return@mapNotNull null
+                    val label = store.getLabelById(vinyl.labelId) ?: return@mapNotNull null
                     val genre = store.getGenreForVinyl(vinyl.id) ?: return@mapNotNull null
                     val inv = store.getInventoryByListingId(listing.id) ?: return@mapNotNull null
 
@@ -162,9 +162,9 @@ fun Route.listingRoutes(store: VinylStoreData) {
                 return@get
             }
 
-            val vinyl = store.vinyls[listing.vinylId]!!
-            val artist = store.artists[vinyl.artistId]!!
-            val label = store.labels[vinyl.labelId]!!
+            val vinyl = store.getVinylById(listing.vinylId)!!
+            val artist = store.getArtistById(vinyl.artistId)!!
+            val label = store.getLabelById(vinyl.labelId)!!
             val genre = store.getGenreForVinyl(vinyl.id)!!
             val inv = store.getInventoryByListingId(listing.id)!!
 

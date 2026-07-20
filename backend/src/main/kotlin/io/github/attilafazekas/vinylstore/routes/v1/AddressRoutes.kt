@@ -22,7 +22,7 @@ import io.github.attilafazekas.vinylstore.NOT_FOUND
 import io.github.attilafazekas.vinylstore.TimestampUtil
 import io.github.attilafazekas.vinylstore.V1
 import io.github.attilafazekas.vinylstore.VALIDATION_ERROR
-import io.github.attilafazekas.vinylstore.VinylStoreData
+import io.github.attilafazekas.vinylstore.VinylStoreRepository
 import io.github.attilafazekas.vinylstore.documentation.badRequestExample
 import io.github.attilafazekas.vinylstore.documentation.notAuthenticatedExample
 import io.github.attilafazekas.vinylstore.documentation.notFoundExample
@@ -50,7 +50,7 @@ import kotlin.text.toBooleanStrictOrNull
 import kotlin.text.uppercase
 import kotlin.uuid.Uuid
 
-fun Route.addressRoutes(store: VinylStoreData) {
+fun Route.addressRoutes(store: VinylStoreRepository) {
     authenticate(AUTH_JWT) {
         route("$V1/users/me/addresses") {
             get(listAddressesDocumentation()) {

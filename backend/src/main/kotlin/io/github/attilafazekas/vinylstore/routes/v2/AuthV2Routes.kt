@@ -16,11 +16,13 @@
 
 package io.github.attilafazekas.vinylstore.routes.v2
 
+import io.github.attilafazekas.vinylstore.ADMIN_EMAIL
 import io.github.attilafazekas.vinylstore.AUTH_JWT
+import io.github.attilafazekas.vinylstore.CUSTOMER_EMAIL
 import io.github.attilafazekas.vinylstore.Email
 import io.github.attilafazekas.vinylstore.TimestampUtil
 import io.github.attilafazekas.vinylstore.V2
-import io.github.attilafazekas.vinylstore.VinylStoreData
+import io.github.attilafazekas.vinylstore.VinylStoreRepository
 import io.github.attilafazekas.vinylstore.documentation.notAuthenticatedExample
 import io.github.attilafazekas.vinylstore.enums.AddressType
 import io.github.attilafazekas.vinylstore.enums.Role
@@ -38,7 +40,7 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import kotlin.uuid.Uuid
 
-fun Route.authV2Routes(store: VinylStoreData) {
+fun Route.authV2Routes(store: VinylStoreRepository) {
     authenticate(AUTH_JWT) {
         route("$V2/auth") {
             get("/me", getCurrentUserWithDetailsDocumentation()) {
@@ -94,7 +96,7 @@ private fun getCurrentUserWithDetailsDocumentation(): RouteConfig.() -> Unit =
                         value =
                             UserV2Response(
                                 id = Uuid.random(),
-                                email = Email("john@example.com"),
+                                email = Email(CUSTOMER_EMAIL),
                                 role = Role.CUSTOMER,
                                 isActive = true,
                                 createdAt = "2025-01-10T14:30:45.123Z",
@@ -126,7 +128,7 @@ private fun getCurrentUserWithDetailsDocumentation(): RouteConfig.() -> Unit =
                         value =
                             UserV2Response(
                                 id = Uuid.random(),
-                                email = Email("admin@vinylstore.com"),
+                                email = Email(ADMIN_EMAIL),
                                 role = Role.ADMIN,
                                 isActive = true,
                                 createdAt = "2025-01-10T14:30:45.123Z",

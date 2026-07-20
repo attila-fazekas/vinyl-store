@@ -21,7 +21,7 @@ import io.github.attilafazekas.vinylstore.BAD_REQUEST
 import io.github.attilafazekas.vinylstore.CONFLICT
 import io.github.attilafazekas.vinylstore.NOT_FOUND
 import io.github.attilafazekas.vinylstore.V1
-import io.github.attilafazekas.vinylstore.VinylStoreData
+import io.github.attilafazekas.vinylstore.VinylStoreRepository
 import io.github.attilafazekas.vinylstore.documentation.badRequestExample
 import io.github.attilafazekas.vinylstore.documentation.conflictExample
 import io.github.attilafazekas.vinylstore.documentation.insufficientPermissionsExample
@@ -47,13 +47,13 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import kotlin.uuid.Uuid
 
-fun Route.artistRoutes(store: VinylStoreData) {
+fun Route.artistRoutes(store: VinylStoreRepository) {
     authenticate(AUTH_JWT) {
         route("$V1/artists") {
             get(listArtistsDocumentation()) {
                 val nameParam = call.parameters["name"]
 
-                var artists = store.artists.values.sortedBy { it.id }
+                var artists = store.getAllArtists().sortedBy { it.id }
 
                 nameParam?.let { name ->
                     artists = artists.filter { it.name.contains(name, ignoreCase = true) }
@@ -76,7 +76,7 @@ fun Route.artistRoutes(store: VinylStoreData) {
                     return@get
                 }
 
-                val artist = store.artists[id]
+                val artist = store.getArtistById(id)
                 if (artist == null) {
                     call.respond(HttpStatusCode.NotFound, ErrorResponse(NOT_FOUND, "Artist not found"))
                 } else {
@@ -112,12 +112,12 @@ fun Route.artistRoutes(store: VinylStoreData) {
                     return@delete
                 }
 
-                if (store.artists[id] == null) {
+                if (store.getArtistById(id) == null) {
                     call.respond(HttpStatusCode.NotFound, ErrorResponse(NOT_FOUND, "Artist not found"))
                     return@delete
                 }
 
-                val hasVinyls = store.vinylArtists.values.any { it.artistId == id }
+                val hasVinyls = store.hasVinylsForArtist(id)
                 if (hasVinyls) {
                     call.respond(
                         HttpStatusCode.Conflict,
