@@ -19,7 +19,7 @@ package io.github.attilafazekas.vinylstore.routes.v2
 import io.github.attilafazekas.vinylstore.AUTH_JWT
 import io.github.attilafazekas.vinylstore.TimestampUtil
 import io.github.attilafazekas.vinylstore.V2
-import io.github.attilafazekas.vinylstore.VinylStoreData
+import io.github.attilafazekas.vinylstore.VinylStoreRepository
 import io.github.attilafazekas.vinylstore.documentation.badRequestExample
 import io.github.attilafazekas.vinylstore.documentation.notAuthenticatedExample
 import io.github.attilafazekas.vinylstore.models.Artist
@@ -36,7 +36,7 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import kotlin.uuid.Uuid
 
-fun Route.vinylV2Routes(store: VinylStoreData) {
+fun Route.vinylV2Routes(store: VinylStoreRepository) {
     authenticate(AUTH_JWT) {
         route("$V2/vinyls") {
             get(listVinylsV2Documentation()) {
@@ -49,10 +49,10 @@ fun Route.vinylV2Routes(store: VinylStoreData) {
                 val titleParam = call.parameters["title"]
 
                 var vinylsWithDetails =
-                    store.vinyls.values.sortedBy { it.id }.mapNotNull { vinyl ->
+                    store.getAllVinyls().sortedBy { it.id }.mapNotNull { vinyl ->
                         val artists = store.getArtistsForVinyl(vinyl.id)
                         if (artists.isEmpty()) return@mapNotNull null
-                        val label = store.labels[vinyl.labelId] ?: return@mapNotNull null
+                        val label = store.getLabelById(vinyl.labelId) ?: return@mapNotNull null
                         val genre = store.getGenreForVinyl(vinyl.id) ?: return@mapNotNull null
 
                         VinylWithDetailsV2(

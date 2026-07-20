@@ -21,7 +21,7 @@ import io.github.attilafazekas.vinylstore.BAD_REQUEST
 import io.github.attilafazekas.vinylstore.CONFLICT
 import io.github.attilafazekas.vinylstore.NOT_FOUND
 import io.github.attilafazekas.vinylstore.V1
-import io.github.attilafazekas.vinylstore.VinylStoreData
+import io.github.attilafazekas.vinylstore.VinylStoreRepository
 import io.github.attilafazekas.vinylstore.documentation.badRequestExample
 import io.github.attilafazekas.vinylstore.documentation.conflictExample
 import io.github.attilafazekas.vinylstore.documentation.insufficientPermissionsExample
@@ -47,13 +47,13 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import kotlin.uuid.Uuid
 
-fun Route.labelRoutes(store: VinylStoreData) {
+fun Route.labelRoutes(store: VinylStoreRepository) {
     authenticate(AUTH_JWT) {
         route("$V1/labels") {
             get(listLabelsDocumentation()) {
                 val nameParam = call.parameters["name"]
 
-                var labels = store.labels.values.sortedBy { it.id }
+                var labels = store.getAllLabels().sortedBy { it.id }
 
                 nameParam?.let { name ->
                     labels = labels.filter { it.name.contains(name, ignoreCase = true) }
@@ -76,7 +76,7 @@ fun Route.labelRoutes(store: VinylStoreData) {
                     return@get
                 }
 
-                val label = store.labels[id]
+                val label = store.getLabelById(id)
                 if (label == null) {
                     call.respond(HttpStatusCode.NotFound, ErrorResponse(NOT_FOUND, "Label not found"))
                 } else {
@@ -112,12 +112,12 @@ fun Route.labelRoutes(store: VinylStoreData) {
                     return@delete
                 }
 
-                if (store.labels[id] == null) {
+                if (store.getLabelById(id) == null) {
                     call.respond(HttpStatusCode.NotFound, ErrorResponse(NOT_FOUND, "Label not found"))
                     return@delete
                 }
 
-                val hasVinyls = store.vinyls.values.any { it.labelId == id }
+                val hasVinyls = store.hasVinylsForLabel(id)
                 if (hasVinyls) {
                     call.respond(
                         HttpStatusCode.Conflict,

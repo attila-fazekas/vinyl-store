@@ -16,15 +16,21 @@
 
 package io.github.attilafazekas.vinylstore.routes.v1
 
+import io.github.attilafazekas.vinylstore.ADMIN_EMAIL
+import io.github.attilafazekas.vinylstore.ADMIN_PASSWORD
 import io.github.attilafazekas.vinylstore.AUTH_JWT
 import io.github.attilafazekas.vinylstore.BAD_REQUEST
 import io.github.attilafazekas.vinylstore.CONFLICT
+import io.github.attilafazekas.vinylstore.CUSTOMER_EMAIL
+import io.github.attilafazekas.vinylstore.CUSTOMER_PASSWORD
 import io.github.attilafazekas.vinylstore.Email
 import io.github.attilafazekas.vinylstore.NOT_FOUND
 import io.github.attilafazekas.vinylstore.Password
+import io.github.attilafazekas.vinylstore.STAFF_EMAIL
+import io.github.attilafazekas.vinylstore.STAFF_PASSWORD
 import io.github.attilafazekas.vinylstore.TimestampUtil
 import io.github.attilafazekas.vinylstore.V1
-import io.github.attilafazekas.vinylstore.VinylStoreData
+import io.github.attilafazekas.vinylstore.VinylStoreRepository
 import io.github.attilafazekas.vinylstore.documentation.badRequestExample
 import io.github.attilafazekas.vinylstore.documentation.conflictExample
 import io.github.attilafazekas.vinylstore.documentation.insufficientPermissionsExample
@@ -52,7 +58,7 @@ import kotlin.text.toBooleanStrictOrNull
 import kotlin.text.uppercase
 import kotlin.uuid.Uuid
 
-fun Route.userRoutes(store: VinylStoreData) {
+fun Route.userRoutes(store: VinylStoreRepository) {
     authenticate(AUTH_JWT) {
         route("$V1/users") {
             get(listUsersDocumentation()) {
@@ -219,7 +225,7 @@ private fun listUsersDocumentation(): RouteConfig.() -> Unit =
                                     listOf(
                                         UserResponse(
                                             Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
-                                            Email("admin@vinylstore.com"),
+                                            Email(ADMIN_EMAIL),
                                             Role.ADMIN,
                                             true,
                                             TimestampUtil.now(),
@@ -227,7 +233,7 @@ private fun listUsersDocumentation(): RouteConfig.() -> Unit =
                                         ),
                                         UserResponse(
                                             Uuid.parse("550e8400-e29b-41d4-a716-446655440001"),
-                                            Email("staff@vinylstore.com"),
+                                            Email(STAFF_EMAIL),
                                             Role.STAFF,
                                             true,
                                             TimestampUtil.now(),
@@ -235,7 +241,7 @@ private fun listUsersDocumentation(): RouteConfig.() -> Unit =
                                         ),
                                         UserResponse(
                                             Uuid.parse("550e8400-e29b-41d4-a716-446655440002"),
-                                            Email("john@example.com"),
+                                            Email(CUSTOMER_EMAIL),
                                             Role.CUSTOMER,
                                             false,
                                             TimestampUtil.now(),
@@ -294,7 +300,7 @@ private fun getUserDocumentation(): RouteConfig.() -> Unit =
                         value =
                             UserResponse(
                                 Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
-                                Email("john@example.com"),
+                                Email(CUSTOMER_EMAIL),
                                 Role.CUSTOMER,
                                 true,
                                 TimestampUtil.now(),
@@ -337,24 +343,24 @@ private fun createUserDocumentation(): RouteConfig.() -> Unit =
                 example("Create customer") {
                     value =
                         CreateUserRequest(
-                            email = Email("customer@example.com"),
-                            password = Password("test1234"),
+                            email = Email(CUSTOMER_EMAIL),
+                            password = Password(CUSTOMER_PASSWORD),
                             role = Role.CUSTOMER,
                         )
                 }
                 example("Create admin") {
                     value =
                         CreateUserRequest(
-                            email = Email("admin@example.com"),
-                            password = Password("admin123"),
+                            email = Email(ADMIN_EMAIL),
+                            password = Password(ADMIN_PASSWORD),
                             role = Role.ADMIN,
                         )
                 }
                 example("Create staff member") {
                     value =
                         CreateUserRequest(
-                            email = Email("staff@example.com"),
-                            password = Password("staff123"),
+                            email = Email(STAFF_EMAIL),
+                            password = Password(STAFF_PASSWORD),
                             role = Role.STAFF,
                         )
                 }
@@ -367,7 +373,7 @@ private fun createUserDocumentation(): RouteConfig.() -> Unit =
                         value =
                             UserResponse(
                                 Uuid.parse("550e8400-e29b-41d4-a716-446655440002"),
-                                Email("customer@example.com"),
+                                Email(CUSTOMER_EMAIL),
                                 Role.CUSTOMER,
                                 true,
                                 TimestampUtil.now(),
@@ -429,7 +435,7 @@ private fun updateUserDocumentation(): RouteConfig.() -> Unit =
                         value =
                             UserResponse(
                                 Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
-                                Email("john@example.com"),
+                                Email(CUSTOMER_EMAIL),
                                 Role.STAFF,
                                 true,
                                 TimestampUtil.now(),

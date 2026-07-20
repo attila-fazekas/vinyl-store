@@ -25,6 +25,7 @@ repositories {
 
 dependencies {
     implementation("com.diffplug.spotless:spotless-plugin-gradle:_")
+    implementation("com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:_")
     implementation("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:_")
     implementation("io.kotest:io.kotest.gradle.plugin:_")
     implementation("org.jetbrains.kotlin.jvm:org.jetbrains.kotlin.jvm.gradle.plugin:_")

@@ -16,6 +16,7 @@
 
 package io.github.attilafazekas.vinylstore
 
+import io.github.attilafazekas.vinylstore.db.DatabaseFactory
 import io.github.attilafazekas.vinylstore.models.ErrorResponse
 import io.github.attilafazekas.vinylstore.models.UserPrincipal
 import io.github.attilafazekas.vinylstore.routes.adminRoutes
@@ -53,6 +54,7 @@ import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.response.respond
 import io.ktor.server.routing.routing
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import kotlin.uuid.Uuid
 
@@ -77,11 +79,13 @@ fun startVinylStoreServer(autoReset: Boolean = false) =
     }.start(wait = true)
 
 fun Application.vinylStoreApplication(
-    store: VinylStoreData = VinylStoreData(),
+    store: VinylStoreRepository = VinylStoreRepository(DatabaseFactory.create()),
     autoReset: Boolean = false,
 ) {
     configureOpenApi()
     configurePlugins()
+
+    runBlocking { store.initialize() }
 
     // Auto-reset checker - only if enabled
     if (autoReset) {

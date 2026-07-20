@@ -23,7 +23,7 @@ import io.github.attilafazekas.vinylstore.NOT_FOUND
 import io.github.attilafazekas.vinylstore.TimestampUtil
 import io.github.attilafazekas.vinylstore.V1
 import io.github.attilafazekas.vinylstore.VALIDATION_ERROR
-import io.github.attilafazekas.vinylstore.VinylStoreData
+import io.github.attilafazekas.vinylstore.VinylStoreRepository
 import io.github.attilafazekas.vinylstore.documentation.badRequestExample
 import io.github.attilafazekas.vinylstore.documentation.conflictExample
 import io.github.attilafazekas.vinylstore.documentation.insufficientPermissionsExample
@@ -49,7 +49,7 @@ import io.ktor.server.routing.Route
 import kotlin.text.uppercase
 import kotlin.uuid.Uuid
 
-fun Route.inventoryRoutes(store: VinylStoreData) {
+fun Route.inventoryRoutes(store: VinylStoreRepository) {
     authenticate(AUTH_JWT) {
         route("$V1/inventory") {
             get(listInventoryDocumentation()) {
@@ -60,7 +60,7 @@ fun Route.inventoryRoutes(store: VinylStoreData) {
                 val minTotalParam = call.parameters["minTotal"]?.toIntOrNull()
                 val listingStatusParam = call.parameters["listingStatus"]
 
-                var inventoryItems = store.inventory.values.sortedBy { it.id }
+                var inventoryItems = store.getAllInventory().sortedBy { it.id }
 
                 minAvailableParam?.let { minAvailable ->
                     inventoryItems = inventoryItems.filter { it.availableQuantity >= minAvailable }
@@ -84,7 +84,7 @@ fun Route.inventoryRoutes(store: VinylStoreData) {
                     statusEnum?.let {
                         inventoryItems =
                             inventoryItems.filter { inv ->
-                                val listing = store.listings[inv.listingId]
+                                val listing = store.getListingById(inv.listingId)
                                 listing?.status == statusEnum
                             }
                     }

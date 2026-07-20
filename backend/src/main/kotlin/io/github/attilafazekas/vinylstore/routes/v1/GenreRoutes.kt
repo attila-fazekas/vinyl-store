@@ -21,7 +21,7 @@ import io.github.attilafazekas.vinylstore.BAD_REQUEST
 import io.github.attilafazekas.vinylstore.CONFLICT
 import io.github.attilafazekas.vinylstore.NOT_FOUND
 import io.github.attilafazekas.vinylstore.V1
-import io.github.attilafazekas.vinylstore.VinylStoreData
+import io.github.attilafazekas.vinylstore.VinylStoreRepository
 import io.github.attilafazekas.vinylstore.documentation.badRequestExample
 import io.github.attilafazekas.vinylstore.documentation.conflictExample
 import io.github.attilafazekas.vinylstore.documentation.insufficientPermissionsExample
@@ -47,13 +47,13 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import kotlin.uuid.Uuid
 
-fun Route.genreRoutes(store: VinylStoreData) {
+fun Route.genreRoutes(store: VinylStoreRepository) {
     authenticate(AUTH_JWT) {
         route("$V1/genres") {
             get(listGenresDocumentation()) {
                 val nameParam = call.parameters["name"]
 
-                var genres = store.genres.values.sortedBy { it.id }
+                var genres = store.getAllGenres().sortedBy { it.id }
 
                 nameParam?.let { name ->
                     genres = genres.filter { it.name.contains(name, ignoreCase = true) }
@@ -76,7 +76,7 @@ fun Route.genreRoutes(store: VinylStoreData) {
                     return@get
                 }
 
-                val genre = store.genres[id]
+                val genre = store.getGenreById(id)
                 if (genre == null) {
                     call.respond(HttpStatusCode.NotFound, ErrorResponse(NOT_FOUND, "Genre not found"))
                 } else {
@@ -112,12 +112,12 @@ fun Route.genreRoutes(store: VinylStoreData) {
                     return@delete
                 }
 
-                if (store.genres[id] == null) {
+                if (store.getGenreById(id) == null) {
                     call.respond(HttpStatusCode.NotFound, ErrorResponse(NOT_FOUND, "Genre not found"))
                     return@delete
                 }
 
-                val hasVinyls = store.vinylGenres.values.any { it.genreId == id }
+                val hasVinyls = store.hasVinylsForGenre(id)
                 if (hasVinyls) {
                     call.respond(
                         HttpStatusCode.Conflict,

@@ -23,7 +23,7 @@ import io.github.attilafazekas.vinylstore.NOT_FOUND
 import io.github.attilafazekas.vinylstore.TimestampUtil
 import io.github.attilafazekas.vinylstore.V1
 import io.github.attilafazekas.vinylstore.VALIDATION_ERROR
-import io.github.attilafazekas.vinylstore.VinylStoreData
+import io.github.attilafazekas.vinylstore.VinylStoreRepository
 import io.github.attilafazekas.vinylstore.documentation.badRequestExample
 import io.github.attilafazekas.vinylstore.documentation.conflictExample
 import io.github.attilafazekas.vinylstore.documentation.insufficientPermissionsExample
@@ -57,7 +57,7 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import kotlin.uuid.Uuid
 
-fun Route.vinylRoutes(store: VinylStoreData) {
+fun Route.vinylRoutes(store: VinylStoreRepository) {
     authenticate(AUTH_JWT) {
         route("$V1/vinyls") {
             get(listVinylsDocumentation()) {
@@ -69,7 +69,7 @@ fun Route.vinylRoutes(store: VinylStoreData) {
                 val maxYearParam = call.parameters["maxYear"]?.toIntOrNull()
                 val titleParam = call.parameters["title"]
 
-                var vinyls = store.vinyls.values.sortedBy { it.id }
+                var vinyls = store.getAllVinyls().sortedBy { it.id }
 
                 artistParam?.let { artist ->
                     val artistId = runCatching { Uuid.parse(artist) }.getOrNull()
@@ -78,7 +78,7 @@ fun Route.vinylRoutes(store: VinylStoreData) {
                             if (artistId != null) {
                                 vinyl.artistId == artistId
                             } else {
-                                val vinylArtist = store.artists[vinyl.artistId]
+                                val vinylArtist = store.getArtistById(vinyl.artistId)
                                 vinylArtist?.name?.contains(artist, ignoreCase = true) == true
                             }
                         }
@@ -99,7 +99,7 @@ fun Route.vinylRoutes(store: VinylStoreData) {
                             if (labelId != null) {
                                 vinyl.labelId == labelId
                             } else {
-                                val vinylLabel = store.labels[vinyl.labelId]
+                                val vinylLabel = store.getLabelById(vinyl.labelId)
                                 vinylLabel?.name?.contains(label, ignoreCase = true) == true
                             }
                         }
@@ -132,14 +132,14 @@ fun Route.vinylRoutes(store: VinylStoreData) {
                     return@get
                 }
 
-                val vinyl = store.vinyls[id]
+                val vinyl = store.getVinylById(id)
                 if (vinyl == null) {
                     call.respond(HttpStatusCode.NotFound, ErrorResponse(NOT_FOUND, "Vinyl not found"))
                     return@get
                 }
 
-                val artist = store.artists[vinyl.artistId]!!
-                val label = store.labels[vinyl.labelId]!!
+                val artist = store.getArtistById(vinyl.artistId)!!
+                val label = store.getLabelById(vinyl.labelId)!!
                 val genre = store.getGenreForVinyl(vinyl.id)!!
 
                 call.respond(VinylDetailResponse(vinyl, artist, label, genre))
@@ -211,12 +211,12 @@ fun Route.vinylRoutes(store: VinylStoreData) {
                     return@delete
                 }
 
-                if (store.vinyls[id] == null) {
+                if (store.getVinylById(id) == null) {
                     call.respond(HttpStatusCode.NotFound, ErrorResponse(NOT_FOUND, "Vinyl not found"))
                     return@delete
                 }
 
-                val hasListings = store.listings.values.any { it.vinylId == id }
+                val hasListings = store.hasListingsForVinyl(id)
                 if (hasListings) {
                     call.respond(
                         HttpStatusCode.Conflict,
@@ -238,7 +238,7 @@ fun Route.vinylRoutes(store: VinylStoreData) {
                     return@post
                 }
 
-                if (store.vinyls[vinylId] == null) {
+                if (store.getVinylById(vinylId) == null) {
                     call.respond(HttpStatusCode.NotFound, ErrorResponse(NOT_FOUND, "Vinyl not found"))
                     return@post
                 }

@@ -16,7 +16,7 @@
 
 package io.github.attilafazekas.vinylstore.routes
 
-import io.github.attilafazekas.vinylstore.VinylStoreData
+import io.github.attilafazekas.vinylstore.VinylStoreRepository
 import io.github.attilafazekas.vinylstore.models.HealthResponse
 import io.github.smiley4.ktoropenapi.config.RouteConfig
 import io.github.smiley4.ktoropenapi.get
@@ -25,7 +25,7 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 
 fun Route.healthRoutes(
-    store: VinylStoreData,
+    store: VinylStoreRepository,
     autoReset: Boolean = false,
 ) {
     get("/health", healthCheckDocumentation()) {

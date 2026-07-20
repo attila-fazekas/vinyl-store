@@ -20,7 +20,7 @@ import io.github.attilafazekas.vinylstore.BAD_REQUEST
 import io.github.attilafazekas.vinylstore.NOT_FOUND
 import io.github.attilafazekas.vinylstore.TimestampUtil
 import io.github.attilafazekas.vinylstore.V2
-import io.github.attilafazekas.vinylstore.VinylStoreData
+import io.github.attilafazekas.vinylstore.VinylStoreRepository
 import io.github.attilafazekas.vinylstore.documentation.badRequestExample
 import io.github.attilafazekas.vinylstore.documentation.notAuthenticatedExample
 import io.github.attilafazekas.vinylstore.documentation.notFoundExample
@@ -43,7 +43,7 @@ import kotlin.text.toDoubleOrNull
 import kotlin.text.uppercase
 import kotlin.uuid.Uuid
 
-fun Route.listingV2Routes(store: VinylStoreData) {
+fun Route.listingV2Routes(store: VinylStoreRepository) {
     route("$V2/listings") {
         get(listListingsV2Documentation()) {
             val statusParam = call.parameters["status"]
@@ -59,10 +59,10 @@ fun Route.listingV2Routes(store: VinylStoreData) {
 
             var details =
                 allListings.mapNotNull { listing ->
-                    val vinyl = store.vinyls[listing.vinylId] ?: return@mapNotNull null
+                    val vinyl = store.getVinylById(listing.vinylId) ?: return@mapNotNull null
                     val artists = store.getArtistsForVinyl(vinyl.id)
                     if (artists.isEmpty()) return@mapNotNull null
-                    val label = store.labels[vinyl.labelId] ?: return@mapNotNull null
+                    val label = store.getLabelById(vinyl.labelId) ?: return@mapNotNull null
                     val genre = store.getGenreForVinyl(vinyl.id) ?: return@mapNotNull null
                     val inventory = store.getInventoryByListingId(listing.id) ?: return@mapNotNull null
 
@@ -180,7 +180,7 @@ fun Route.listingV2Routes(store: VinylStoreData) {
                 return@get
             }
 
-            val vinyl = store.vinyls[listing.vinylId]
+            val vinyl = store.getVinylById(listing.vinylId)
             if (vinyl == null) {
                 call.respond(HttpStatusCode.NotFound, ErrorResponse(NOT_FOUND, "Vinyl not found"))
                 return@get
@@ -192,7 +192,7 @@ fun Route.listingV2Routes(store: VinylStoreData) {
                 return@get
             }
 
-            val label = store.labels[vinyl.labelId]
+            val label = store.getLabelById(vinyl.labelId)
             if (label == null) {
                 call.respond(HttpStatusCode.NotFound, ErrorResponse(NOT_FOUND, "Label not found"))
                 return@get
