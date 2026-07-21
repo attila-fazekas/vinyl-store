@@ -98,9 +98,9 @@ class VinylStoreRepository(
 
     private suspend fun bootstrap() {
         db.withTransaction {
-            createUser(Email(ADMIN_EMAIL), Password(ADMIN_PASSWORD), Role.ADMIN)
-            createUser(Email(STAFF_EMAIL), Password(STAFF_PASSWORD), Role.STAFF)
-            createUser(Email(CUSTOMER_EMAIL), Password(CUSTOMER_PASSWORD), Role.CUSTOMER)
+            createUser(Email(ADMIN_EMAIL), Password(ADMIN_PASSWORD), Role.Admin)
+            createUser(Email(STAFF_EMAIL), Password(STAFF_PASSWORD), Role.Staff)
+            createUser(Email(CUSTOMER_EMAIL), Password(CUSTOMER_PASSWORD), Role.Customer)
             loadVinylsFromCsv()
         }
     }
@@ -548,7 +548,7 @@ class VinylStoreRepository(
         initialStock: Int,
     ): Listing {
         val now = TimestampUtil.now()
-        val listing = Listing(Uuid.random(), vinylId, ListingStatus.PUBLISHED, price, currency, now, now)
+        val listing = Listing(Uuid.random(), vinylId, ListingStatus.Published, price, currency, now, now)
         val insertedListing = db.runQuery { QueryDsl.insert(Meta.listing).single(listing) }
 
         val newInventory =
@@ -583,7 +583,7 @@ class VinylStoreRepository(
         db.runQuery { QueryDsl.from(Meta.listing).where { Meta.listing.id eq id }.firstOrNull() }
 
     suspend fun getAllPublishedListings(): Listings =
-        db.runQuery { QueryDsl.from(Meta.listing).where { Meta.listing.status eq ListingStatus.PUBLISHED }.orderBy(Meta.listing.id) }
+        db.runQuery { QueryDsl.from(Meta.listing).where { Meta.listing.status eq ListingStatus.Published }.orderBy(Meta.listing.id) }
 
     suspend fun deleteListing(id: Uuid): Boolean =
         db.withTransaction {

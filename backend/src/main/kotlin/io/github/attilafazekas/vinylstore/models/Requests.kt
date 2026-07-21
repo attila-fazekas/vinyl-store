@@ -17,7 +17,6 @@
 package io.github.attilafazekas.vinylstore.models
 
 import io.github.attilafazekas.vinylstore.Email
-import io.github.attilafazekas.vinylstore.Genres
 import io.github.attilafazekas.vinylstore.Password
 import io.github.attilafazekas.vinylstore.enums.AddressType
 import io.github.attilafazekas.vinylstore.enums.ListingStatus
@@ -185,7 +184,7 @@ data class CreateUserRequest(
     @Description("User's password. Must be at least 8 characters long.")
     val password: Password,
     @Description("User's role in the system (CUSTOMER, STAFF, or ADMIN). Defaults to CUSTOMER.")
-    val role: Role = Role.CUSTOMER,
+    val role: Role = Role.Customer,
 )
 
 @Serializable

@@ -173,7 +173,7 @@ fun Route.listingRoutes(store: VinylStoreRepository) {
 
         authenticate(AUTH_JWT) {
             put("/{id}", updateListingDocumentation()) {
-                call.requireRole(Role.ADMIN, Role.STAFF)
+                call.requireRole(Role.Admin, Role.Staff)
 
                 val id = call.parameters["id"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
                 if (id == null) {
@@ -192,7 +192,7 @@ fun Route.listingRoutes(store: VinylStoreRepository) {
             }
 
             delete("/{id}", deleteListingDocumentation()) {
-                call.requireRole(Role.ADMIN, Role.STAFF)
+                call.requireRole(Role.Admin, Role.Staff)
 
                 val id = call.parameters["id"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
                 if (id == null) {
@@ -301,7 +301,7 @@ private fun listListingsDocumentation(): RouteConfig.() -> Unit =
                                                 Listing(
                                                     id = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
                                                     vinylId = Uuid.parse("550e8400-e29b-41d4-a716-446655440001"),
-                                                    status = ListingStatus.PUBLISHED,
+                                                    status = ListingStatus.Published,
                                                     price = 99.99,
                                                     currency = "EUR",
                                                     createdAt = "2025-01-10T14:30:45.123Z",
@@ -404,7 +404,7 @@ private fun getListingDocumentation(): RouteConfig.() -> Unit =
                                     Listing(
                                         id = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
                                         vinylId = Uuid.parse("550e8400-e29b-41d4-a716-446655440001"),
-                                        status = ListingStatus.PUBLISHED,
+                                        status = ListingStatus.Published,
                                         price = 99.99,
                                         currency = "EUR",
                                         createdAt = "2025-01-10T14:30:45.123Z",
@@ -504,7 +504,7 @@ private fun updateListingDocumentation(): RouteConfig.() -> Unit =
                 example("Update status") {
                     value =
                         UpdateListingRequest(
-                            status = ListingStatus.DRAFT,
+                            status = ListingStatus.Draft,
                         )
                 }
             }
@@ -518,7 +518,7 @@ private fun updateListingDocumentation(): RouteConfig.() -> Unit =
                             Listing(
                                 id = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
                                 vinylId = Uuid.parse("550e8400-e29b-41d4-a716-446655440001"),
-                                status = ListingStatus.PUBLISHED,
+                                status = ListingStatus.Published,
                                 price = 34.99,
                                 currency = "EUR",
                                 createdAt = "2025-01-10T14:30:45.123Z",

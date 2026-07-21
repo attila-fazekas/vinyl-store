@@ -320,7 +320,7 @@ private fun listListingsV2Documentation(): RouteConfig.() -> Unit =
                                     listOf(
                                         ListingV2Response(
                                             id = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
-                                            status = ListingStatus.PUBLISHED,
+                                            status = ListingStatus.Published,
                                             price = 99.99,
                                             currency = "EUR",
                                             createdAt = "2025-01-10T14:30:45.123Z",
@@ -352,7 +352,7 @@ private fun listListingsV2Documentation(): RouteConfig.() -> Unit =
                                         ),
                                         ListingV2Response(
                                             id = Uuid.parse("550e8400-e29b-41d4-a716-446655440005"),
-                                            status = ListingStatus.PUBLISHED,
+                                            status = ListingStatus.Published,
                                             price = 149.99,
                                             currency = "EUR",
                                             createdAt = "2025-01-10T14:30:45.123Z",
@@ -445,7 +445,7 @@ private fun getListingV2Documentation(): RouteConfig.() -> Unit =
                         value =
                             ListingV2Response(
                                 id = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
-                                status = ListingStatus.PUBLISHED,
+                                status = ListingStatus.Published,
                                 price = 99.99,
                                 currency = "EUR",
                                 createdAt = "2025-01-10T14:30:45.123Z",
@@ -477,7 +477,7 @@ private fun getListingV2Documentation(): RouteConfig.() -> Unit =
                         value =
                             ListingV2Response(
                                 id = Uuid.parse("550e8400-e29b-41d4-a716-446655440005"),
-                                status = ListingStatus.PUBLISHED,
+                                status = ListingStatus.Published,
                                 price = 149.99,
                                 currency = "EUR",
                                 createdAt = "2025-01-10T14:30:45.123Z",

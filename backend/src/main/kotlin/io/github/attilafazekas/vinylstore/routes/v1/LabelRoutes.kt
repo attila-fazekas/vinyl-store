@@ -63,7 +63,7 @@ fun Route.labelRoutes(store: VinylStoreRepository) {
             }
 
             post(createLabelDocumentation()) {
-                call.requireRole(Role.ADMIN, Role.STAFF)
+                call.requireRole(Role.Admin, Role.Staff)
                 val request = call.receive<CreateLabelRequest>()
                 val label = store.createLabel(request.name)
                 call.respond(HttpStatusCode.Created, label)
@@ -85,7 +85,7 @@ fun Route.labelRoutes(store: VinylStoreRepository) {
             }
 
             put("/{id}", updateLabelDocumentation()) {
-                call.requireRole(Role.ADMIN, Role.STAFF)
+                call.requireRole(Role.Admin, Role.Staff)
 
                 val id = call.parameters["id"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
                 if (id == null) {
@@ -104,7 +104,7 @@ fun Route.labelRoutes(store: VinylStoreRepository) {
             }
 
             delete("/{id}", deleteLabelDocumentation()) {
-                call.requireRole(Role.ADMIN, Role.STAFF)
+                call.requireRole(Role.Admin, Role.Staff)
 
                 val id = call.parameters["id"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
                 if (id == null) {

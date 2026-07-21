@@ -53,7 +53,7 @@ fun Route.inventoryRoutes(store: VinylStoreRepository) {
     authenticate(AUTH_JWT) {
         route("$V1/inventory") {
             get(listInventoryDocumentation()) {
-                call.requireRole(Role.ADMIN, Role.STAFF)
+                call.requireRole(Role.Admin, Role.Staff)
 
                 val minAvailableParam = call.parameters["minAvailable"]?.toIntOrNull()
                 val maxAvailableParam = call.parameters["maxAvailable"]?.toIntOrNull()
@@ -94,7 +94,7 @@ fun Route.inventoryRoutes(store: VinylStoreRepository) {
             }
 
             get("/{listingId}", getInventoryDocumentation()) {
-                call.requireRole(Role.ADMIN, Role.STAFF)
+                call.requireRole(Role.Admin, Role.Staff)
 
                 val listingId = call.parameters["listingId"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
                 if (listingId == null) {
@@ -111,7 +111,7 @@ fun Route.inventoryRoutes(store: VinylStoreRepository) {
             }
 
             put("/{listingId}", updateInventoryDocumentation()) {
-                call.requireRole(Role.ADMIN, Role.STAFF)
+                call.requireRole(Role.Admin, Role.Staff)
 
                 val listingId = call.parameters["listingId"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
                 if (listingId == null) {

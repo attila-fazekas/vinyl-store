@@ -261,7 +261,7 @@ private fun listAddressesDocumentation(): RouteConfig.() -> Unit =
                                         Address(
                                             id = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
                                             userId = Uuid.parse("550e8400-e29b-41d4-a716-446655440001"),
-                                            type = AddressType.SHIPPING,
+                                            type = AddressType.Shipping,
                                             fullName = "John Doe",
                                             street = "123 Main St",
                                             city = "New York",
@@ -317,7 +317,7 @@ private fun getAddressDocumentation(): RouteConfig.() -> Unit =
                             Address(
                                 id = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
                                 userId = Uuid.parse("550e8400-e29b-41d4-a716-446655440001"),
-                                type = AddressType.SHIPPING,
+                                type = AddressType.Shipping,
                                 fullName = "John Doe",
                                 street = "123 Main St",
                                 city = "New York",
@@ -364,7 +364,7 @@ private fun createAddressDocumentation(): RouteConfig.() -> Unit =
                 example("Shipping address") {
                     value =
                         CreateAddressRequest(
-                            type = AddressType.SHIPPING,
+                            type = AddressType.Shipping,
                             fullName = "John Doe",
                             street = "123 Main St",
                             city = "New York",
@@ -383,7 +383,7 @@ private fun createAddressDocumentation(): RouteConfig.() -> Unit =
                             Address(
                                 id = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
                                 userId = Uuid.parse("550e8400-e29b-41d4-a716-446655440001"),
-                                type = AddressType.SHIPPING,
+                                type = AddressType.Shipping,
                                 fullName = "John Doe",
                                 street = "123 Main St",
                                 city = "New York",
@@ -463,7 +463,7 @@ private fun updateAddressDocumentation(): RouteConfig.() -> Unit =
                             Address(
                                 id = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
                                 userId = Uuid.parse("550e8400-e29b-41d4-a716-446655440001"),
-                                type = AddressType.SHIPPING,
+                                type = AddressType.Shipping,
                                 fullName = "John Doe",
                                 street = "456 Oak Ave",
                                 city = "New York",

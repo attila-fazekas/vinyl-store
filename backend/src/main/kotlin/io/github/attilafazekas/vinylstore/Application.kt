@@ -74,7 +74,7 @@ fun main(args: Array<String>) {
 }
 
 fun startVinylStoreServer(autoReset: Boolean = false) =
-    embeddedServer(Netty, port = 8080) {
+    embeddedServer(Netty, port = 8080, watchPaths = listOf("classes")) {
         vinylStoreApplication(autoReset = autoReset)
     }.start(wait = true)
 

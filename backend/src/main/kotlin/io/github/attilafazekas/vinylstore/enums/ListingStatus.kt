@@ -17,7 +17,7 @@
 package io.github.attilafazekas.vinylstore.enums
 
 enum class ListingStatus {
-    DRAFT,
-    PUBLISHED,
-    ARCHIVED,
+    Draft,
+    Published,
+    Archived,
 }

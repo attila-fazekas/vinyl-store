@@ -33,7 +33,7 @@ import io.ktor.server.routing.Route
 fun Route.adminRoutes(store: VinylStoreRepository) {
     authenticate(AUTH_JWT) {
         post("/admin/reset", adminDocumentation()) {
-            call.requireRole(Role.ADMIN)
+            call.requireRole(Role.Admin)
             store.resetToBootstrap()
             call.respond(MessageResponse("Data reset to bootstrap state"))
         }

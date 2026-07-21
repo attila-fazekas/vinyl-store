@@ -47,7 +47,7 @@ fun Route.inventoryV2Routes(store: VinylStoreRepository) {
     authenticate(AUTH_JWT) {
         route("$V2/inventory") {
             get(listInventoryV2Documentation()) {
-                call.requireRole(Role.ADMIN, Role.STAFF)
+                call.requireRole(Role.Admin, Role.Staff)
 
                 val outOfStockParam = call.parameters["outOfStock"]?.toBoolean() ?: false
                 val artistParam = call.parameters["artist"]
@@ -123,7 +123,7 @@ fun Route.inventoryV2Routes(store: VinylStoreRepository) {
             }
 
             get("/{listingId}", getInventoryWithContextDocumentation()) {
-                call.requireRole(Role.ADMIN, Role.STAFF)
+                call.requireRole(Role.Admin, Role.Staff)
 
                 val listingId = call.parameters["listingId"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
                 if (listingId == null) {
@@ -257,7 +257,7 @@ private fun listInventoryV2Documentation(): RouteConfig.() -> Unit =
                                             listing =
                                                 ListingContextV2(
                                                     id = Uuid.parse("550e8400-e29b-41d4-a716-446655440001"),
-                                                    status = ListingStatus.PUBLISHED,
+                                                    status = ListingStatus.Published,
                                                     price = 99.99,
                                                     currency = "EUR",
                                                     vinyl =
@@ -284,7 +284,7 @@ private fun listInventoryV2Documentation(): RouteConfig.() -> Unit =
                                             listing =
                                                 ListingContextV2(
                                                     id = Uuid.parse("550e8400-e29b-41d4-a716-446655440005"),
-                                                    status = ListingStatus.PUBLISHED,
+                                                    status = ListingStatus.Published,
                                                     price = 65.05,
                                                     currency = "EUR",
                                                     vinyl =
@@ -324,7 +324,7 @@ private fun listInventoryV2Documentation(): RouteConfig.() -> Unit =
                                             listing =
                                                 ListingContextV2(
                                                     id = Uuid.parse("550e8400-e29b-41d4-a716-446655440005"),
-                                                    status = ListingStatus.PUBLISHED,
+                                                    status = ListingStatus.Published,
                                                     price = 65.05,
                                                     currency = "EUR",
                                                     vinyl =
@@ -418,7 +418,7 @@ private fun getInventoryWithContextDocumentation(): RouteConfig.() -> Unit =
                                 listing =
                                     ListingContextV2(
                                         id = Uuid.parse("550e8400-e29b-41d4-a716-446655440001"),
-                                        status = ListingStatus.PUBLISHED,
+                                        status = ListingStatus.Published,
                                         price = 99.99,
                                         currency = "EUR",
                                         vinyl =
@@ -448,7 +448,7 @@ private fun getInventoryWithContextDocumentation(): RouteConfig.() -> Unit =
                                 listing =
                                     ListingContextV2(
                                         id = Uuid.parse("550e8400-e29b-41d4-a716-446655440005"),
-                                        status = ListingStatus.PUBLISHED,
+                                        status = ListingStatus.Published,
                                         price = 65.05,
                                         currency = "EUR",
                                         vinyl =
