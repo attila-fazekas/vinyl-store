@@ -63,7 +63,7 @@ fun Route.genreRoutes(store: VinylStoreRepository) {
             }
 
             post(createGenreDocumentation()) {
-                call.requireRole(Role.ADMIN, Role.STAFF)
+                call.requireRole(Role.Admin, Role.Staff)
                 val request = call.receive<CreateGenreRequest>()
                 val genre = store.createGenre(request.name)
                 call.respond(HttpStatusCode.Created, genre)
@@ -85,7 +85,7 @@ fun Route.genreRoutes(store: VinylStoreRepository) {
             }
 
             put("/{id}", updateGenreDocumentation()) {
-                call.requireRole(Role.ADMIN, Role.STAFF)
+                call.requireRole(Role.Admin, Role.Staff)
 
                 val id = call.parameters["id"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
                 if (id == null) {
@@ -104,7 +104,7 @@ fun Route.genreRoutes(store: VinylStoreRepository) {
             }
 
             delete("/{id}", deleteGenreDocumentation()) {
-                call.requireRole(Role.ADMIN, Role.STAFF)
+                call.requireRole(Role.Admin, Role.Staff)
 
                 val id = call.parameters["id"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
                 if (id == null) {

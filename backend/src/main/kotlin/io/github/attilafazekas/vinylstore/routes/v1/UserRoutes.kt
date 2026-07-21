@@ -62,7 +62,7 @@ fun Route.userRoutes(store: VinylStoreRepository) {
     authenticate(AUTH_JWT) {
         route("$V1/users") {
             get(listUsersDocumentation()) {
-                call.requireRole(Role.ADMIN)
+                call.requireRole(Role.Admin)
 
                 val roleParam = call.parameters["role"]
                 val isActiveParam = call.parameters["isActive"]?.toBooleanStrictOrNull()
@@ -92,7 +92,7 @@ fun Route.userRoutes(store: VinylStoreRepository) {
             }
 
             get("/{id}", getUserDocumentation()) {
-                call.requireRole(Role.ADMIN)
+                call.requireRole(Role.Admin)
 
                 val id = call.parameters["id"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
                 if (id == null) {
@@ -118,7 +118,7 @@ fun Route.userRoutes(store: VinylStoreRepository) {
             }
 
             post(createUserDocumentation()) {
-                call.requireRole(Role.ADMIN)
+                call.requireRole(Role.Admin)
 
                 val request = call.receive<CreateUserRequest>()
 
@@ -139,7 +139,7 @@ fun Route.userRoutes(store: VinylStoreRepository) {
             }
 
             put("/{id}", updateUserDocumentation()) {
-                call.requireRole(Role.ADMIN)
+                call.requireRole(Role.Admin)
 
                 val id = call.parameters["id"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
                 if (id == null) {
@@ -167,7 +167,7 @@ fun Route.userRoutes(store: VinylStoreRepository) {
             }
 
             delete("/{id}", deleteUserDocumentation()) {
-                call.requireRole(Role.ADMIN)
+                call.requireRole(Role.Admin)
 
                 val id = call.parameters["id"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
                 if (id == null) {
@@ -226,7 +226,7 @@ private fun listUsersDocumentation(): RouteConfig.() -> Unit =
                                         UserResponse(
                                             Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
                                             Email(ADMIN_EMAIL),
-                                            Role.ADMIN,
+                                            Role.Admin,
                                             true,
                                             TimestampUtil.now(),
                                             TimestampUtil.now(),
@@ -234,7 +234,7 @@ private fun listUsersDocumentation(): RouteConfig.() -> Unit =
                                         UserResponse(
                                             Uuid.parse("550e8400-e29b-41d4-a716-446655440001"),
                                             Email(STAFF_EMAIL),
-                                            Role.STAFF,
+                                            Role.Staff,
                                             true,
                                             TimestampUtil.now(),
                                             TimestampUtil.now(),
@@ -242,7 +242,7 @@ private fun listUsersDocumentation(): RouteConfig.() -> Unit =
                                         UserResponse(
                                             Uuid.parse("550e8400-e29b-41d4-a716-446655440002"),
                                             Email(CUSTOMER_EMAIL),
-                                            Role.CUSTOMER,
+                                            Role.Customer,
                                             false,
                                             TimestampUtil.now(),
                                             TimestampUtil.now(),
@@ -301,7 +301,7 @@ private fun getUserDocumentation(): RouteConfig.() -> Unit =
                             UserResponse(
                                 Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
                                 Email(CUSTOMER_EMAIL),
-                                Role.CUSTOMER,
+                                Role.Customer,
                                 true,
                                 TimestampUtil.now(),
                                 TimestampUtil.now(),
@@ -345,7 +345,7 @@ private fun createUserDocumentation(): RouteConfig.() -> Unit =
                         CreateUserRequest(
                             email = Email(CUSTOMER_EMAIL),
                             password = Password(CUSTOMER_PASSWORD),
-                            role = Role.CUSTOMER,
+                            role = Role.Customer,
                         )
                 }
                 example("Create admin") {
@@ -353,7 +353,7 @@ private fun createUserDocumentation(): RouteConfig.() -> Unit =
                         CreateUserRequest(
                             email = Email(ADMIN_EMAIL),
                             password = Password(ADMIN_PASSWORD),
-                            role = Role.ADMIN,
+                            role = Role.Admin,
                         )
                 }
                 example("Create staff member") {
@@ -361,7 +361,7 @@ private fun createUserDocumentation(): RouteConfig.() -> Unit =
                         CreateUserRequest(
                             email = Email(STAFF_EMAIL),
                             password = Password(STAFF_PASSWORD),
-                            role = Role.STAFF,
+                            role = Role.Staff,
                         )
                 }
             }
@@ -374,7 +374,7 @@ private fun createUserDocumentation(): RouteConfig.() -> Unit =
                             UserResponse(
                                 Uuid.parse("550e8400-e29b-41d4-a716-446655440002"),
                                 Email(CUSTOMER_EMAIL),
-                                Role.CUSTOMER,
+                                Role.Customer,
                                 true,
                                 TimestampUtil.now(),
                                 TimestampUtil.now(),
@@ -418,13 +418,13 @@ private fun updateUserDocumentation(): RouteConfig.() -> Unit =
             body<UpdateUserRequest> {
                 description = "All fields are optional. Only provided fields will be updated."
                 example("Change role") {
-                    value = UpdateUserRequest(role = Role.STAFF)
+                    value = UpdateUserRequest(role = Role.Staff)
                 }
                 example("Deactivate user") {
                     value = UpdateUserRequest(isActive = false)
                 }
                 example("Update both") {
-                    value = UpdateUserRequest(role = Role.STAFF, isActive = false)
+                    value = UpdateUserRequest(role = Role.Staff, isActive = false)
                 }
             }
         }
@@ -436,7 +436,7 @@ private fun updateUserDocumentation(): RouteConfig.() -> Unit =
                             UserResponse(
                                 Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
                                 Email(CUSTOMER_EMAIL),
-                                Role.STAFF,
+                                Role.Staff,
                                 true,
                                 TimestampUtil.now(),
                                 TimestampUtil.now(),

@@ -17,6 +17,6 @@
 package io.github.attilafazekas.vinylstore.enums
 
 enum class AddressType {
-    SHIPPING,
-    BILLING,
+    Shipping,
+    Billing,
 }

@@ -146,7 +146,7 @@ fun Route.vinylRoutes(store: VinylStoreRepository) {
             }
 
             post(createVinylDocumentation()) {
-                call.requireRole(Role.ADMIN, Role.STAFF)
+                call.requireRole(Role.Admin, Role.Staff)
                 val request = call.receive<CreateVinylRequest>()
 
                 val vinyl =
@@ -166,7 +166,7 @@ fun Route.vinylRoutes(store: VinylStoreRepository) {
             }
 
             put("/{id}", updateVinylDocumentation()) {
-                call.requireRole(Role.ADMIN, Role.STAFF)
+                call.requireRole(Role.Admin, Role.Staff)
 
                 val id = call.parameters["id"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
                 if (id == null) {
@@ -203,7 +203,7 @@ fun Route.vinylRoutes(store: VinylStoreRepository) {
             }
 
             delete("/{id}", deleteVinylDocumentation()) {
-                call.requireRole(Role.ADMIN, Role.STAFF)
+                call.requireRole(Role.Admin, Role.Staff)
 
                 val id = call.parameters["id"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
                 if (id == null) {
@@ -230,7 +230,7 @@ fun Route.vinylRoutes(store: VinylStoreRepository) {
             }
 
             post("/{vinylId}/listings", createListingDocumentation()) {
-                call.requireRole(Role.ADMIN, Role.STAFF)
+                call.requireRole(Role.Admin, Role.Staff)
 
                 val vinylId = call.parameters["vinylId"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
                 if (vinylId == null) {
@@ -734,7 +734,7 @@ private fun createListingDocumentation(): RouteConfig.() -> Unit =
                             Listing(
                                 id = Uuid.parse("550e8400-e29b-41d4-a716-446655440003"),
                                 vinylId = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
-                                status = ListingStatus.PUBLISHED,
+                                status = ListingStatus.Published,
                                 price = 29.99,
                                 currency = "EUR",
                                 createdAt = "2025-01-10T14:30:45.123Z",

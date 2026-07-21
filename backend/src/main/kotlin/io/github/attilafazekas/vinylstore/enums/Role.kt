@@ -17,7 +17,7 @@
 package io.github.attilafazekas.vinylstore.enums
 
 enum class Role {
-    ADMIN,
-    CUSTOMER,
-    STAFF,
+    Admin,
+    Customer,
+    Staff,
 }

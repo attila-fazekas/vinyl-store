@@ -97,7 +97,7 @@ private fun getCurrentUserWithDetailsDocumentation(): RouteConfig.() -> Unit =
                             UserV2Response(
                                 id = Uuid.random(),
                                 email = Email(CUSTOMER_EMAIL),
-                                role = Role.CUSTOMER,
+                                role = Role.Customer,
                                 isActive = true,
                                 createdAt = "2025-01-10T14:30:45.123Z",
                                 updatedAt = "2025-01-10T14:30:45.123Z",
@@ -106,7 +106,7 @@ private fun getCurrentUserWithDetailsDocumentation(): RouteConfig.() -> Unit =
                                         Address(
                                             id = Uuid.random(),
                                             userId = Uuid.random(),
-                                            type = AddressType.SHIPPING,
+                                            type = AddressType.Shipping,
                                             fullName = "John Doe",
                                             street = "123 Main St",
                                             city = "New York",
@@ -129,7 +129,7 @@ private fun getCurrentUserWithDetailsDocumentation(): RouteConfig.() -> Unit =
                             UserV2Response(
                                 id = Uuid.random(),
                                 email = Email(ADMIN_EMAIL),
-                                role = Role.ADMIN,
+                                role = Role.Admin,
                                 isActive = true,
                                 createdAt = "2025-01-10T14:30:45.123Z",
                                 updatedAt = "2025-01-10T14:30:45.123Z",

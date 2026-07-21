@@ -77,7 +77,7 @@ fun Route.authRoutes(store: VinylStoreRepository) {
                 return@post
             }
 
-            val user = store.createUser(request.email, request.password, Role.CUSTOMER)
+            val user = store.createUser(request.email, request.password, Role.Customer)
             val token = JwtConfig.generateToken(user.id, user.email, user.role)
 
             call.respond(
@@ -171,7 +171,7 @@ private fun getCurrentUserDocumentation(): RouteConfig.() -> Unit =
                             UserResponse(
                                 Uuid.random(),
                                 Email(CUSTOMER_EMAIL),
-                                Role.CUSTOMER,
+                                Role.Customer,
                                 true,
                                 TimestampUtil.now(),
                                 TimestampUtil.now(),
@@ -182,7 +182,7 @@ private fun getCurrentUserDocumentation(): RouteConfig.() -> Unit =
                             UserResponse(
                                 Uuid.random(),
                                 Email(ADMIN_EMAIL),
-                                Role.ADMIN,
+                                Role.Admin,
                                 true,
                                 TimestampUtil.now(),
                                 TimestampUtil.now(),
@@ -235,7 +235,7 @@ private fun registerUserDocumentation(): RouteConfig.() -> Unit =
                                     UserResponse(
                                         id = Uuid.random(),
                                         email = Email(CUSTOMER_EMAIL),
-                                        role = Role.CUSTOMER,
+                                        role = Role.Customer,
                                         isActive = true,
                                         createdAt = TimestampUtil.now(),
                                         updatedAt = TimestampUtil.now(),
@@ -296,7 +296,7 @@ private fun loginDocumentation(): RouteConfig.() -> Unit =
                                     UserResponse(
                                         Uuid.random(),
                                         Email(CUSTOMER_EMAIL),
-                                        Role.CUSTOMER,
+                                        Role.Customer,
                                         true,
                                         TimestampUtil.now(),
                                         TimestampUtil.now(),

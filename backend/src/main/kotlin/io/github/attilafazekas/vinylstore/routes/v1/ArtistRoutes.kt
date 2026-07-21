@@ -63,7 +63,7 @@ fun Route.artistRoutes(store: VinylStoreRepository) {
             }
 
             post(createArtistDocumentation()) {
-                call.requireRole(Role.ADMIN, Role.STAFF)
+                call.requireRole(Role.Admin, Role.Staff)
                 val request = call.receive<CreateArtistRequest>()
                 val artist = store.createArtist(request.name)
                 call.respond(HttpStatusCode.Created, artist)
@@ -85,7 +85,7 @@ fun Route.artistRoutes(store: VinylStoreRepository) {
             }
 
             put("/{id}", updateArtistDocumentation()) {
-                call.requireRole(Role.ADMIN, Role.STAFF)
+                call.requireRole(Role.Admin, Role.Staff)
 
                 val id = call.parameters["id"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
                 if (id == null) {
@@ -104,7 +104,7 @@ fun Route.artistRoutes(store: VinylStoreRepository) {
             }
 
             delete("/{id}", deleteArtistDocumentation()) {
-                call.requireRole(Role.ADMIN, Role.STAFF)
+                call.requireRole(Role.Admin, Role.Staff)
 
                 val id = call.parameters["id"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
                 if (id == null) {
