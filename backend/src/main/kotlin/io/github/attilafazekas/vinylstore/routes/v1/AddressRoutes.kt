@@ -194,7 +194,11 @@ fun Route.addressRoutes(store: VinylStoreRepository) {
                         request.isDefault,
                     )
 
-                call.respond(updated!!)
+                if (updated == null) {
+                    call.respond(HttpStatusCode.NotFound, ErrorResponse(NOT_FOUND, "Address not found"))
+                } else {
+                    call.respond(updated)
+                }
             }
 
             delete("/{id}", deleteAddressDocumentation()) {

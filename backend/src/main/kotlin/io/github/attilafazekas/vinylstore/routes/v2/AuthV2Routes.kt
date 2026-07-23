@@ -18,6 +18,7 @@ package io.github.attilafazekas.vinylstore.routes.v2
 
 import io.github.attilafazekas.vinylstore.ADMIN_EMAIL
 import io.github.attilafazekas.vinylstore.AUTH_JWT
+import io.github.attilafazekas.vinylstore.AuthException
 import io.github.attilafazekas.vinylstore.CUSTOMER_EMAIL
 import io.github.attilafazekas.vinylstore.Email
 import io.github.attilafazekas.vinylstore.TimestampUtil
@@ -45,7 +46,7 @@ fun Route.authV2Routes(store: VinylStoreRepository) {
         route("$V2/auth") {
             get("/me", getCurrentUserWithDetailsDocumentation()) {
                 val principal = call.principal<UserPrincipal>()!!
-                val user = store.getUserById(principal.userId)!!
+                val user = store.getUserById(principal.userId) ?: throw AuthException.Unauthenticated()
                 val addresses = store.getAddressesByUserId(user.id)
 
                 val totalOrders = 0 // TODO: Implement order counting when orders are added

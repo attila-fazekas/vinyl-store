@@ -17,16 +17,45 @@
 package io.github.attilafazekas.vinylstore
 
 import java.security.MessageDigest
+import java.security.SecureRandom
+import java.util.Base64
+import javax.crypto.SecretKeyFactory
+import javax.crypto.spec.PBEKeySpec
 
 object PasswordUtil {
-    fun hash(password: Password): String =
-        MessageDigest
-            .getInstance("SHA-256")
-            .digest(password.value.toByteArray())
-            .joinToString("") { "%02x".format(it) }
+    private const val ITERATIONS = 120_000
+    private const val KEY_LENGTH_BITS = 256
+    private const val SALT_BYTES = 16
+    private const val ALGORITHM = "PBKDF2WithHmacSHA256"
+
+    fun hash(password: Password): String {
+        val salt = ByteArray(SALT_BYTES).also { SecureRandom().nextBytes(it) }
+        val derived = pbkdf2(password.value, salt, ITERATIONS, KEY_LENGTH_BITS)
+        val encoder = Base64.getEncoder()
+        return $$"pbkdf2$$$ITERATIONS$$${encoder.encodeToString(salt)}$$${encoder.encodeToString(derived)}"
+    }
 
     fun verify(
         password: Password,
         hash: String,
-    ): Boolean = hash(password) == hash
+    ): Boolean {
+        val parts = hash.split("$")
+        if (parts.size != 4 || parts[0] != "pbkdf2") return false
+        val iterations = parts[1].toIntOrNull() ?: return false
+        val decoder = Base64.getDecoder()
+        val salt = decoder.decode(parts[2])
+        val stored = decoder.decode(parts[3])
+        val computed = pbkdf2(password.value, salt, iterations, stored.size * 8)
+        return MessageDigest.isEqual(stored, computed)
+    }
+
+    private fun pbkdf2(
+        password: String,
+        salt: ByteArray,
+        iterations: Int,
+        keyLengthBits: Int,
+    ): ByteArray {
+        val spec = PBEKeySpec(password.toCharArray(), salt, iterations, keyLengthBits)
+        return SecretKeyFactory.getInstance(ALGORITHM).generateSecret(spec).encoded
+    }
 }

@@ -83,7 +83,7 @@ fun Application.vinylStoreApplication(
     autoReset: Boolean = false,
 ) {
     configureOpenApi()
-    configurePlugins()
+    configurePlugins(store)
 
     runBlocking { store.initialize() }
 
@@ -186,7 +186,7 @@ private fun Application.configureOpenApi() {
     }
 }
 
-fun Application.configurePlugins() {
+fun Application.configurePlugins(store: VinylStoreRepository) {
     install(ContentNegotiation) {
         json(
             Json {
@@ -201,9 +201,12 @@ fun Application.configurePlugins() {
             verifier(JwtConfig.verifier)
             validate { credential ->
                 val userId = Uuid.parse(credential.payload.getClaim("userId").asString())
-                val email = credential.payload.getClaim("email").asString()
-                val role = credential.payload.getClaim("role").asString()
-                UserPrincipal(userId, email, role)
+                val user = store.getUserById(userId)
+                if (user == null || !user.isActive) {
+                    null
+                } else {
+                    UserPrincipal(user.id, user.email.value, user.role.name)
+                }
             }
         }
     }

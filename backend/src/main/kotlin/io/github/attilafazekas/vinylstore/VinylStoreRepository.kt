@@ -49,14 +49,22 @@ import kotlin.uuid.Uuid
 
 private val logger = KotlinLogging.logger {}
 
+enum class DeletionResult {
+    Deleted,
+    NotFound,
+    Conflict,
+}
+
 class VinylStoreRepository(
     private val db: R2dbcDatabase,
 ) {
     val createdAt = System.currentTimeMillis()
+    var lastResetAt = System.currentTimeMillis()
 
-    fun shouldReset(): Boolean {
-        val oneHourInMillis = 60 * 60 * 1000
-        return System.currentTimeMillis() - createdAt > oneHourInMillis
+    fun shouldReset(): Boolean = System.currentTimeMillis() - lastResetAt > RESET_INTERVAL_MS
+
+    companion object {
+        const val RESET_INTERVAL_MS = 60 * 60 * 1000L
     }
 
     suspend fun initialize() {
@@ -74,6 +82,7 @@ class VinylStoreRepository(
                 Meta.vinylGenre,
             )
         }
+        db.runQuery { QueryDsl.executeScript("CREATE UNIQUE INDEX IF NOT EXISTS users_email_idx ON users (email)") }
         val isEmpty = db.runQuery { QueryDsl.from(Meta.user).limit(1) }.isEmpty()
         if (isEmpty) {
             bootstrap()
@@ -94,6 +103,7 @@ class VinylStoreRepository(
             db.runQuery { QueryDsl.delete(Meta.user).all() }
         }
         bootstrap()
+        lastResetAt = System.currentTimeMillis()
     }
 
     private suspend fun bootstrap() {
@@ -379,9 +389,30 @@ class VinylStoreRepository(
         return db.runQuery { QueryDsl.update(Meta.artist).single(updated) }
     }
 
-    suspend fun deleteArtist(id: Uuid): Boolean = db.runQuery { QueryDsl.delete(Meta.artist).where { Meta.artist.id eq id } } > 0
+    suspend fun deleteArtist(id: Uuid): DeletionResult =
+        db.withTransaction {
+            when {
+                getArtistById(id) == null -> {
+                    DeletionResult.NotFound
+                }
+
+                hasVinylsForArtist(id) -> {
+                    DeletionResult.Conflict
+                }
+
+                else -> {
+                    db.runQuery { QueryDsl.delete(Meta.artist).where { Meta.artist.id eq id } }
+                    DeletionResult.Deleted
+                }
+            }
+        }
 
     suspend fun getArtistById(id: Uuid): Artist? = db.runQuery { QueryDsl.from(Meta.artist).where { Meta.artist.id eq id }.firstOrNull() }
+
+    suspend fun getArtistsByIds(ids: List<Uuid>): List<Artist> {
+        if (ids.isEmpty()) return emptyList()
+        return db.runQuery { QueryDsl.from(Meta.artist).where { Meta.artist.id inList ids } }
+    }
 
     suspend fun getAllArtists(): List<Artist> = db.runQuery { QueryDsl.from(Meta.artist).orderBy(Meta.artist.id) }
 
@@ -406,7 +437,23 @@ class VinylStoreRepository(
         return db.runQuery { QueryDsl.update(Meta.genre).single(updated) }
     }
 
-    suspend fun deleteGenre(id: Uuid): Boolean = db.runQuery { QueryDsl.delete(Meta.genre).where { Meta.genre.id eq id } } > 0
+    suspend fun deleteGenre(id: Uuid): DeletionResult =
+        db.withTransaction {
+            when {
+                getGenreById(id) == null -> {
+                    DeletionResult.NotFound
+                }
+
+                hasVinylsForGenre(id) -> {
+                    DeletionResult.Conflict
+                }
+
+                else -> {
+                    db.runQuery { QueryDsl.delete(Meta.genre).where { Meta.genre.id eq id } }
+                    DeletionResult.Deleted
+                }
+            }
+        }
 
     suspend fun getGenreById(id: Uuid): Genre? = db.runQuery { QueryDsl.from(Meta.genre).where { Meta.genre.id eq id }.firstOrNull() }
 
@@ -433,9 +480,30 @@ class VinylStoreRepository(
         return db.runQuery { QueryDsl.update(Meta.label).single(updated) }
     }
 
-    suspend fun deleteLabel(id: Uuid): Boolean = db.runQuery { QueryDsl.delete(Meta.label).where { Meta.label.id eq id } } > 0
+    suspend fun deleteLabel(id: Uuid): DeletionResult =
+        db.withTransaction {
+            when {
+                getLabelById(id) == null -> {
+                    DeletionResult.NotFound
+                }
+
+                hasVinylsForLabel(id) -> {
+                    DeletionResult.Conflict
+                }
+
+                else -> {
+                    db.runQuery { QueryDsl.delete(Meta.label).where { Meta.label.id eq id } }
+                    DeletionResult.Deleted
+                }
+            }
+        }
 
     suspend fun getLabelById(id: Uuid): Label? = db.runQuery { QueryDsl.from(Meta.label).where { Meta.label.id eq id }.firstOrNull() }
+
+    suspend fun getLabelsByIds(ids: List<Uuid>): List<Label> {
+        if (ids.isEmpty()) return emptyList()
+        return db.runQuery { QueryDsl.from(Meta.label).where { Meta.label.id inList ids } }
+    }
 
     suspend fun getAllLabels(): List<Label> = db.runQuery { QueryDsl.from(Meta.label).orderBy(Meta.label.id) }
 
@@ -473,6 +541,7 @@ class VinylStoreRepository(
         title: String?,
         artistId: Uuid?,
         labelId: Uuid?,
+        genreId: Uuid?,
         year: Int?,
         conditionMedia: String?,
         conditionSleeve: String?,
@@ -483,6 +552,7 @@ class VinylStoreRepository(
                 title = title ?: vinyl.title,
                 artistId = artistId ?: vinyl.artistId,
                 labelId = labelId ?: vinyl.labelId,
+                genreId = genreId ?: vinyl.genreId,
                 year = year ?: vinyl.year,
                 conditionMedia = conditionMedia ?: vinyl.conditionMedia,
                 conditionSleeve = conditionSleeve ?: vinyl.conditionSleeve,
@@ -491,11 +561,24 @@ class VinylStoreRepository(
         return db.runQuery { QueryDsl.update(Meta.vinyl).single(updated) }
     }
 
-    suspend fun deleteVinyl(id: Uuid): Boolean =
+    suspend fun deleteVinyl(id: Uuid): DeletionResult =
         db.withTransaction {
-            db.runQuery { QueryDsl.delete(Meta.vinylArtist).where { Meta.vinylArtist.vinylId eq id } }
-            db.runQuery { QueryDsl.delete(Meta.vinylGenre).where { Meta.vinylGenre.vinylId eq id } }
-            db.runQuery { QueryDsl.delete(Meta.vinyl).where { Meta.vinyl.id eq id } } > 0
+            when {
+                getVinylById(id) == null -> {
+                    DeletionResult.NotFound
+                }
+
+                hasListingsForVinyl(id) -> {
+                    DeletionResult.Conflict
+                }
+
+                else -> {
+                    db.runQuery { QueryDsl.delete(Meta.vinylArtist).where { Meta.vinylArtist.vinylId eq id } }
+                    db.runQuery { QueryDsl.delete(Meta.vinylGenre).where { Meta.vinylGenre.vinylId eq id } }
+                    db.runQuery { QueryDsl.delete(Meta.vinyl).where { Meta.vinyl.id eq id } }
+                    DeletionResult.Deleted
+                }
+            }
         }
 
     suspend fun linkVinylArtist(
@@ -519,10 +602,33 @@ class VinylStoreRepository(
     suspend fun getGenreForVinyl(vinylId: Uuid): Genre? {
         val genreId =
             db
-                .runQuery { QueryDsl.from(Meta.vinylGenre).where { Meta.vinylGenre.vinylId eq vinylId } }
-                .firstOrNull()
+                .runQuery {
+                    QueryDsl
+                        .from(Meta.vinylGenre)
+                        .where { Meta.vinylGenre.vinylId eq vinylId }
+                        .orderBy(Meta.vinylGenre.genreId)
+                }.firstOrNull()
                 ?.genreId
         return genreId?.let { getGenreById(it) }
+    }
+
+    suspend fun getGenresForVinyls(vinylIds: List<Uuid>): Map<Uuid, Genre> {
+        if (vinylIds.isEmpty()) return emptyMap()
+        val links =
+            db.runQuery {
+                QueryDsl
+                    .from(Meta.vinylGenre)
+                    .where { Meta.vinylGenre.vinylId inList vinylIds }
+                    .orderBy(Meta.vinylGenre.genreId)
+            }
+        val genreIdByVinylId = links.groupBy { it.vinylId }.mapValues { (_, links) -> links.first().genreId }
+        val genreById = getGenresByIds(genreIdByVinylId.values.distinct()).associateBy { it.id }
+        return genreIdByVinylId.mapNotNull { (vinylId, genreId) -> genreById[genreId]?.let { vinylId to it } }.toMap()
+    }
+
+    suspend fun getGenresByIds(ids: List<Uuid>): List<Genre> {
+        if (ids.isEmpty()) return emptyList()
+        return db.runQuery { QueryDsl.from(Meta.genre).where { Meta.genre.id inList ids } }
     }
 
     suspend fun getArtistsForVinyl(vinylId: Uuid): List<Artist> {
@@ -534,7 +640,21 @@ class VinylStoreRepository(
         return db.runQuery { QueryDsl.from(Meta.artist).where { Meta.artist.id inList artistIds }.orderBy(Meta.artist.id) }
     }
 
+    suspend fun getArtistsForVinyls(vinylIds: List<Uuid>): Map<Uuid, List<Artist>> {
+        if (vinylIds.isEmpty()) return emptyMap()
+        val links = db.runQuery { QueryDsl.from(Meta.vinylArtist).where { Meta.vinylArtist.vinylId inList vinylIds } }
+        val artistById = getArtistsByIds(links.map { it.artistId }.distinct()).associateBy { it.id }
+        return links
+            .groupBy { it.vinylId }
+            .mapValues { (_, links) -> links.mapNotNull { artistById[it.artistId] }.sortedBy { it.id } }
+    }
+
     suspend fun getVinylById(id: Uuid): Vinyl? = db.runQuery { QueryDsl.from(Meta.vinyl).where { Meta.vinyl.id eq id }.firstOrNull() }
+
+    suspend fun getVinylsByIds(ids: List<Uuid>): List<Vinyl> {
+        if (ids.isEmpty()) return emptyList()
+        return db.runQuery { QueryDsl.from(Meta.vinyl).where { Meta.vinyl.id inList ids } }
+    }
 
     suspend fun getAllVinyls(): List<Vinyl> = db.runQuery { QueryDsl.from(Meta.vinyl).orderBy(Meta.vinyl.id) }
 
@@ -585,10 +705,23 @@ class VinylStoreRepository(
     suspend fun getAllPublishedListings(): Listings =
         db.runQuery { QueryDsl.from(Meta.listing).where { Meta.listing.status eq ListingStatus.Published }.orderBy(Meta.listing.id) }
 
-    suspend fun deleteListing(id: Uuid): Boolean =
+    suspend fun deleteListing(id: Uuid): DeletionResult =
         db.withTransaction {
-            db.runQuery { QueryDsl.delete(Meta.inventory).where { Meta.inventory.listingId eq id } }
-            db.runQuery { QueryDsl.delete(Meta.listing).where { Meta.listing.id eq id } } > 0
+            when {
+                getListingById(id) == null -> {
+                    DeletionResult.NotFound
+                }
+
+                hasActiveOrders(id) -> {
+                    DeletionResult.Conflict
+                }
+
+                else -> {
+                    db.runQuery { QueryDsl.delete(Meta.inventory).where { Meta.inventory.listingId eq id } }
+                    db.runQuery { QueryDsl.delete(Meta.listing).where { Meta.listing.id eq id } }
+                    DeletionResult.Deleted
+                }
+            }
         }
 
     suspend fun hasActiveOrders(listingId: Uuid): Boolean {
@@ -599,6 +732,11 @@ class VinylStoreRepository(
 
     suspend fun getInventoryByListingId(listingId: Uuid): Inventory? =
         db.runQuery { QueryDsl.from(Meta.inventory).where { Meta.inventory.listingId eq listingId }.firstOrNull() }
+
+    suspend fun getInventoryByListingIds(listingIds: List<Uuid>): List<Inventory> {
+        if (listingIds.isEmpty()) return emptyList()
+        return db.runQuery { QueryDsl.from(Meta.inventory).where { Meta.inventory.listingId inList listingIds } }
+    }
 
     suspend fun getAllInventory(): List<Inventory> = db.runQuery { QueryDsl.from(Meta.inventory).orderBy(Meta.inventory.id) }
 

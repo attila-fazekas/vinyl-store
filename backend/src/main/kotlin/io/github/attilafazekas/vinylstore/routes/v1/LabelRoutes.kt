@@ -19,6 +19,7 @@ package io.github.attilafazekas.vinylstore.routes.v1
 import io.github.attilafazekas.vinylstore.AUTH_JWT
 import io.github.attilafazekas.vinylstore.BAD_REQUEST
 import io.github.attilafazekas.vinylstore.CONFLICT
+import io.github.attilafazekas.vinylstore.DeletionResult
 import io.github.attilafazekas.vinylstore.NOT_FOUND
 import io.github.attilafazekas.vinylstore.V1
 import io.github.attilafazekas.vinylstore.VinylStoreRepository
@@ -112,22 +113,22 @@ fun Route.labelRoutes(store: VinylStoreRepository) {
                     return@delete
                 }
 
-                if (store.getLabelById(id) == null) {
-                    call.respond(HttpStatusCode.NotFound, ErrorResponse(NOT_FOUND, "Label not found"))
-                    return@delete
-                }
+                when (store.deleteLabel(id)) {
+                    DeletionResult.NotFound -> {
+                        call.respond(HttpStatusCode.NotFound, ErrorResponse(NOT_FOUND, "Label not found"))
+                    }
 
-                val hasVinyls = store.hasVinylsForLabel(id)
-                if (hasVinyls) {
-                    call.respond(
-                        HttpStatusCode.Conflict,
-                        ErrorResponse(CONFLICT, "Cannot delete label with associated vinyls"),
-                    )
-                    return@delete
-                }
+                    DeletionResult.Conflict -> {
+                        call.respond(
+                            HttpStatusCode.Conflict,
+                            ErrorResponse(CONFLICT, "Cannot delete label with associated vinyls"),
+                        )
+                    }
 
-                store.deleteLabel(id)
-                call.respond(HttpStatusCode.NoContent)
+                    DeletionResult.Deleted -> {
+                        call.respond(HttpStatusCode.NoContent)
+                    }
+                }
             }
         }
     }

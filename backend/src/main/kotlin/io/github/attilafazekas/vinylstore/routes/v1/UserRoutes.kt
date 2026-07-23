@@ -19,6 +19,7 @@ package io.github.attilafazekas.vinylstore.routes.v1
 import io.github.attilafazekas.vinylstore.ADMIN_EMAIL
 import io.github.attilafazekas.vinylstore.ADMIN_PASSWORD
 import io.github.attilafazekas.vinylstore.AUTH_JWT
+import io.github.attilafazekas.vinylstore.AuthException
 import io.github.attilafazekas.vinylstore.BAD_REQUEST
 import io.github.attilafazekas.vinylstore.CONFLICT
 import io.github.attilafazekas.vinylstore.CUSTOMER_EMAIL
@@ -40,6 +41,7 @@ import io.github.attilafazekas.vinylstore.enums.Role
 import io.github.attilafazekas.vinylstore.models.CreateUserRequest
 import io.github.attilafazekas.vinylstore.models.ErrorResponse
 import io.github.attilafazekas.vinylstore.models.UpdateUserRequest
+import io.github.attilafazekas.vinylstore.models.UserPrincipal
 import io.github.attilafazekas.vinylstore.models.UserResponse
 import io.github.attilafazekas.vinylstore.models.UsersResponse
 import io.github.attilafazekas.vinylstore.requireRole
@@ -51,9 +53,11 @@ import io.github.smiley4.ktoropenapi.put
 import io.github.smiley4.ktoropenapi.route
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.auth.authenticate
+import io.ktor.server.auth.principal
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
+import io.r2dbc.spi.R2dbcDataIntegrityViolationException
 import kotlin.text.toBooleanStrictOrNull
 import kotlin.text.uppercase
 import kotlin.uuid.Uuid
@@ -131,7 +135,16 @@ fun Route.userRoutes(store: VinylStoreRepository) {
                     return@post
                 }
 
-                val user = store.createUser(request.email, request.password, request.role)
+                val user =
+                    try {
+                        store.createUser(request.email, request.password, request.role)
+                    } catch (_: R2dbcDataIntegrityViolationException) {
+                        call.respond(
+                            HttpStatusCode.Conflict,
+                            ErrorResponse(CONFLICT, "User with this email already exists"),
+                        )
+                        return@post
+                    }
                 call.respond(
                     HttpStatusCode.Created,
                     UserResponse(user.id, user.email, user.role, user.isActive, user.createdAt, user.updatedAt),
@@ -148,6 +161,18 @@ fun Route.userRoutes(store: VinylStoreRepository) {
                 }
 
                 val request = call.receive<UpdateUserRequest>()
+
+                val principal = call.principal<UserPrincipal>() ?: throw AuthException.Unauthenticated()
+                val demotesSelf = request.role != null && request.role != Role.Admin
+                val deactivatesSelf = request.isActive == false
+                if (principal.userId == id && (demotesSelf || deactivatesSelf)) {
+                    call.respond(
+                        HttpStatusCode.Conflict,
+                        ErrorResponse(CONFLICT, "Admins cannot change their own role or deactivate their own account"),
+                    )
+                    return@put
+                }
+
                 val updated = store.updateUser(id, request.role, request.isActive)
 
                 if (updated == null) {
@@ -404,6 +429,7 @@ private fun updateUserDocumentation(): RouteConfig.() -> Unit =
 
             Access restrictions:
             - Only ADMIN role can update users
+            - Admins cannot demote themselves from ADMIN or deactivate their own account (returns 409 Conflict)
 
             Requires ADMIN authentication via JWT token.
             """.trimIndent()
@@ -446,8 +472,11 @@ private fun updateUserDocumentation(): RouteConfig.() -> Unit =
             }
             badRequestExample("Invalid user UUID")
             notAuthenticatedExample()
-            insufficientPermissionsExample("Only ADMIN role can delete users")
+            insufficientPermissionsExample("Only ADMIN role can update users")
             notFoundExample("User not found")
+            conflictExample(
+                "Self-lockout" to "Admins cannot change their own role or deactivate their own account",
+            )
         }
     }
 
@@ -484,7 +513,7 @@ private fun deleteUserDocumentation(): RouteConfig.() -> Unit =
             }
             badRequestExample("Invalid user UUID")
             notAuthenticatedExample()
-            insufficientPermissionsExample("Only ADMIN role can update users")
+            insufficientPermissionsExample("Only ADMIN role can delete users")
             notFoundExample("User not found")
         }
     }
