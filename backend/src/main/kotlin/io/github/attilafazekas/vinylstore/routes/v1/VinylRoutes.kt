@@ -19,6 +19,7 @@ package io.github.attilafazekas.vinylstore.routes.v1
 import io.github.attilafazekas.vinylstore.AUTH_JWT
 import io.github.attilafazekas.vinylstore.BAD_REQUEST
 import io.github.attilafazekas.vinylstore.CONFLICT
+import io.github.attilafazekas.vinylstore.DeletionResult
 import io.github.attilafazekas.vinylstore.NOT_FOUND
 import io.github.attilafazekas.vinylstore.TimestampUtil
 import io.github.attilafazekas.vinylstore.V1
@@ -73,36 +74,36 @@ fun Route.vinylRoutes(store: VinylStoreRepository) {
 
                 artistParam?.let { artist ->
                     val artistId = runCatching { Uuid.parse(artist) }.getOrNull()
-                    vinyls =
-                        vinyls.filter { vinyl ->
-                            if (artistId != null) {
-                                vinyl.artistId == artistId
-                            } else {
-                                val vinylArtist = store.getArtistById(vinyl.artistId)
-                                vinylArtist?.name?.contains(artist, ignoreCase = true) == true
+                    if (artistId != null) {
+                        vinyls = vinyls.filter { it.artistId == artistId }
+                    } else {
+                        val artistsById = store.getArtistsByIds(vinyls.map { it.artistId }.distinct()).associateBy { it.id }
+                        vinyls =
+                            vinyls.filter { vinyl ->
+                                artistsById[vinyl.artistId]?.name?.contains(artist, ignoreCase = true) == true
                             }
-                        }
+                    }
                 }
 
                 genreParam?.let { genreFilter ->
+                    val genresByVinylId = store.getGenresForVinyls(vinyls.map { it.id })
                     vinyls =
                         vinyls.filter { vinyl ->
-                            val genre = store.getGenreForVinyl(vinyl.id)
-                            genre?.name?.contains(genreFilter, ignoreCase = true) == true
+                            genresByVinylId[vinyl.id]?.name?.contains(genreFilter, ignoreCase = true) == true
                         }
                 }
 
                 labelParam?.let { label ->
                     val labelId = runCatching { Uuid.parse(label) }.getOrNull()
-                    vinyls =
-                        vinyls.filter { vinyl ->
-                            if (labelId != null) {
-                                vinyl.labelId == labelId
-                            } else {
-                                val vinylLabel = store.getLabelById(vinyl.labelId)
-                                vinylLabel?.name?.contains(label, ignoreCase = true) == true
+                    if (labelId != null) {
+                        vinyls = vinyls.filter { it.labelId == labelId }
+                    } else {
+                        val labelsById = store.getLabelsByIds(vinyls.map { it.labelId }.distinct()).associateBy { it.id }
+                        vinyls =
+                            vinyls.filter { vinyl ->
+                                labelsById[vinyl.labelId]?.name?.contains(label, ignoreCase = true) == true
                             }
-                        }
+                    }
                 }
 
                 // Apply year filters (exact year takes precedence)
@@ -138,9 +139,13 @@ fun Route.vinylRoutes(store: VinylStoreRepository) {
                     return@get
                 }
 
-                val artist = store.getArtistById(vinyl.artistId)!!
-                val label = store.getLabelById(vinyl.labelId)!!
-                val genre = store.getGenreForVinyl(vinyl.id)!!
+                val artist = store.getArtistById(vinyl.artistId)
+                val label = store.getLabelById(vinyl.labelId)
+                val genre = store.getGenreForVinyl(vinyl.id)
+                if (artist == null || label == null || genre == null) {
+                    call.respond(HttpStatusCode.NotFound, ErrorResponse(NOT_FOUND, "Vinyl not found"))
+                    return@get
+                }
 
                 call.respond(VinylDetailResponse(vinyl, artist, label, genre))
             }
@@ -181,6 +186,7 @@ fun Route.vinylRoutes(store: VinylStoreRepository) {
                         request.title,
                         request.artistId,
                         request.labelId,
+                        request.genreIds?.firstOrNull(),
                         request.year,
                         request.conditionMedia,
                         request.conditionSleeve,
@@ -211,22 +217,22 @@ fun Route.vinylRoutes(store: VinylStoreRepository) {
                     return@delete
                 }
 
-                if (store.getVinylById(id) == null) {
-                    call.respond(HttpStatusCode.NotFound, ErrorResponse(NOT_FOUND, "Vinyl not found"))
-                    return@delete
-                }
+                when (store.deleteVinyl(id)) {
+                    DeletionResult.NotFound -> {
+                        call.respond(HttpStatusCode.NotFound, ErrorResponse(NOT_FOUND, "Vinyl not found"))
+                    }
 
-                val hasListings = store.hasListingsForVinyl(id)
-                if (hasListings) {
-                    call.respond(
-                        HttpStatusCode.Conflict,
-                        ErrorResponse(CONFLICT, "Cannot delete vinyl with associated listings"),
-                    )
-                    return@delete
-                }
+                    DeletionResult.Conflict -> {
+                        call.respond(
+                            HttpStatusCode.Conflict,
+                            ErrorResponse(CONFLICT, "Cannot delete vinyl with associated listings"),
+                        )
+                    }
 
-                store.deleteVinyl(id)
-                call.respond(HttpStatusCode.NoContent)
+                    DeletionResult.Deleted -> {
+                        call.respond(HttpStatusCode.NoContent)
+                    }
+                }
             }
 
             post("/{vinylId}/listings", createListingDocumentation()) {
@@ -240,6 +246,14 @@ fun Route.vinylRoutes(store: VinylStoreRepository) {
 
                 if (store.getVinylById(vinylId) == null) {
                     call.respond(HttpStatusCode.NotFound, ErrorResponse(NOT_FOUND, "Vinyl not found"))
+                    return@post
+                }
+
+                if (store.hasListingsForVinyl(vinylId)) {
+                    call.respond(
+                        HttpStatusCode.Conflict,
+                        ErrorResponse(CONFLICT, "A listing already exists for this vinyl"),
+                    )
                     return@post
                 }
 

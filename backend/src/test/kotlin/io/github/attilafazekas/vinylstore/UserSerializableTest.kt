@@ -16,18 +16,15 @@
 
 package io.github.attilafazekas.vinylstore
 
+import io.github.attilafazekas.vinylstore.models.User
+import io.kotest.matchers.shouldBe
 import kotlinx.serialization.Serializable
+import org.junit.jupiter.api.Test
 
-@Serializable
-@JvmInline
-value class Email(
-    val value: String,
-)
-
-@Serializable
-@JvmInline
-value class Password(
-    val value: String,
-) {
-    override fun toString(): String = "Password(***)"
+class UserSerializableTest {
+    @Test
+    fun `User class is not annotated with Serializable`() {
+        val isSerializable = User::class.annotations.any { it is Serializable }
+        isSerializable shouldBe false
+    }
 }

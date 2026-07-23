@@ -25,7 +25,6 @@ import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.Serializable
 import kotlin.uuid.Uuid
 
-@Serializable
 data class User(
     @Description("Unique identifier for the user.")
     val id: Uuid,

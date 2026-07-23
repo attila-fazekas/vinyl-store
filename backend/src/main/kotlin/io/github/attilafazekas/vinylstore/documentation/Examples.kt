@@ -39,9 +39,9 @@ fun ResponsesConfig.badRequestExample(message: String) {
 fun ResponsesConfig.validationErrorExample(vararg message: String) {
     code(HttpStatusCode.BadRequest) {
         body<ErrorResponse> {
-            message.forEach { message ->
-                example(message) {
-                    value = ErrorResponse(VALIDATION_ERROR, message)
+            message.forEach { singleMessage ->
+                example(singleMessage) {
+                    value = ErrorResponse(VALIDATION_ERROR, singleMessage)
                 }
             }
         }
@@ -71,9 +71,9 @@ fun ResponsesConfig.insufficientPermissionsExample(message: String) {
 fun ResponsesConfig.notFoundExample(vararg message: String) {
     code(HttpStatusCode.NotFound) {
         body<ErrorResponse> {
-            message.forEach { message ->
-                example(message) {
-                    value = ErrorResponse(NOT_FOUND, message)
+            message.forEach { singleMessage ->
+                example(singleMessage) {
+                    value = ErrorResponse(NOT_FOUND, singleMessage)
                 }
             }
         }

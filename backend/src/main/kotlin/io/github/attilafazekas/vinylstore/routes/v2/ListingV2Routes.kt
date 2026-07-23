@@ -57,14 +57,21 @@ fun Route.listingV2Routes(store: VinylStoreRepository) {
 
             val allListings = store.getAllPublishedListings()
 
+            val vinylsById = store.getVinylsByIds(allListings.map { it.vinylId }.distinct()).associateBy { it.id }
+            val artistsByVinylId = store.getArtistsForVinyls(vinylsById.keys.toList())
+            val labelsById = store.getLabelsByIds(vinylsById.values.map { it.labelId }.distinct()).associateBy { it.id }
+            val genresByVinylId = store.getGenresForVinyls(vinylsById.keys.toList())
+            val inventoryByListingId =
+                store.getInventoryByListingIds(allListings.map { it.id }).associateBy { it.listingId }
+
             var details =
                 allListings.mapNotNull { listing ->
-                    val vinyl = store.getVinylById(listing.vinylId) ?: return@mapNotNull null
-                    val artists = store.getArtistsForVinyl(vinyl.id)
+                    val vinyl = vinylsById[listing.vinylId] ?: return@mapNotNull null
+                    val artists = artistsByVinylId[vinyl.id] ?: emptyList()
                     if (artists.isEmpty()) return@mapNotNull null
-                    val label = store.getLabelById(vinyl.labelId) ?: return@mapNotNull null
-                    val genre = store.getGenreForVinyl(vinyl.id) ?: return@mapNotNull null
-                    val inventory = store.getInventoryByListingId(listing.id) ?: return@mapNotNull null
+                    val label = labelsById[vinyl.labelId] ?: return@mapNotNull null
+                    val genre = genresByVinylId[vinyl.id] ?: return@mapNotNull null
+                    val inventory = inventoryByListingId[listing.id] ?: return@mapNotNull null
 
                     if (inventory.availableQuantity > 0) {
                         ListingV2Response(
@@ -329,7 +336,6 @@ private fun listListingsV2Documentation(): RouteConfig.() -> Unit =
                                                 InventoryV2(
                                                     totalQuantity = 15,
                                                     reservedQuantity = 0,
-                                                    availableQuantity = 15,
                                                     createdAt = TimestampUtil.now(),
                                                     updatedAt = TimestampUtil.now(),
                                                 ),
@@ -361,7 +367,6 @@ private fun listListingsV2Documentation(): RouteConfig.() -> Unit =
                                                 InventoryV2(
                                                     totalQuantity = 5,
                                                     reservedQuantity = 2,
-                                                    availableQuantity = 3,
                                                     createdAt = TimestampUtil.now(),
                                                     updatedAt = TimestampUtil.now(),
                                                 ),
@@ -454,7 +459,6 @@ private fun getListingV2Documentation(): RouteConfig.() -> Unit =
                                     InventoryV2(
                                         totalQuantity = 15,
                                         reservedQuantity = 0,
-                                        availableQuantity = 15,
                                         createdAt = TimestampUtil.now(),
                                         updatedAt = TimestampUtil.now(),
                                     ),
@@ -486,7 +490,6 @@ private fun getListingV2Documentation(): RouteConfig.() -> Unit =
                                     InventoryV2(
                                         totalQuantity = 5,
                                         reservedQuantity = 2,
-                                        availableQuantity = 3,
                                         createdAt = TimestampUtil.now(),
                                         updatedAt = TimestampUtil.now(),
                                     ),

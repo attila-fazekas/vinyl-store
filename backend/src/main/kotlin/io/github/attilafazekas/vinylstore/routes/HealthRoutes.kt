@@ -29,11 +29,11 @@ fun Route.healthRoutes(
     autoReset: Boolean = false,
 ) {
     get("/health", healthCheckDocumentation()) {
-        val uptime = System.currentTimeMillis() - store.createdAt
+        val now = System.currentTimeMillis()
+        val uptime = now - store.createdAt
         val nextReset =
             if (autoReset) {
-                val oneHour = 60 * 60 * 1000
-                formatDuration(oneHour - uptime)
+                formatDuration(VinylStoreRepository.RESET_INTERVAL_MS - (now - store.lastResetAt))
             } else {
                 null
             }

@@ -19,6 +19,7 @@ package io.github.attilafazekas.vinylstore.routes.v1
 import io.github.attilafazekas.vinylstore.ADMIN_EMAIL
 import io.github.attilafazekas.vinylstore.ADMIN_PASSWORD
 import io.github.attilafazekas.vinylstore.AUTH_JWT
+import io.github.attilafazekas.vinylstore.AuthException
 import io.github.attilafazekas.vinylstore.CONFLICT
 import io.github.attilafazekas.vinylstore.CUSTOMER_EMAIL
 import io.github.attilafazekas.vinylstore.CUSTOMER_PASSWORD
@@ -52,6 +53,7 @@ import io.ktor.server.auth.principal
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
+import io.r2dbc.spi.R2dbcDataIntegrityViolationException
 import kotlin.uuid.Uuid
 
 fun Route.authRoutes(store: VinylStoreRepository) {
@@ -77,7 +79,13 @@ fun Route.authRoutes(store: VinylStoreRepository) {
                 return@post
             }
 
-            val user = store.createUser(request.email, request.password, Role.Customer)
+            val user =
+                try {
+                    store.createUser(request.email, request.password, Role.Customer)
+                } catch (_: R2dbcDataIntegrityViolationException) {
+                    call.respond(HttpStatusCode.Conflict, ErrorResponse(CONFLICT, "Email already exists"))
+                    return@post
+                }
             val token = JwtConfig.generateToken(user.id, user.email, user.role)
 
             call.respond(
@@ -119,7 +127,7 @@ fun Route.authRoutes(store: VinylStoreRepository) {
                         id = user.id,
                         email = user.email,
                         role = user.role,
-                        isActive = true,
+                        isActive = user.isActive,
                         createdAt = user.createdAt,
                         updatedAt = user.updatedAt,
                     ),
@@ -130,7 +138,7 @@ fun Route.authRoutes(store: VinylStoreRepository) {
         authenticate(AUTH_JWT) {
             get("/me", getCurrentUserDocumentation()) {
                 val principal = call.principal<UserPrincipal>()!!
-                val user = store.getUserById(principal.userId)!!
+                val user = store.getUserById(principal.userId) ?: throw AuthException.Unauthenticated()
                 call.respond(
                     UserResponse(
                         id = user.id,

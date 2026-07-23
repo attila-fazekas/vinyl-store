@@ -19,6 +19,7 @@ package io.github.attilafazekas.vinylstore.routes.v1
 import io.github.attilafazekas.vinylstore.AUTH_JWT
 import io.github.attilafazekas.vinylstore.BAD_REQUEST
 import io.github.attilafazekas.vinylstore.CONFLICT
+import io.github.attilafazekas.vinylstore.DeletionResult
 import io.github.attilafazekas.vinylstore.NOT_FOUND
 import io.github.attilafazekas.vinylstore.TimestampUtil
 import io.github.attilafazekas.vinylstore.V1
@@ -69,13 +70,20 @@ fun Route.listingRoutes(store: VinylStoreRepository) {
 
             val allListings = store.getAllPublishedListings()
 
+            val vinylsById = store.getVinylsByIds(allListings.map { it.vinylId }.distinct()).associateBy { it.id }
+            val artistsById = store.getArtistsByIds(vinylsById.values.map { it.artistId }.distinct()).associateBy { it.id }
+            val labelsById = store.getLabelsByIds(vinylsById.values.map { it.labelId }.distinct()).associateBy { it.id }
+            val genresByVinylId = store.getGenresForVinyls(vinylsById.keys.toList())
+            val inventoryByListingId =
+                store.getInventoryByListingIds(allListings.map { it.id }).associateBy { it.listingId }
+
             var details =
                 allListings.mapNotNull { listing ->
-                    val vinyl = store.getVinylById(listing.vinylId) ?: return@mapNotNull null
-                    val artist = store.getArtistById(vinyl.artistId) ?: return@mapNotNull null
-                    val label = store.getLabelById(vinyl.labelId) ?: return@mapNotNull null
-                    val genre = store.getGenreForVinyl(vinyl.id) ?: return@mapNotNull null
-                    val inv = store.getInventoryByListingId(listing.id) ?: return@mapNotNull null
+                    val vinyl = vinylsById[listing.vinylId] ?: return@mapNotNull null
+                    val artist = artistsById[vinyl.artistId] ?: return@mapNotNull null
+                    val label = labelsById[vinyl.labelId] ?: return@mapNotNull null
+                    val genre = genresByVinylId[vinyl.id] ?: return@mapNotNull null
+                    val inv = inventoryByListingId[listing.id] ?: return@mapNotNull null
 
                     if (inv.availableQuantity > 0) {
                         ListingDetailResponse(listing, vinyl, artist, genre, label, inv)
@@ -162,11 +170,15 @@ fun Route.listingRoutes(store: VinylStoreRepository) {
                 return@get
             }
 
-            val vinyl = store.getVinylById(listing.vinylId)!!
-            val artist = store.getArtistById(vinyl.artistId)!!
-            val label = store.getLabelById(vinyl.labelId)!!
-            val genre = store.getGenreForVinyl(vinyl.id)!!
-            val inv = store.getInventoryByListingId(listing.id)!!
+            val vinyl = store.getVinylById(listing.vinylId)
+            val artist = vinyl?.let { store.getArtistById(it.artistId) }
+            val label = vinyl?.let { store.getLabelById(it.labelId) }
+            val genre = vinyl?.let { store.getGenreForVinyl(it.id) }
+            val inv = store.getInventoryByListingId(listing.id)
+            if (vinyl == null || artist == null || label == null || genre == null || inv == null) {
+                call.respond(HttpStatusCode.NotFound, ErrorResponse(NOT_FOUND, "Listing not found"))
+                return@get
+            }
 
             call.respond(ListingDetailResponse(listing, vinyl, artist, genre, label, inv))
         }
@@ -182,6 +194,12 @@ fun Route.listingRoutes(store: VinylStoreRepository) {
                 }
 
                 val request = call.receive<UpdateListingRequest>()
+
+                if (request.price != null && request.price <= 0) {
+                    call.respond(HttpStatusCode.BadRequest, ErrorResponse(BAD_REQUEST, "Price must be positive"))
+                    return@put
+                }
+
                 val updated = store.updateListing(id, request.price, request.status)
 
                 if (updated == null) {
@@ -200,27 +218,25 @@ fun Route.listingRoutes(store: VinylStoreRepository) {
                     return@delete
                 }
 
-                if (store.getListingById(id) == null) {
-                    call.respond(HttpStatusCode.NotFound, ErrorResponse(NOT_FOUND, "Listing not found"))
-                    return@delete
-                }
+                when (store.deleteListing(id)) {
+                    DeletionResult.NotFound -> {
+                        call.respond(HttpStatusCode.NotFound, ErrorResponse(NOT_FOUND, "Listing not found"))
+                    }
 
-                // Check if listing has active orders (when orders are implemented)
-                // For now, we'll use a placeholder check
-                val hasActiveOrders = store.hasActiveOrders(id)
-                if (hasActiveOrders) {
-                    call.respond(
-                        HttpStatusCode.Conflict,
-                        ErrorResponse(
-                            CONFLICT,
-                            "Cannot delete listing with active orders. Archive it instead.",
-                        ),
-                    )
-                    return@delete
-                }
+                    DeletionResult.Conflict -> {
+                        call.respond(
+                            HttpStatusCode.Conflict,
+                            ErrorResponse(
+                                CONFLICT,
+                                "Cannot delete listing with active orders. Archive it instead.",
+                            ),
+                        )
+                    }
 
-                store.deleteListing(id)
-                call.respond(HttpStatusCode.NoContent)
+                    DeletionResult.Deleted -> {
+                        call.respond(HttpStatusCode.NoContent)
+                    }
+                }
             }
         }
     }
@@ -337,7 +353,6 @@ private fun listListingsDocumentation(): RouteConfig.() -> Unit =
                                                     listingId = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
                                                     totalQuantity = 15,
                                                     reservedQuantity = 0,
-                                                    availableQuantity = 15,
                                                     createdAt = TimestampUtil.now(),
                                                     updatedAt = TimestampUtil.now(),
                                                 ),
