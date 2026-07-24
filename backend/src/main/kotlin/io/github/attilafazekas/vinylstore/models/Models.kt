@@ -172,3 +172,17 @@ data class VinylArtist(
     @Description("ID of the artist associated with the vinyl.")
     val artistId: Uuid,
 )
+
+@Serializable
+data class CartItem(
+    @Description("ID of the user who owns this cart item.")
+    val userId: Uuid,
+    @Description("ID of the listing added to the cart.")
+    val listingId: Uuid,
+    @Description("Quantity of this listing requested.")
+    val quantity: Int,
+    @Description("Timestamp when this item was added to the cart in ISO 8601 format with UTC timezone (e.g., '2025-01-10T14:30:45.123Z').")
+    val createdAt: String,
+    @Description("Timestamp when this cart item was last updated in ISO 8601 format with UTC timezone (e.g., '2025-01-10T14:30:45.123Z').")
+    val updatedAt: String,
+)

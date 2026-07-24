@@ -18,6 +18,7 @@ package io.github.attilafazekas.vinylstore
 
 import io.github.attilafazekas.vinylstore.db.address
 import io.github.attilafazekas.vinylstore.db.artist
+import io.github.attilafazekas.vinylstore.db.cartItem
 import io.github.attilafazekas.vinylstore.db.genre
 import io.github.attilafazekas.vinylstore.db.inventory
 import io.github.attilafazekas.vinylstore.db.label
@@ -31,6 +32,7 @@ import io.github.attilafazekas.vinylstore.enums.ListingStatus
 import io.github.attilafazekas.vinylstore.enums.Role
 import io.github.attilafazekas.vinylstore.models.Address
 import io.github.attilafazekas.vinylstore.models.Artist
+import io.github.attilafazekas.vinylstore.models.CartItem
 import io.github.attilafazekas.vinylstore.models.Genre
 import io.github.attilafazekas.vinylstore.models.Inventory
 import io.github.attilafazekas.vinylstore.models.Label
@@ -80,6 +82,7 @@ class VinylStoreRepository(
                 Meta.inventory,
                 Meta.vinylArtist,
                 Meta.vinylGenre,
+                Meta.cartItem,
             )
         }
         db.runQuery { QueryDsl.executeScript("CREATE UNIQUE INDEX IF NOT EXISTS users_email_idx ON users (email)") }
@@ -756,5 +759,61 @@ class VinylStoreRepository(
                 updatedAt = TimestampUtil.now(),
             )
         return db.runQuery { QueryDsl.update(Meta.inventory).single(updated) }
+    }
+
+    suspend fun getCartItems(userId: Uuid): List<CartItem> =
+        db.runQuery {
+            QueryDsl
+                .from(Meta.cartItem)
+                .where { Meta.cartItem.userId eq userId }
+                .orderBy(Meta.cartItem.listingId)
+        }
+
+    suspend fun getCartItem(
+        userId: Uuid,
+        listingId: Uuid,
+    ): CartItem? =
+        db.runQuery {
+            QueryDsl
+                .from(Meta.cartItem)
+                .where {
+                    Meta.cartItem.userId eq userId
+                    Meta.cartItem.listingId eq listingId
+                }.firstOrNull()
+        }
+
+    suspend fun upsertCartItem(
+        userId: Uuid,
+        listingId: Uuid,
+        quantity: Int,
+    ): CartItem =
+        setCartItemQuantity(userId, listingId, quantity) ?: run {
+            val now = TimestampUtil.now()
+            db.runQuery { QueryDsl.insert(Meta.cartItem).single(CartItem(userId, listingId, quantity, now, now)) }
+        }
+
+    suspend fun setCartItemQuantity(
+        userId: Uuid,
+        listingId: Uuid,
+        quantity: Int,
+    ): CartItem? {
+        val existing = getCartItem(userId, listingId) ?: return null
+        val updated = existing.copy(quantity = quantity, updatedAt = TimestampUtil.now())
+        return db.runQuery { QueryDsl.update(Meta.cartItem).single(updated) }
+    }
+
+    suspend fun deleteCartItem(
+        userId: Uuid,
+        listingId: Uuid,
+    ): Boolean =
+        db.runQuery {
+            QueryDsl.delete(Meta.cartItem).where {
+                Meta.cartItem.userId eq userId
+                Meta.cartItem.listingId eq listingId
+            }
+        } > 0
+
+    suspend fun clearCart(userId: Uuid) {
+        db.runQuery { QueryDsl.delete(Meta.cartItem).where { Meta.cartItem.userId eq userId } }
     }
 }

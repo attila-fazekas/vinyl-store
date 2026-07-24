@@ -18,6 +18,7 @@ package io.github.attilafazekas.vinylstore.db
 
 import io.github.attilafazekas.vinylstore.models.Address
 import io.github.attilafazekas.vinylstore.models.Artist
+import io.github.attilafazekas.vinylstore.models.CartItem
 import io.github.attilafazekas.vinylstore.models.Genre
 import io.github.attilafazekas.vinylstore.models.Inventory
 import io.github.attilafazekas.vinylstore.models.Label
@@ -92,4 +93,11 @@ data class VinylArtistDef(
 data class VinylGenreDef(
     @KomapperId val vinylId: Nothing,
     @KomapperId val genreId: Nothing,
+)
+
+@KomapperEntityDef(CartItem::class)
+@KomapperTable(name = "cart_items")
+data class CartItemDef(
+    @KomapperId val userId: Nothing,
+    @KomapperId val listingId: Nothing,
 )

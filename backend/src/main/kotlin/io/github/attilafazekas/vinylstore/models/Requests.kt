@@ -194,3 +194,17 @@ data class UpdateUserRequest(
     @Description("Optional. The new active status for the user. If omitted, status remains unchanged.")
     val isActive: Boolean? = null,
 )
+
+@Serializable
+data class AddCartItemRequest(
+    @Description("ID of the listing to add to the cart.")
+    val listingId: Uuid,
+    @Description("Quantity to add. Must be at least 1.")
+    val quantity: Int,
+)
+
+@Serializable
+data class UpdateCartItemRequest(
+    @Description("The new quantity for this cart item. Must be at least 1.")
+    val quantity: Int,
+)
