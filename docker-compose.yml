@@ -25,9 +25,19 @@ services:
       POSTGRES_DB: vinylstore
       POSTGRES_USER: vinylstore
       POSTGRES_PASSWORD: vinylstore
+      PAYMENT_SERVICE_URL: http://payment-service:9090
     depends_on:
       postgres:
         condition: service_healthy
+      payment-service:
+        condition: service_started
+
+  payment-service:
+    build:
+      context: .
+      dockerfile: payment-service/Dockerfile
+    ports:
+      - "9090:9090"
 
 volumes:
   postgres-data:

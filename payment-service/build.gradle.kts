@@ -26,7 +26,7 @@ plugins {
 }
 
 application {
-    mainClass.set("io.github.attilafazekas.vinylstore.ApplicationKt")
+    mainClass.set("io.github.attilafazekas.paymentservice.ApplicationKt")
 }
 
 dependencies {
