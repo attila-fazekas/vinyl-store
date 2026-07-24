@@ -24,6 +24,7 @@ import io.github.attilafazekas.vinylstore.routes.healthRoutes
 import io.github.attilafazekas.vinylstore.routes.v1.addressRoutes
 import io.github.attilafazekas.vinylstore.routes.v1.artistRoutes
 import io.github.attilafazekas.vinylstore.routes.v1.authRoutes
+import io.github.attilafazekas.vinylstore.routes.v1.cartRoutes
 import io.github.attilafazekas.vinylstore.routes.v1.genreRoutes
 import io.github.attilafazekas.vinylstore.routes.v1.inventoryRoutes
 import io.github.attilafazekas.vinylstore.routes.v1.labelRoutes
@@ -110,6 +111,7 @@ fun Application.vinylStoreApplication(
         authV2Routes(store)
         userRoutes(store)
         addressRoutes(store)
+        cartRoutes(store)
         listingRoutes(store)
         listingV2Routes(store)
         inventoryRoutes(store)

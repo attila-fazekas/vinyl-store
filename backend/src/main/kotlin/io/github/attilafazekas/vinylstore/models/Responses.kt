@@ -313,6 +313,32 @@ data class UserStatsV2(
 )
 
 @Serializable
+data class CartItemResponse(
+    @Description("The listing added to the cart.")
+    val listing: Listing,
+    @Description("Quantity of this listing in the cart.")
+    val quantity: Int,
+    @Description("Quantity currently available for purchase (total minus reserved).")
+    val availableQuantity: Int,
+    @Description("Subtotal for this line (listing price multiplied by quantity).")
+    val subtotal: Double,
+    @Description("Timestamp when this item was added to the cart in ISO 8601 format with UTC timezone (e.g., '2025-01-10T14:30:45.123Z').")
+    val createdAt: String,
+    @Description("Timestamp when this cart item was last updated in ISO 8601 format with UTC timezone (e.g., '2025-01-10T14:30:45.123Z').")
+    val updatedAt: String,
+)
+
+@Serializable
+data class CartResponse(
+    @Description("Array of cart line items with embedded listing details and availability.")
+    val items: List<CartItemResponse>,
+    @Description("Total number of line items in the cart.")
+    val total: Int,
+    @Description("Currency code shared by all line items in the cart. Null if the cart is empty.")
+    val currency: String? = null,
+)
+
+@Serializable
 data class UserV2Response(
     @Description("Unique identifier for the user.")
     val id: Uuid,
