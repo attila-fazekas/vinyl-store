@@ -20,6 +20,7 @@ import io.github.attilafazekas.vinylstore.enums.PaymentChargeStatus
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.post
@@ -35,13 +36,12 @@ private const val PAYMENT_CLIENT_TIMEOUT_MILLIS = 5_000L
 
 class PaymentClient(
     private val baseUrl: String,
-    private val httpClient: HttpClient = createHttpClient(),
+    private val client: HttpClient = createHttpClient(),
 ) {
     suspend fun charge(request: PaymentChargeRequest): PaymentChargeOutcome =
         try {
             val response =
-                httpClient.post("$baseUrl/payments") {
-                    contentType(ContentType.Application.Json)
+                client.post("$baseUrl/payments") {
                     setBody(request)
                 }
             if (response.status.isSuccess()) {
@@ -79,6 +79,9 @@ private fun createHttpClient(): HttpClient =
         expectSuccess = false
         install(ContentNegotiation) {
             json(Json { ignoreUnknownKeys = true })
+        }
+        install(DefaultRequest) {
+            contentType(ContentType.Application.Json)
         }
         install(HttpTimeout) {
             requestTimeoutMillis = PAYMENT_CLIENT_TIMEOUT_MILLIS

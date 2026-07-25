@@ -83,11 +83,9 @@ fun startVinylStoreServer(autoReset: Boolean = false) =
 
 fun Application.vinylStoreApplication(
     store: VinylStoreRepository = VinylStoreRepository(DatabaseFactory.create()),
+    paymentClient: PaymentClient = PaymentClient(System.getenv("PAYMENT_SERVICE_URL") ?: "http://localhost:9090"),
     autoReset: Boolean = false,
 ) {
-    val paymentServiceUrl = System.getenv("PAYMENT_SERVICE_URL") ?: "http://localhost:9090"
-    val paymentClient = PaymentClient(paymentServiceUrl)
-
     configureOpenApi()
     configurePlugins(store)
 
