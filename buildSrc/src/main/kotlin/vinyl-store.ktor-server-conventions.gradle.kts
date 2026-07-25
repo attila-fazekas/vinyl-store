@@ -17,7 +17,6 @@
 plugins {
     id("vinyl-store.kotlin-conventions")
     id("org.jetbrains.kotlin.plugin.serialization")
-    id("com.google.devtools.ksp")
 }
 
 dependencies {
@@ -29,11 +28,7 @@ dependencies {
     implementation("io.ktor:ktor-server-auth-jwt-jvm:_")
     implementation("io.ktor:ktor-server-content-negotiation-jvm:_")
     implementation("io.ktor:ktor-server-core-jvm:_")
-    implementation("io.ktor:ktor-server-html-builder-jvm:_")
     implementation("io.ktor:ktor-server-netty-jvm:_")
     implementation("io.ktor:ktor-server-status-pages:_")
-    implementation("org.komapper:komapper-starter-r2dbc:_")
-    implementation("org.komapper:komapper-dialect-postgresql-r2dbc:_")
-    ksp("org.komapper:komapper-processor:_")
     testImplementation("io.ktor:ktor-server-test-host-jvm:_")
 }
