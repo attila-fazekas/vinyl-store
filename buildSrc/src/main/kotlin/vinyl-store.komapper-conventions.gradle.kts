@@ -14,26 +14,13 @@
  * limitations under the License.
  */
 
-import org.gradle.kotlin.dsl.withType
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
-    id("vinyl-store.detekt-conventions")
-    id("vinyl-store.komapper-conventions")
-    id("vinyl-store.ktlint-conventions")
-    id("vinyl-store.ktor-server-conventions")
-    id("vinyl-store.test-conventions")
-    id("io.ktor.plugin") version "3.4.0"
+    id("vinyl-store.kotlin-conventions")
+    id("com.google.devtools.ksp")
 }
 
-application {
-    mainClass.set("io.github.attilafazekas.vinylstore.ApplicationKt")
-}
-
-tasks.withType<KotlinCompile>().configureEach {
-    compilerOptions {
-        optIn.addAll(
-            "kotlin.uuid.ExperimentalUuidApi",
-        )
-    }
+dependencies {
+    implementation("org.komapper:komapper-starter-r2dbc:_")
+    implementation("org.komapper:komapper-dialect-postgresql-r2dbc:_")
+    ksp("org.komapper:komapper-processor:_")
 }

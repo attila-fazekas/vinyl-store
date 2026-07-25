@@ -29,17 +29,6 @@ application {
     mainClass.set("io.github.attilafazekas.paymentservice.ApplicationKt")
 }
 
-dependencies {
-    constraints {
-        implementation("com.fasterxml.jackson.core:jackson-databind:2.22.1") {
-            because("CVE-2026-54512 and CVE-2026-54513 are fixed in 2.22.1")
-        }
-        implementation("tools.jackson.core:jackson-databind:3.1.4") {
-            because("CVE-2026-54512 and CVE-2026-54513 are fixed in 3.1.4")
-        }
-    }
-}
-
 tasks.withType<KotlinCompile>().configureEach {
     compilerOptions {
         optIn.addAll(
