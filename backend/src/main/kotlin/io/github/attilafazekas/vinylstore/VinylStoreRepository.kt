@@ -23,12 +23,16 @@ import io.github.attilafazekas.vinylstore.db.genre
 import io.github.attilafazekas.vinylstore.db.inventory
 import io.github.attilafazekas.vinylstore.db.label
 import io.github.attilafazekas.vinylstore.db.listing
+import io.github.attilafazekas.vinylstore.db.order
+import io.github.attilafazekas.vinylstore.db.orderItem
 import io.github.attilafazekas.vinylstore.db.user
 import io.github.attilafazekas.vinylstore.db.vinyl
 import io.github.attilafazekas.vinylstore.db.vinylArtist
 import io.github.attilafazekas.vinylstore.db.vinylGenre
 import io.github.attilafazekas.vinylstore.enums.AddressType
+import io.github.attilafazekas.vinylstore.enums.DeletionResult
 import io.github.attilafazekas.vinylstore.enums.ListingStatus
+import io.github.attilafazekas.vinylstore.enums.OrderStatus
 import io.github.attilafazekas.vinylstore.enums.Role
 import io.github.attilafazekas.vinylstore.models.Address
 import io.github.attilafazekas.vinylstore.models.Artist
@@ -37,6 +41,8 @@ import io.github.attilafazekas.vinylstore.models.Genre
 import io.github.attilafazekas.vinylstore.models.Inventory
 import io.github.attilafazekas.vinylstore.models.Label
 import io.github.attilafazekas.vinylstore.models.Listing
+import io.github.attilafazekas.vinylstore.models.Order
+import io.github.attilafazekas.vinylstore.models.OrderItem
 import io.github.attilafazekas.vinylstore.models.User
 import io.github.attilafazekas.vinylstore.models.Vinyl
 import io.github.attilafazekas.vinylstore.models.VinylArtist
@@ -51,10 +57,20 @@ import kotlin.uuid.Uuid
 
 private val logger = KotlinLogging.logger {}
 
-enum class DeletionResult {
-    Deleted,
-    NotFound,
-    Conflict,
+sealed interface OrderCreationResult {
+    data class Success(
+        val order: Order,
+    ) : OrderCreationResult
+
+    data class InsufficientStock(
+        val listingId: Uuid,
+    ) : OrderCreationResult
+
+    data object EmptyCart : OrderCreationResult
+
+    data object MixedCurrency : OrderCreationResult
+
+    data object ListingUnavailable : OrderCreationResult
 }
 
 class VinylStoreRepository(
@@ -83,6 +99,8 @@ class VinylStoreRepository(
                 Meta.vinylArtist,
                 Meta.vinylGenre,
                 Meta.cartItem,
+                Meta.order,
+                Meta.orderItem,
             )
         }
         db.runQuery { QueryDsl.executeScript("CREATE UNIQUE INDEX IF NOT EXISTS users_email_idx ON users (email)") }
@@ -94,6 +112,9 @@ class VinylStoreRepository(
 
     suspend fun resetToBootstrap() {
         db.withTransaction {
+            db.runQuery { QueryDsl.delete(Meta.orderItem).all() }
+            db.runQuery { QueryDsl.delete(Meta.order).all() }
+            db.runQuery { QueryDsl.delete(Meta.cartItem).all() }
             db.runQuery { QueryDsl.delete(Meta.inventory).all() }
             db.runQuery { QueryDsl.delete(Meta.listing).all() }
             db.runQuery { QueryDsl.delete(Meta.vinylArtist).all() }
@@ -728,9 +749,20 @@ class VinylStoreRepository(
         }
 
     suspend fun hasActiveOrders(listingId: Uuid): Boolean {
-        // TODO: Implement when orders are added
-        // For now, return false to allow deletion
-        return false
+        val orderIds =
+            db
+                .runQuery { QueryDsl.from(Meta.orderItem).where { Meta.orderItem.listingId eq listingId } }
+                .map { it.orderId }
+                .distinct()
+        if (orderIds.isEmpty()) return false
+
+        return db
+            .runQuery {
+                QueryDsl.from(Meta.order).where {
+                    Meta.order.id inList orderIds
+                    Meta.order.status inList listOf(OrderStatus.Pending, OrderStatus.Paid)
+                }
+            }.isNotEmpty()
     }
 
     suspend fun getInventoryByListingId(listingId: Uuid): Inventory? =
@@ -816,4 +848,126 @@ class VinylStoreRepository(
     suspend fun clearCart(userId: Uuid) {
         db.runQuery { QueryDsl.delete(Meta.cartItem).where { Meta.cartItem.userId eq userId } }
     }
+
+    suspend fun createOrder(
+        userId: Uuid,
+        shippingAddress: Address,
+        items: List<CartItem>,
+    ): OrderCreationResult {
+        if (items.isEmpty()) return OrderCreationResult.EmptyCart
+
+        return db.withTransaction {
+            val orderId = Uuid.random()
+            var currency: String? = null
+            val orderItems = mutableListOf<OrderItem>()
+
+            for (cartItem in items) {
+                val listing = getListingById(cartItem.listingId)
+                if (listing == null || listing.status != ListingStatus.Published) {
+                    return@withTransaction OrderCreationResult.ListingUnavailable
+                }
+                if (currency == null) {
+                    currency = listing.currency
+                } else if (currency != listing.currency) {
+                    return@withTransaction OrderCreationResult.MixedCurrency
+                }
+
+                val vinyl = getVinylById(listing.vinylId) ?: return@withTransaction OrderCreationResult.ListingUnavailable
+
+                val inventory = getInventoryByListingId(cartItem.listingId)
+                if (inventory == null || inventory.availableQuantity < cartItem.quantity) {
+                    return@withTransaction OrderCreationResult.InsufficientStock(cartItem.listingId)
+                }
+                updateInventory(cartItem.listingId, null, inventory.reservedQuantity + cartItem.quantity)
+
+                orderItems +=
+                    OrderItem(
+                        id = Uuid.random(),
+                        orderId = orderId,
+                        listingId = cartItem.listingId,
+                        title = vinyl.title,
+                        unitPrice = listing.price,
+                        currency = listing.currency,
+                        quantity = cartItem.quantity,
+                    )
+            }
+
+            val now = TimestampUtil.now()
+            val order =
+                Order(
+                    id = orderId,
+                    userId = userId,
+                    status = OrderStatus.Pending,
+                    totalAmount = orderItems.sumOf { it.unitPrice * it.quantity },
+                    currency = checkNotNull(currency),
+                    shippingFullName = shippingAddress.fullName,
+                    shippingStreet = shippingAddress.street,
+                    shippingCity = shippingAddress.city,
+                    shippingPostalCode = shippingAddress.postalCode,
+                    shippingCountry = shippingAddress.country,
+                    addressId = shippingAddress.id,
+                    createdAt = now,
+                    updatedAt = now,
+                )
+            val insertedOrder = db.runQuery { QueryDsl.insert(Meta.order).single(order) }
+            db.runQuery { QueryDsl.insert(Meta.orderItem).multiple(orderItems) }
+            clearCart(userId)
+            OrderCreationResult.Success(insertedOrder)
+        }
+    }
+
+    suspend fun getOrderById(id: Uuid): Order? = db.runQuery { QueryDsl.from(Meta.order).where { Meta.order.id eq id }.firstOrNull() }
+
+    suspend fun getOrderItems(orderId: Uuid): List<OrderItem> =
+        db.runQuery {
+            QueryDsl
+                .from(Meta.orderItem)
+                .where { Meta.orderItem.orderId eq orderId }
+                .orderBy(Meta.orderItem.id)
+        }
+
+    suspend fun getOrdersByUserId(userId: Uuid): List<Order> =
+        db.runQuery {
+            QueryDsl
+                .from(Meta.order)
+                .where { Meta.order.userId eq userId }
+                .orderBy(Meta.order.createdAt)
+        }
+
+    suspend fun getAllOrders(): List<Order> = db.runQuery { QueryDsl.from(Meta.order).orderBy(Meta.order.createdAt) }
+
+    suspend fun markOrderPaid(id: Uuid): Order? =
+        db.withTransaction {
+            val order = getOrderById(id)
+            if (order == null || order.status != OrderStatus.Pending) return@withTransaction null
+
+            getOrderItems(id).forEach { item ->
+                val listingId = item.listingId ?: return@forEach
+                val inventory = getInventoryByListingId(listingId) ?: return@forEach
+                updateInventory(listingId, inventory.totalQuantity - item.quantity, inventory.reservedQuantity - item.quantity)
+            }
+
+            db.runQuery { QueryDsl.update(Meta.order).single(order.copy(status = OrderStatus.Paid, updatedAt = TimestampUtil.now())) }
+        }
+
+    suspend fun markOrderFailed(id: Uuid): Order? = transitionPendingOrder(id, OrderStatus.Failed)
+
+    suspend fun cancelOrder(id: Uuid): Order? = transitionPendingOrder(id, OrderStatus.Cancelled)
+
+    private suspend fun transitionPendingOrder(
+        id: Uuid,
+        newStatus: OrderStatus,
+    ): Order? =
+        db.withTransaction {
+            val order = getOrderById(id)
+            if (order == null || order.status != OrderStatus.Pending) return@withTransaction null
+
+            getOrderItems(id).forEach { item ->
+                val listingId = item.listingId ?: return@forEach
+                val inventory = getInventoryByListingId(listingId) ?: return@forEach
+                updateInventory(listingId, null, inventory.reservedQuantity - item.quantity)
+            }
+
+            db.runQuery { QueryDsl.update(Meta.order).single(order.copy(status = newStatus, updatedAt = TimestampUtil.now())) }
+        }
 }

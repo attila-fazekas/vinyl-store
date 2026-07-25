@@ -23,6 +23,8 @@ import io.github.attilafazekas.vinylstore.models.Genre
 import io.github.attilafazekas.vinylstore.models.Inventory
 import io.github.attilafazekas.vinylstore.models.Label
 import io.github.attilafazekas.vinylstore.models.Listing
+import io.github.attilafazekas.vinylstore.models.Order
+import io.github.attilafazekas.vinylstore.models.OrderItem
 import io.github.attilafazekas.vinylstore.models.User
 import io.github.attilafazekas.vinylstore.models.Vinyl
 import io.github.attilafazekas.vinylstore.models.VinylArtist
@@ -100,4 +102,16 @@ data class VinylGenreDef(
 data class CartItemDef(
     @KomapperId val userId: Nothing,
     @KomapperId val listingId: Nothing,
+)
+
+@KomapperEntityDef(Order::class)
+@KomapperTable(name = "orders")
+data class OrderDef(
+    @KomapperId val id: Nothing,
+)
+
+@KomapperEntityDef(OrderItem::class)
+@KomapperTable(name = "order_items")
+data class OrderItemDef(
+    @KomapperId val id: Nothing,
 )

@@ -19,6 +19,7 @@ package io.github.attilafazekas.vinylstore
 import io.github.attilafazekas.vinylstore.db.DatabaseFactory
 import io.github.attilafazekas.vinylstore.models.ErrorResponse
 import io.github.attilafazekas.vinylstore.models.UserPrincipal
+import io.github.attilafazekas.vinylstore.payments.PaymentClient
 import io.github.attilafazekas.vinylstore.routes.adminRoutes
 import io.github.attilafazekas.vinylstore.routes.healthRoutes
 import io.github.attilafazekas.vinylstore.routes.v1.addressRoutes
@@ -29,6 +30,7 @@ import io.github.attilafazekas.vinylstore.routes.v1.genreRoutes
 import io.github.attilafazekas.vinylstore.routes.v1.inventoryRoutes
 import io.github.attilafazekas.vinylstore.routes.v1.labelRoutes
 import io.github.attilafazekas.vinylstore.routes.v1.listingRoutes
+import io.github.attilafazekas.vinylstore.routes.v1.orderRoutes
 import io.github.attilafazekas.vinylstore.routes.v1.userRoutes
 import io.github.attilafazekas.vinylstore.routes.v1.vinylRoutes
 import io.github.attilafazekas.vinylstore.routes.v2.authV2Routes
@@ -83,6 +85,9 @@ fun Application.vinylStoreApplication(
     store: VinylStoreRepository = VinylStoreRepository(DatabaseFactory.create()),
     autoReset: Boolean = false,
 ) {
+    val paymentServiceUrl = System.getenv("PAYMENT_SERVICE_URL") ?: "http://localhost:9090"
+    val paymentClient = PaymentClient(paymentServiceUrl)
+
     configureOpenApi()
     configurePlugins(store)
 
@@ -112,6 +117,7 @@ fun Application.vinylStoreApplication(
         userRoutes(store)
         addressRoutes(store)
         cartRoutes(store)
+        orderRoutes(store, paymentClient)
         listingRoutes(store)
         listingV2Routes(store)
         inventoryRoutes(store)

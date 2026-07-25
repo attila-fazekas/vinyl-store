@@ -32,13 +32,13 @@ import io.ktor.server.routing.routing
 import kotlinx.serialization.json.Json
 
 fun main() {
-    println("Payment Service API running on http://localhost:8080")
-    println("Swagger UI: http://localhost:8080/swagger")
+    println("Payment Service API running on http://localhost:9090")
+    println("Swagger UI: http://localhost:9090/swagger")
     startPaymentServiceServer()
 }
 
 fun startPaymentServiceServer() =
-    embeddedServer(Netty, port = 8080, watchPaths = listOf("classes")) {
+    embeddedServer(Netty, port = 9090, watchPaths = listOf("classes")) {
         paymentServiceApplication()
     }.start(wait = true)
 
@@ -77,7 +77,7 @@ private fun Application.configureOpenApi() {
                 """.trimIndent()
         }
         server {
-            url = "http://localhost:8080"
+            url = "http://localhost:9090"
             description = "Development Server"
         }
     }

@@ -339,6 +339,22 @@ data class CartResponse(
 )
 
 @Serializable
+data class OrderResponse(
+    @Description("The order information including status, total amount, and shipping details.")
+    val order: Order,
+    @Description("The line items belonging to this order, snapshotted at order creation.")
+    val items: List<OrderItem>,
+)
+
+@Serializable
+data class OrdersResponse(
+    @Description("Array of orders, each with its line items.")
+    val orders: List<OrderResponse>,
+    @Description("Total number of orders matching the query.")
+    val total: Int,
+)
+
+@Serializable
 data class UserV2Response(
     @Description("Unique identifier for the user.")
     val id: Uuid,
