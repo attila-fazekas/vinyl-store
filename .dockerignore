@@ -6,7 +6,7 @@
 .aiassistant
 .DS_Store
 build
-backend/build
+store-service/build
 buildSrc/build
 buildSrc/.gradle
 *.md

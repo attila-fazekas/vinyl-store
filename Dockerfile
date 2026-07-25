@@ -9,16 +9,16 @@ COPY settings.gradle.kts versions.properties ./
 COPY buildSrc/build.gradle.kts ./buildSrc/build.gradle.kts
 COPY buildSrc/settings.gradle.kts ./buildSrc/settings.gradle.kts
 COPY buildSrc/src ./buildSrc/src
-COPY backend/build.gradle.kts ./backend/build.gradle.kts
+COPY store-service/build.gradle.kts ./store-service/build.gradle.kts
 COPY payment-service/build.gradle.kts ./payment-service/build.gradle.kts
 
 # Warm the dependency cache as its own layer — doesn't need app source,
 # so this layer is reused whenever only source changes
-RUN ./gradlew :backend:dependencies --no-daemon
+RUN ./gradlew :store-service:dependencies --no-daemon
 
 # Now copy the actual source and build the fat jar
-COPY backend/src/main ./backend/src/main
-RUN ./gradlew :backend:buildFatJar --no-daemon
+COPY store-service/src/main ./store-service/src/main
+RUN ./gradlew :store-service:buildFatJar --no-daemon
 
 # ---- Runtime stage ----
 FROM eclipse-temurin:21-jre-jammy AS runtime
@@ -28,7 +28,7 @@ WORKDIR /app
 RUN useradd --create-home --shell /bin/false appuser
 USER appuser
 
-COPY --from=build /app/backend/build/libs/*-all.jar app.jar
+COPY --from=build /app/store-service/build/libs/*-all.jar app.jar
 
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
