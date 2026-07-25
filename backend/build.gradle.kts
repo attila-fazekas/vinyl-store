@@ -31,6 +31,10 @@ application {
     mainClass.set("io.github.attilafazekas.vinylstore.ApplicationKt")
 }
 
+dependencies {
+    testImplementation("org.wiremock:wiremock:_")
+}
+
 tasks.withType<KotlinCompile>().configureEach {
     compilerOptions {
         optIn.addAll(
