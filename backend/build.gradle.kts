@@ -21,6 +21,7 @@ plugins {
     id("vinyl-store.detekt-conventions")
     id("vinyl-store.komapper-conventions")
     id("vinyl-store.ktlint-conventions")
+    id("vinyl-store.ktor-client-conventions")
     id("vinyl-store.ktor-server-conventions")
     id("vinyl-store.test-conventions")
     id("io.ktor.plugin") version "3.4.0"
