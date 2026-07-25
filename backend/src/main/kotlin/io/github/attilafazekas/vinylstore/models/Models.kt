@@ -19,6 +19,7 @@ package io.github.attilafazekas.vinylstore.models
 import io.github.attilafazekas.vinylstore.Email
 import io.github.attilafazekas.vinylstore.enums.AddressType
 import io.github.attilafazekas.vinylstore.enums.ListingStatus
+import io.github.attilafazekas.vinylstore.enums.OrderStatus
 import io.github.attilafazekas.vinylstore.enums.Role
 import io.github.smiley4.schemakenerator.core.annotations.Description
 import kotlinx.serialization.EncodeDefault
@@ -185,4 +186,52 @@ data class CartItem(
     val createdAt: String,
     @Description("Timestamp when this cart item was last updated in ISO 8601 format with UTC timezone (e.g., '2025-01-10T14:30:45.123Z').")
     val updatedAt: String,
+)
+
+@Serializable
+data class Order(
+    @Description("Unique identifier for the order.")
+    val id: Uuid,
+    @Description("ID of the user who placed the order.")
+    val userId: Uuid,
+    @Description("Current status of the order (PENDING, PAID, FAILED, or CANCELLED).")
+    val status: OrderStatus,
+    @Description("Total amount charged for the order, summed from its line items.")
+    val totalAmount: Double,
+    @Description("The currency code shared by all line items in the order.")
+    val currency: String,
+    @Description("Snapshot of the recipient full name from the shipping address at order creation.")
+    val shippingFullName: String,
+    @Description("Snapshot of the street address from the shipping address at order creation.")
+    val shippingStreet: String,
+    @Description("Snapshot of the city from the shipping address at order creation.")
+    val shippingCity: String,
+    @Description("Snapshot of the postal code from the shipping address at order creation.")
+    val shippingPostalCode: String,
+    @Description("Snapshot of the country from the shipping address at order creation.")
+    val shippingCountry: String,
+    @Description("ID of the address the order was shipped to. Null if the address was later deleted.")
+    val addressId: Uuid?,
+    @Description("Timestamp when the order was created in ISO 8601 format with UTC timezone (e.g., '2025-01-10T14:30:45.123Z').")
+    val createdAt: String,
+    @Description("Timestamp when the order was last updated in ISO 8601 format with UTC timezone (e.g., '2025-01-10T14:30:45.123Z').")
+    val updatedAt: String,
+)
+
+@Serializable
+data class OrderItem(
+    @Description("Unique identifier for the order line item.")
+    val id: Uuid,
+    @Description("ID of the order this line item belongs to.")
+    val orderId: Uuid,
+    @Description("ID of the listing this line item was created from. Null if the listing was later deleted.")
+    val listingId: Uuid?,
+    @Description("Snapshot of the vinyl title at order creation.")
+    val title: String,
+    @Description("Snapshot of the listing's unit price at order creation.")
+    val unitPrice: Double,
+    @Description("Snapshot of the listing's currency at order creation.")
+    val currency: String,
+    @Description("Quantity of this listing purchased.")
+    val quantity: Int,
 )

@@ -20,6 +20,7 @@ import io.github.attilafazekas.vinylstore.BAD_REQUEST
 import io.github.attilafazekas.vinylstore.CONFLICT
 import io.github.attilafazekas.vinylstore.FORBIDDEN
 import io.github.attilafazekas.vinylstore.NOT_FOUND
+import io.github.attilafazekas.vinylstore.SERVICE_UNAVAILABLE
 import io.github.attilafazekas.vinylstore.UNAUTHORIZED
 import io.github.attilafazekas.vinylstore.VALIDATION_ERROR
 import io.github.attilafazekas.vinylstore.models.ErrorResponse
@@ -88,6 +89,16 @@ fun ResponsesConfig.conflictExample(vararg examples: Pair<String, String>) {
                 example(exampleName) {
                     value = ErrorResponse(CONFLICT, errorMessage)
                 }
+            }
+        }
+    }
+}
+
+fun ResponsesConfig.serviceUnavailableExample(message: String) {
+    code(HttpStatusCode.ServiceUnavailable) {
+        body<ErrorResponse> {
+            example(message) {
+                value = ErrorResponse(SERVICE_UNAVAILABLE, message)
             }
         }
     }

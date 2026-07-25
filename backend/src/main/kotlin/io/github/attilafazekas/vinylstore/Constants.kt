@@ -22,6 +22,7 @@ const val BAD_REQUEST = "Bad Request"
 const val CONFLICT = "Conflict"
 const val FORBIDDEN = "Forbidden"
 const val NOT_FOUND = "Not Found"
+const val SERVICE_UNAVAILABLE = "Service Unavailable"
 const val UNAUTHORIZED = "Unauthorized"
 const val VALIDATION_ERROR = "Validation Error"
 

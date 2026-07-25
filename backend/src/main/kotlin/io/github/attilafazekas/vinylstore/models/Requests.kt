@@ -208,3 +208,15 @@ data class UpdateCartItemRequest(
     @Description("The new quantity for this cart item. Must be at least 1.")
     val quantity: Int,
 )
+
+@Serializable
+data class CreateOrderRequest(
+    @Description("ID of the caller's address to ship the order to.")
+    val shippingAddressId: Uuid,
+)
+
+@Serializable
+data class PayOrderRequest(
+    @Description("Opaque token identifying the payment method to charge (e.g., 'tok_visa').")
+    val paymentMethod: String,
+)
