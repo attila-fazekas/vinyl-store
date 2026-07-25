@@ -11,6 +11,11 @@
 
 A comprehensive REST API server for managing a vinyl record store, featuring catalog management, inventory tracking, user authentication, and listings. Built with Kotlin and Ktor, this API provides a realistic testing environment for developers and testers.
 
+The project consists of two services:
+
+- **store-service** — the main Vinyl Store API described below
+- **payment-service** — a contract-only payment processing API modeling how store-service integrates with an external payment provider (see [Payment Service](#payment-service))
+
 ## Key Features
 
 - **JWT-based Authentication** with role-based access control (CUSTOMER, STAFF, ADMIN)
@@ -48,7 +53,7 @@ The simplest way to run the full stack (API + PostgreSQL) is:
 docker compose up --build
 ```
 
-This starts a `postgres` service and the `backend` service together; the API will be available at [http://localhost:8080](http://localhost:8080). Data persists in a named Docker volume across `backend` restarts. To wipe all data (including the volume), run `docker compose down -v`.
+This starts a `postgres` service, the `store-service` service, and the `payment-service` together; the API will be available at [http://localhost:8080](http://localhost:8080) and the payment service at [http://localhost:9090](http://localhost:9090). Data persists in a named Docker volume across `store-service` restarts. To wipe all data (including the volume), run `docker compose down -v`.
 
 ### Running the Server Locally
 
@@ -60,7 +65,16 @@ To run the server directly with Gradle, you need a reachable PostgreSQL instance
 - `POSTGRES_USER` (default: `vinylstore`)
 - `POSTGRES_PASSWORD` (default: `vinylstore`)
 
-Then run `./gradlew :backend:run` command in Terminal to start the server.
+Then run `./gradlew :store-service:run` command in Terminal to start the server.
 
 ### Enabling Auto-Reset
-To enable auto-reset, pass `--auto-reset` argument to the server: `./gradlew :backend:run --args="--auto-reset"`
+To enable auto-reset, pass `--auto-reset` argument to the server: `./gradlew :store-service:run --args="--auto-reset"`
+
+## Payment Service
+
+`payment-service` is a contract-only API that models how store-service integrates with an external payment provider. It is not implemented yet — every endpoint documents its intended request and response shape, but handlers currently respond with `501 Not Implemented`. The published contract is intended to be stubbed with WireMock by calling services (such as `store-service`) during testing.
+
+- **Endpoints**: `POST /payments` (charge a payment), `GET /payments/{paymentId}` (retrieve a payment), `GET /health` (health check)
+- **OpenAPI/Swagger Documentation** at [http://localhost:9090/swagger](http://localhost:9090/swagger)
+
+Run it directly with `./gradlew :payment-service:run`, or via `docker compose up --build`. The `store-service` service points at it through the `PAYMENT_SERVICE_URL` environment variable (default: `http://payment-service:9090` in Docker Compose).

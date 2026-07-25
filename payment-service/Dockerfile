@@ -9,7 +9,7 @@ COPY settings.gradle.kts versions.properties ./
 COPY buildSrc/build.gradle.kts ./buildSrc/build.gradle.kts
 COPY buildSrc/settings.gradle.kts ./buildSrc/settings.gradle.kts
 COPY buildSrc/src ./buildSrc/src
-COPY backend/build.gradle.kts ./backend/build.gradle.kts
+COPY store-service/build.gradle.kts ./store-service/build.gradle.kts
 COPY payment-service/build.gradle.kts ./payment-service/build.gradle.kts
 
 # Warm the dependency cache as its own layer — doesn't need app source,

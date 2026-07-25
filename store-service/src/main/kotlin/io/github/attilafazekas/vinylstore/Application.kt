@@ -37,6 +37,7 @@ import io.github.attilafazekas.vinylstore.routes.v2.authV2Routes
 import io.github.attilafazekas.vinylstore.routes.v2.inventoryV2Routes
 import io.github.attilafazekas.vinylstore.routes.v2.listingV2Routes
 import io.github.attilafazekas.vinylstore.routes.v2.vinylV2Routes
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.github.smiley4.ktoropenapi.OpenApi
 import io.github.smiley4.ktoropenapi.config.AuthScheme
 import io.github.smiley4.ktoropenapi.config.AuthType
@@ -57,6 +58,8 @@ import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.response.respond
 import io.ktor.server.routing.routing
+import io.r2dbc.spi.R2dbcException
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import kotlin.uuid.Uuid
@@ -64,6 +67,8 @@ import kotlin.uuid.Uuid
 const val USER_AUTH = "UserAuth"
 const val V1 = "v1"
 const val V2 = "v2"
+
+private val logger = KotlinLogging.logger {}
 
 fun main(args: Array<String>) {
     val autoReset = args.contains("--auto-reset")
@@ -89,7 +94,7 @@ fun Application.vinylStoreApplication(
     configureOpenApi()
     configurePlugins(store)
 
-    runBlocking { store.initialize() }
+    runBlocking { initializeWithRetry(store) }
 
     // Auto-reset checker - only if enabled
     if (autoReset) {
@@ -127,6 +132,23 @@ fun Application.vinylStoreApplication(
         vinylV2Routes(store)
         adminRoutes(store)
     }
+}
+
+private suspend fun initializeWithRetry(
+    store: VinylStoreRepository,
+    maxAttempts: Int = 5,
+    retryDelayMs: Long = 2_000,
+) {
+    repeat(maxAttempts - 1) { attempt ->
+        try {
+            store.initialize()
+            return
+        } catch (e: R2dbcException) {
+            logger.warn(e) { "Database initialization failed (attempt ${attempt + 1}/$maxAttempts); retrying in ${retryDelayMs}ms" }
+            delay(retryDelayMs)
+        }
+    }
+    store.initialize()
 }
 
 private fun Application.configureOpenApi() {

@@ -13,5 +13,5 @@ refreshVersions {
     }
 }
 
-include("backend")
+include("store-service")
 include("payment-service")
