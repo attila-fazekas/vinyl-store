@@ -59,7 +59,6 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.r2dbc.spi.R2dbcDataIntegrityViolationException
 import kotlin.text.toBooleanStrictOrNull
-import kotlin.text.uppercase
 import kotlin.uuid.Uuid
 
 fun Route.userRoutes(store: VinylStoreRepository) {
@@ -77,12 +76,7 @@ fun Route.userRoutes(store: VinylStoreRepository) {
                     }
 
                 roleParam?.let { role ->
-                    val roleEnum =
-                        try {
-                            Role.valueOf(role.uppercase())
-                        } catch (_: IllegalArgumentException) {
-                            null
-                        }
+                    val roleEnum = Role.entries.firstOrNull { it.name.equals(role, ignoreCase = true) }
                     roleEnum?.let {
                         users = users.filter { it.role == roleEnum }
                     }
