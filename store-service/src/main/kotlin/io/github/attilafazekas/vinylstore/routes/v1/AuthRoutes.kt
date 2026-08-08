@@ -165,7 +165,7 @@ private fun getCurrentUserDocumentation(): RouteConfig.() -> Unit =
             Returns basic user profile information including:
             - User ID
             - Email address
-            - Assigned role (CUSTOMER, STAFF, or ADMIN)
+            - Assigned role (Customer, Stuff, or Admin)
             - Account active status
 
             Requires a valid JWT token in the Authorization header.
@@ -213,7 +213,7 @@ private fun registerUserDocumentation(): RouteConfig.() -> Unit =
             Registration requirements:
             - Email must be unique and contain an '@' symbol
             - Password must be at least 8 characters long
-            - New users are automatically assigned the CUSTOMER role
+            - New users are automatically assigned the Customer role
             - Account is active by default
 
             Upon successful registration, returns a JWT token for immediate authentication along with the user details.

@@ -253,7 +253,7 @@ private fun listListingsDocumentation(): RouteConfig.() -> Unit =
             This endpoint provides comprehensive access to the store's catalog with powerful filtering capabilities:
 
             **Filtering Options:**
-            - **status**: Filter by listing status (DRAFT, PUBLISHED, ARCHIVED)
+            - **status**: Filter by listing status (Draft, Published, Archived)
             - **minPrice/maxPrice**: Filter by price range in specified currency
             - **artist**: Filter by artist name (partial match) or exact artist ID
             - **genre**: Filter by genre name (partial match)
@@ -272,7 +272,7 @@ private fun listListingsDocumentation(): RouteConfig.() -> Unit =
         tags = listOf("listings")
         request {
             queryParameter<String>("status") {
-                description = "Filter by listing status (DRAFT, PUBLISHED, ARCHIVED)"
+                description = "Filter by listing status (Draft, Published, Archived)"
                 required = false
             }
             queryParameter<Double>("minPrice") {
@@ -478,7 +478,7 @@ private fun updateListingDocumentation(): RouteConfig.() -> Unit =
 
             **Updatable Fields:**
             - **price**: Change the listing price (must be positive if provided)
-            - **status**: Change listing status (DRAFT, PUBLISHED, ARCHIVED)
+            - **status**: Change listing status (Draft, Published, Archived)
 
             **Partial Update Support:**
             All fields are optional. Only fields explicitly provided in the request will be updated.
@@ -491,14 +491,14 @@ private fun updateListingDocumentation(): RouteConfig.() -> Unit =
 
             **Use Cases:**
             - Adjust pricing for sales or market changes
-            - Archive discontinued items (status = ARCHIVED)
-            - Draft unpublished listings for later review (status = DRAFT)
-            - Publish drafted listings (status = PUBLISHED)
+            - Archive discontinued items (status = Archived)
+            - Draft unpublished listings for later review (status = Draft)
+            - Publish drafted listings (status = Published)
 
             **Access Requirements:**
             - Requires authentication via JWT token
-            - Only ADMIN and STAFF roles can update listings
-            - Returns 403 Forbidden for CUSTOMER role
+            - Only Admin and Stuff roles can update listings
+            - Returns 403 Forbidden for Customer role
             """.trimIndent()
         tags = listOf("listings")
         request {
@@ -544,7 +544,7 @@ private fun updateListingDocumentation(): RouteConfig.() -> Unit =
             }
             badRequestExample("Invalid listing UUID")
             notAuthenticatedExample()
-            insufficientPermissionsExample("Only ADMIN and STAFF roles can update listings")
+            insufficientPermissionsExample("Only Admin and Stuff roles can update listings")
             notFoundExample("Listing not found")
         }
     }
@@ -559,7 +559,7 @@ private fun deleteListingDocumentation(): RouteConfig.() -> Unit =
 
             **Important Constraints:**
             - Cannot delete listings with active or pending orders
-            - Listings with order history should be archived instead (set status to ARCHIVED)
+            - Listings with order history should be archived instead (set status to Archived)
             - Deletion is permanent and cannot be undone
             - Associated inventory record will also be removed
 
@@ -570,12 +570,12 @@ private fun deleteListingDocumentation(): RouteConfig.() -> Unit =
             **Best Practices:**
             - Consider archiving instead of deleting for historical records
             - Use DELETE only for listings created in error
-            - Archive listings (status = ARCHIVED) to preserve order history
+            - Archive listings (status = Archived) to preserve order history
 
             **Access Requirements:**
             - Requires authentication via JWT token
-            - Only ADMIN and STAFF roles can delete listings
-            - Returns 403 Forbidden for CUSTOMER role
+            - Only Admin and Stuff roles can delete listings
+            - Returns 403 Forbidden for Customer role
             """.trimIndent()
         tags = listOf("listings")
         request {
@@ -592,7 +592,7 @@ private fun deleteListingDocumentation(): RouteConfig.() -> Unit =
             }
             badRequestExample("Invalid listing UUID")
             notAuthenticatedExample()
-            insufficientPermissionsExample("Only ADMIN and STAFF roles can delete listings")
+            insufficientPermissionsExample("Only Admin and Stuff roles can delete listings")
             notFoundExample("Listing not found")
             conflictExample("Listing has active orders" to "Cannot delete listing with active orders. Archive it instead.")
         }

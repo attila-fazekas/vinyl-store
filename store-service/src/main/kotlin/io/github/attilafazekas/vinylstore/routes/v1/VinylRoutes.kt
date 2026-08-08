@@ -313,7 +313,7 @@ private fun listVinylsDocumentation(): RouteConfig.() -> Unit =
 
             **Access Requirements:**
             - Requires authentication via JWT token
-            - Accessible to all authenticated roles (CUSTOMER, STAFF, ADMIN)
+            - Accessible to all authenticated roles (Customer, Stuff, Admin)
             """.trimIndent()
         tags = listOf("vinyls")
         request {
@@ -414,7 +414,7 @@ private fun getVinylDocumentation(): RouteConfig.() -> Unit =
 
             **Access Requirements:**
             - Requires authentication via JWT token
-            - Accessible to all authenticated roles (CUSTOMER, STAFF, ADMIN)
+            - Accessible to all authenticated roles (Customer, Stuff, Admin)
             """.trimIndent()
         tags = listOf("vinyls")
         request {
@@ -489,8 +489,8 @@ private fun createVinylDocumentation(): RouteConfig.() -> Unit =
 
             **Access Requirements:**
             - Requires authentication via JWT token
-            - Only ADMIN and STAFF roles can create vinyls
-            - Returns 403 Forbidden for CUSTOMER role
+            - Only Admin and Stuff roles can create vinyls
+            - Returns 403 Forbidden for Customer role
             """.trimIndent()
         tags = listOf("vinyls")
         request {
@@ -530,7 +530,7 @@ private fun createVinylDocumentation(): RouteConfig.() -> Unit =
             }
             validationErrorExample("Invalid vinyl data")
             notAuthenticatedExample()
-            insufficientPermissionsExample("Only ADMIN and STAFF roles can create vinyls")
+            insufficientPermissionsExample("Only Admin and Stuff roles can create vinyls")
         }
     }
 
@@ -567,8 +567,8 @@ private fun updateVinylDocumentation(): RouteConfig.() -> Unit =
 
             **Access Requirements:**
             - Requires authentication via JWT token
-            - Only ADMIN and STAFF roles can update vinyls
-            - Returns 403 Forbidden for CUSTOMER role
+            - Only Admin and Stuff roles can update vinyls
+            - Returns 403 Forbidden for Customer role
             """.trimIndent()
         tags = listOf("vinyls")
         request {
@@ -625,7 +625,7 @@ private fun updateVinylDocumentation(): RouteConfig.() -> Unit =
             }
             badRequestExample("Invalid vinyl UUID")
             notAuthenticatedExample()
-            insufficientPermissionsExample("Only ADMIN and STAFF roles can update vinyls")
+            insufficientPermissionsExample("Only Admin and Stuff roles can update vinyls")
             notFoundExample("Vinyl not found")
         }
     }
@@ -656,8 +656,8 @@ private fun deleteVinylDocumentation(): RouteConfig.() -> Unit =
 
             **Access Requirements:**
             - Requires authentication via JWT token
-            - Only ADMIN and STAFF roles can delete vinyls
-            - Returns 403 Forbidden for CUSTOMER role
+            - Only Admin and Stuff roles can delete vinyls
+            - Returns 403 Forbidden for Customer role
             """.trimIndent()
         tags = listOf("vinyls")
         request {
@@ -674,7 +674,7 @@ private fun deleteVinylDocumentation(): RouteConfig.() -> Unit =
             }
             badRequestExample("Invalid vinyl UUID")
             notAuthenticatedExample()
-            insufficientPermissionsExample("Only ADMIN and STAFF roles can delete vinyls")
+            insufficientPermissionsExample("Only Admin and Stuff roles can delete vinyls")
             notFoundExample("Vinyl not found")
             code(HttpStatusCode.Conflict) {
                 body<ErrorResponse> {
@@ -701,7 +701,7 @@ private fun createListingDocumentation(): RouteConfig.() -> Unit =
             - **initialStock**: Initial inventory quantity (must be positive)
 
             **Automatic Operations:**
-            - Creates listing in PUBLISHED status
+            - Creates listing in Published status
             - Automatically creates associated inventory record
             - Sets timestamps (createdAt, updatedAt)
 
@@ -717,8 +717,8 @@ private fun createListingDocumentation(): RouteConfig.() -> Unit =
 
             **Access Requirements:**
             - Requires authentication via JWT token
-            - Only ADMIN and STAFF roles can create listings
-            - Returns 403 Forbidden for CUSTOMER role
+            - Only Admin and Stuff roles can create listings
+            - Returns 403 Forbidden for Customer role
             """.trimIndent()
         tags = listOf("vinyls", "listings")
         request {
@@ -771,7 +771,7 @@ private fun createListingDocumentation(): RouteConfig.() -> Unit =
                 }
             }
             notAuthenticatedExample()
-            insufficientPermissionsExample("Only ADMIN and STAFF roles can create listings")
+            insufficientPermissionsExample("Only Admin and Stuff roles can create listings")
             notFoundExample("Vinyl not found")
             conflictExample("Listing already exists" to "A listing already exists for this vinyl")
         }

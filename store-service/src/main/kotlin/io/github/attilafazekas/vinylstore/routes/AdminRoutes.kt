@@ -77,8 +77,8 @@ private fun adminDocumentation(): RouteConfig.() -> Unit =
 
             **Access Requirements:**
             - Requires authentication via JWT token
-            - Only ADMIN role can reset data
-            - Returns 403 Forbidden for STAFF and CUSTOMER roles
+            - Only Admin role can reset data
+            - Returns 403 Forbidden for Stuff and Customer roles
             """.trimIndent()
         tags = listOf("admin")
         response {
@@ -90,6 +90,6 @@ private fun adminDocumentation(): RouteConfig.() -> Unit =
                 }
             }
             notAuthenticatedExample()
-            insufficientPermissionsExample("Only ADMIN role can reset data")
+            insufficientPermissionsExample("Only Admin role can reset data")
         }
     }

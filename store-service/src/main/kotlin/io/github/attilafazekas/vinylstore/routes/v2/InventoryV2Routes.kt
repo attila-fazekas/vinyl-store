@@ -213,8 +213,8 @@ private fun listInventoryV2Documentation(): RouteConfig.() -> Unit =
 
             **Access Requirements:**
             - Requires authentication via JWT token
-            - Only ADMIN and STAFF roles can view inventory list
-            - Returns 403 Forbidden for CUSTOMER role
+            - Only Admin and Stuff roles can view inventory list
+            - Returns 403 Forbidden for Customer role
             """.trimIndent()
         tags = listOf("inventory-v2")
         request {
@@ -356,7 +356,7 @@ private fun listInventoryV2Documentation(): RouteConfig.() -> Unit =
                 }
             }
             notAuthenticatedExample()
-            insufficientPermissionsExample("Only ADMIN and STAFF roles can view inventory list")
+            insufficientPermissionsExample("Only Admin and Stuff roles can view inventory list")
         }
     }
 
@@ -388,8 +388,8 @@ private fun getInventoryWithContextDocumentation(): RouteConfig.() -> Unit =
 
             **Access Requirements:**
             - Requires authentication via JWT token
-            - Only ADMIN and STAFF roles can view inventory details
-            - Returns 403 Forbidden for CUSTOMER role
+            - Only Admin and Stuff roles can view inventory details
+            - Returns 403 Forbidden for Customer role
             """.trimIndent()
         tags = listOf("inventory-v2")
         request {
@@ -469,7 +469,7 @@ private fun getInventoryWithContextDocumentation(): RouteConfig.() -> Unit =
             }
             badRequestExample("Invalid listing UUID")
             notAuthenticatedExample()
-            insufficientPermissionsExample("Only ADMIN and STAFF roles can view inventory details")
+            insufficientPermissionsExample("Only Admin and Stuff roles can view inventory details")
             notFoundExample("Inventory not found", "Listing not found")
         }
     }

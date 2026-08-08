@@ -133,7 +133,7 @@ data class CreateLabelRequest(
 
 @Serializable
 data class CreateAddressRequest(
-    @Description("The type of address (SHIPPING or BILLING).")
+    @Description("The type of address (Shipping or Billing).")
     val type: AddressType,
     @Description("The full name of the recipient.")
     val fullName: String,
@@ -183,7 +183,7 @@ data class CreateUserRequest(
     val email: Email,
     @Description("User's password. Must be at least 8 characters long.")
     val password: Password,
-    @Description("User's role in the system (CUSTOMER, STAFF, or ADMIN). Defaults to CUSTOMER.")
+    @Description("User's role in the system (Customer, Stuff, or Admin). Defaults to Customer.")
     val role: Role = Role.Customer,
 )
 

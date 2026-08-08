@@ -233,7 +233,7 @@ private fun listAddressesDocumentation(): RouteConfig.() -> Unit =
             Retrieve all shipping and billing addresses for the currently authenticated user.
 
             Available filters:
-            - type: Filter by address type (SHIPPING or BILLING)
+            - type: Filter by address type (Shipping or Billing)
             - isDefault: Filter for default addresses only
 
             Each address includes:
@@ -246,7 +246,7 @@ private fun listAddressesDocumentation(): RouteConfig.() -> Unit =
         tags = listOf("users")
         request {
             queryParameter<String>("type") {
-                description = "Filter by address type (SHIPPING or BILLING)"
+                description = "Filter by address type (Shipping or Billing)"
                 required = false
             }
             queryParameter<Boolean>("isDefault") {
@@ -294,7 +294,7 @@ private fun getAddressDocumentation(): RouteConfig.() -> Unit =
             Retrieve details of a specific address by its ID.
 
             Returns complete address information including:
-            - Address type (SHIPPING or BILLING)
+            - Address type (Shipping or Billing)
             - Recipient full name
             - Complete street address
             - City, postal code, and country
@@ -354,11 +354,11 @@ private fun createAddressDocumentation(): RouteConfig.() -> Unit =
             - City is required
             - Postal code is required
             - Country is required
-            - Address type must be SHIPPING or BILLING
+            - Address type must be Shipping or Billing
 
             Default address behavior:
             - If setting this address as default, any existing default address of the same type will be automatically unmarked
-            - Only one default address per type (SHIPPING or BILLING) is allowed
+            - Only one default address per type (Shipping or Billing) is allowed
             - The system automatically handles this without returning conflicts
             """.trimIndent()
         tags = listOf("users")
@@ -421,7 +421,7 @@ private fun updateAddressDocumentation(): RouteConfig.() -> Unit =
             Update an existing address with support for partial updates.
 
             Updatable fields:
-            - type: Change address type (SHIPPING or BILLING)
+            - type: Change address type (Shipping or Billing)
             - fullName: Update recipient name
             - street, city, postalCode, country: Update address components
             - isDefault: Set or unset as default address

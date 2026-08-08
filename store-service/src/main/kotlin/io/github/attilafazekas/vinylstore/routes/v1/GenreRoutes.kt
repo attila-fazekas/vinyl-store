@@ -158,7 +158,7 @@ private fun listGenresDocumentation(): RouteConfig.() -> Unit =
 
             **Access Requirements:**
             - Requires authentication via JWT token
-            - Accessible to all authenticated roles (CUSTOMER, STAFF, ADMIN)
+            - Accessible to all authenticated roles (Customer, Stuff, Admin)
             """.trimIndent()
         tags = listOf("genres")
         request {
@@ -210,8 +210,8 @@ private fun createGenreDocumentation(): RouteConfig.() -> Unit =
 
             **Access Requirements:**
             - Requires authentication via JWT token
-            - Only ADMIN and STAFF roles can create genres
-            - Returns 403 Forbidden for CUSTOMER role
+            - Only Admin and Stuff roles can create genres
+            - Returns 403 Forbidden for Customer role
             """.trimIndent()
         tags = listOf("genres")
         request {
@@ -231,7 +231,7 @@ private fun createGenreDocumentation(): RouteConfig.() -> Unit =
                 }
             }
             notAuthenticatedExample()
-            insufficientPermissionsExample("Only ADMIN and STAFF roles can create genres")
+            insufficientPermissionsExample("Only Admin and Stuff roles can create genres")
         }
     }
 
@@ -254,7 +254,7 @@ private fun getGenreDocumentation(): RouteConfig.() -> Unit =
 
             **Access Requirements:**
             - Requires authentication via JWT token
-            - Accessible to all authenticated roles (CUSTOMER, STAFF, ADMIN)
+            - Accessible to all authenticated roles (Customer, Stuff, Admin)
             """.trimIndent()
         tags = listOf("genres")
         request {
@@ -302,8 +302,8 @@ private fun updateGenreDocumentation(): RouteConfig.() -> Unit =
 
             **Access Requirements:**
             - Requires authentication via JWT token
-            - Only ADMIN and STAFF roles can update genres
-            - Returns 403 Forbidden for CUSTOMER role
+            - Only Admin and Stuff roles can update genres
+            - Returns 403 Forbidden for Customer role
             """.trimIndent()
         tags = listOf("genres")
         request {
@@ -329,7 +329,7 @@ private fun updateGenreDocumentation(): RouteConfig.() -> Unit =
             }
             badRequestExample("Invalid genre UUID")
             notAuthenticatedExample()
-            insufficientPermissionsExample("Only ADMIN and STAFF roles can update genres")
+            insufficientPermissionsExample("Only Admin and Stuff roles can update genres")
             notFoundExample("Genre not found")
         }
     }
@@ -359,8 +359,8 @@ private fun deleteGenreDocumentation(): RouteConfig.() -> Unit =
 
             **Access Requirements:**
             - Requires authentication via JWT token
-            - Only ADMIN and STAFF roles can delete genres
-            - Returns 403 Forbidden for CUSTOMER role
+            - Only Admin and Stuff roles can delete genres
+            - Returns 403 Forbidden for Customer role
             """.trimIndent()
         tags = listOf("genres")
         request {
@@ -377,7 +377,7 @@ private fun deleteGenreDocumentation(): RouteConfig.() -> Unit =
             }
             badRequestExample("Invalid genre UUID")
             notAuthenticatedExample()
-            insufficientPermissionsExample("Only ADMIN and STAFF roles can delete genres")
+            insufficientPermissionsExample("Only Admin and Stuff roles can delete genres")
             notFoundExample("Genre not found")
             conflictExample("Genre associated with vinyls" to "Cannot delete genre associated with vinyls")
         }

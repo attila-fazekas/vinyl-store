@@ -231,7 +231,7 @@ private fun addCartItemDocumentation(): RouteConfig.() -> Unit =
             listing is already in the cart.
 
             **Validation Rules:**
-            - The listing must exist and have status PUBLISHED
+            - The listing must exist and have status Published
             - Quantity must be at least 1
 
             Adding to the cart does not reserve inventory; stock is only checked and reserved when

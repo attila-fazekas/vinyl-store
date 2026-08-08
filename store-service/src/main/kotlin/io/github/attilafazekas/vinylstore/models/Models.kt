@@ -33,7 +33,7 @@ data class User(
     val email: Email,
     @Description("Hashed password for authentication.")
     val passwordHash: String,
-    @Description("User's role in the system (CUSTOMER, STAFF, or ADMIN).")
+    @Description("User's role in the system (Customer, Stuff, or Admin).")
     val role: Role,
     @Description("Whether the user account is active and can authenticate.")
     val isActive: Boolean,
@@ -49,7 +49,7 @@ data class Address(
     val id: Uuid,
     @Description("ID of the user who owns this address.")
     val userId: Uuid,
-    @Description("The type of address (SHIPPING or BILLING).")
+    @Description("The type of address (Shipping or Billing).")
     val type: AddressType,
     @Description("The full name of the recipient.")
     val fullName: String,
@@ -127,7 +127,7 @@ data class Listing(
     val id: Uuid,
     @Description("ID of the vinyl record being listed.")
     val vinylId: Uuid,
-    @Description("Current status of the listing (DRAFT, PUBLISHED, or ARCHIVED).")
+    @Description("Current status of the listing (Draft, Published, or Archived).")
     val status: ListingStatus,
     @Description("The listing price.")
     val price: Double,
@@ -194,7 +194,7 @@ data class Order(
     val id: Uuid,
     @Description("ID of the user who placed the order.")
     val userId: Uuid,
-    @Description("Current status of the order (PENDING, PAID, FAILED, or CANCELLED).")
+    @Description("Current status of the order (Pending,Paid Failed, Cancelled).")
     val status: OrderStatus,
     @Description("Total amount charged for the order, summed from its line items.")
     val totalAmount: Double,

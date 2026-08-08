@@ -153,7 +153,7 @@ private fun getArtistDocumentation(): RouteConfig.() -> Unit =
 
             **Access Requirements:**
             - Requires authentication via JWT token
-            - Accessible to all authenticated roles (CUSTOMER, STAFF, ADMIN)
+            - Accessible to all authenticated roles (Customer, Stuff, Admin)
             """.trimIndent()
         tags = listOf("artists")
         request {
@@ -202,7 +202,7 @@ private fun listArtistsDocumentation(): RouteConfig.() -> Unit =
 
             **Access Requirements:**
             - Requires authentication via JWT token
-            - Accessible to all authenticated roles (CUSTOMER, STAFF, ADMIN)
+            - Accessible to all authenticated roles (Customer, Stuff, Admin)
             """.trimIndent()
         tags = listOf("artists")
         request {
@@ -254,8 +254,8 @@ private fun createArtistDocumentation(): RouteConfig.() -> Unit =
 
             **Access Requirements:**
             - Requires authentication via JWT token
-            - Only ADMIN and STAFF roles can create artists
-            - Returns 403 Forbidden for CUSTOMER role
+            - Only Admin and Stuff roles can create artists
+            - Returns 403 Forbidden for Customer role
             """.trimIndent()
         tags = listOf("artists")
         request {
@@ -275,7 +275,7 @@ private fun createArtistDocumentation(): RouteConfig.() -> Unit =
                 }
             }
             notAuthenticatedExample()
-            insufficientPermissionsExample("Only ADMIN and STAFF roles can create artists")
+            insufficientPermissionsExample("Only Admin and Stuff roles can create artists")
         }
     }
 
@@ -302,8 +302,8 @@ private fun updateArtistDocumentation(): RouteConfig.() -> Unit =
 
             **Access Requirements:**
             - Requires authentication via JWT token
-            - Only ADMIN and STAFF roles can update artists
-            - Returns 403 Forbidden for CUSTOMER role
+            - Only Admin and Stuff roles can update artists
+            - Returns 403 Forbidden for Customer role
             """.trimIndent()
         tags = listOf("artists")
         request {
@@ -329,7 +329,7 @@ private fun updateArtistDocumentation(): RouteConfig.() -> Unit =
             }
             badRequestExample("Invalid artist UUID")
             notAuthenticatedExample()
-            insufficientPermissionsExample("Only ADMIN and STAFF roles can update artists")
+            insufficientPermissionsExample("Only Admin and Stuff roles can update artists")
             notFoundExample("Artist not found")
         }
     }
@@ -359,8 +359,8 @@ private fun deleteArtistDocumentation(): RouteConfig.() -> Unit =
 
             **Access Requirements:**
             - Requires authentication via JWT token
-            - Only ADMIN and STAFF roles can delete artists
-            - Returns 403 Forbidden for CUSTOMER role
+            - Only Admin and Stuff roles can delete artists
+            - Returns 403 Forbidden for Customer role
             """.trimIndent()
         tags = listOf("artists")
         request {
@@ -377,7 +377,7 @@ private fun deleteArtistDocumentation(): RouteConfig.() -> Unit =
             }
             badRequestExample("Invalid artist ID")
             notAuthenticatedExample()
-            insufficientPermissionsExample("Only ADMIN and STAFF roles can delete artists")
+            insufficientPermissionsExample("Only Admin and Stuff roles can delete artists")
             notFoundExample("Artist not found")
             conflictExample("Artist has vinyls" to "Cannot delete artist with associated vinyls")
         }

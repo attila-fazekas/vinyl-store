@@ -47,7 +47,7 @@ data class PaymentResponse(
     val amountCents: Int,
     @Description("The ISO 4217 currency code for the amount.")
     val currency: String,
-    @Description("Reason the payment failed. Only present when status is FAILED.")
+    @Description("Reason the payment failed. Only present when status is Failed.")
     val failureReason: String? = null,
     @Description("Timestamp when the payment was processed in ISO 8601 format with UTC timezone (e.g., '2025-01-10T14:30:45.123Z').")
     val createdAt: String,

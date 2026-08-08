@@ -265,7 +265,7 @@ private fun listListingsV2Documentation(): RouteConfig.() -> Unit =
             eliminating the need for multiple API calls to fetch artist, label, genre, and inventory details.
 
             **Filtering Options:**
-            - **status**: Filter by listing status (DRAFT, PUBLISHED, ARCHIVED)
+            - **status**: Filter by listing status (Draft, Published, Archived)
             - **minPrice/maxPrice**: Filter by price range
             - **artist**: Filter by artist name (partial match) or exact artist ID
             - **genre**: Filter by genre name (partial match)
@@ -285,7 +285,7 @@ private fun listListingsV2Documentation(): RouteConfig.() -> Unit =
         tags = listOf("listings-v2")
         request {
             queryParameter<String>("status") {
-                description = "Filter by listing status (DRAFT, PUBLISHED, ARCHIVED)"
+                description = "Filter by listing status (Draft, Published, Archived)"
                 required = false
             }
             queryParameter<Double>("minPrice") {

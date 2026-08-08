@@ -187,7 +187,7 @@ private fun listInventoryDocumentation(): RouteConfig.() -> Unit =
             - **minAvailable**: Filter by minimum available quantity (totalQuantity - reservedQuantity)
             - **maxAvailable**: Filter by maximum available quantity
             - **minTotal**: Filter by minimum total quantity
-            - **listingStatus**: Filter by associated listing status (DRAFT, PUBLISHED, ARCHIVED)
+            - **listingStatus**: Filter by associated listing status (Draft, Published, Archived)
 
             **Stock Management Features:**
             - Track total quantity in warehouse
@@ -203,8 +203,8 @@ private fun listInventoryDocumentation(): RouteConfig.() -> Unit =
 
             **Access Requirements:**
             - Requires authentication via JWT token
-            - Only ADMIN and STAFF roles can view inventory
-            - Returns 403 Forbidden for CUSTOMER role
+            - Only Admin and Stuff roles can view inventory
+            - Returns 403 Forbidden for Customer role
             """.trimIndent()
         tags = listOf("inventory")
         request {
@@ -221,7 +221,7 @@ private fun listInventoryDocumentation(): RouteConfig.() -> Unit =
                 required = false
             }
             queryParameter<String>("listingStatus") {
-                description = "Filter by listing status (DRAFT, PUBLISHED, ARCHIVED)"
+                description = "Filter by listing status (Draft, Published, Archived)"
                 required = false
             }
         }
@@ -263,7 +263,7 @@ private fun listInventoryDocumentation(): RouteConfig.() -> Unit =
                 }
             }
             notAuthenticatedExample()
-            insufficientPermissionsExample("Only ADMIN and STAFF roles can view inventory")
+            insufficientPermissionsExample("Only Admin and Stuff roles can view inventory")
         }
     }
 
@@ -294,8 +294,8 @@ private fun getInventoryDocumentation(): RouteConfig.() -> Unit =
 
             **Access Requirements:**
             - Requires authentication via JWT token
-            - Only ADMIN and STAFF roles can view inventory details
-            - Returns 403 Forbidden for CUSTOMER role
+            - Only Admin and Stuff roles can view inventory details
+            - Returns 403 Forbidden for Customer role
             """.trimIndent()
         tags = listOf("inventory")
         request {
@@ -336,7 +336,7 @@ private fun getInventoryDocumentation(): RouteConfig.() -> Unit =
                 }
             }
             notAuthenticatedExample()
-            insufficientPermissionsExample("Only ADMIN and STAFF roles can update inventory")
+            insufficientPermissionsExample("Only Admin and Stuff roles can update inventory")
             notFoundExample("Inventory not found")
             conflictExample(
                 "Reserved exceeds total" to "Reserved quantity cannot exceed total quantity",
@@ -379,8 +379,8 @@ private fun updateInventoryDocumentation(): RouteConfig.() -> Unit =
 
             **Access Requirements:**
             - Requires authentication via JWT token
-            - Only ADMIN and STAFF roles can update inventory
-            - Returns 403 Forbidden for CUSTOMER role
+            - Only Admin and Stuff roles can update inventory
+            - Returns 403 Forbidden for Customer role
             """.trimIndent()
         tags = listOf("inventory")
         request {
@@ -419,7 +419,7 @@ private fun updateInventoryDocumentation(): RouteConfig.() -> Unit =
             }
             badRequestExample("Invalid listing UUID")
             notAuthenticatedExample()
-            insufficientPermissionsExample("Only ADMIN and STAFF roles can view inventory")
+            insufficientPermissionsExample("Only Admin and Stuff roles can view inventory")
             notFoundExample("Inventory not found")
         }
     }

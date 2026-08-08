@@ -45,7 +45,7 @@ data class UserResponse(
     val id: Uuid,
     @Description("User's email address.")
     val email: Email,
-    @Description("User's role in the system (CUSTOMER, STAFF, or ADMIN).")
+    @Description("User's role in the system (Customer, Stuff, or Admin).")
     val role: Role,
     @Description("Whether the user account is active and can authenticate.")
     val isActive: Boolean,
@@ -129,7 +129,7 @@ data class InventoryV2(
 data class ListingV2Response(
     @Description("Unique identifier for the listing.")
     val id: Uuid,
-    @Description("Current status of the listing (DRAFT, PUBLISHED, or ARCHIVED).")
+    @Description("Current status of the listing (Draft, Published, or Archived).")
     val status: ListingStatus,
     @Description("The listing price.")
     val price: Double,
