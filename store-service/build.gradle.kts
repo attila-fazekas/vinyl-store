@@ -32,6 +32,9 @@ application {
 }
 
 dependencies {
+    implementation("io.ktor:ktor-server-request-validation-jvm:_")
+    implementation("org.komapper:kova-core:_")
+    implementation("org.komapper:kova-ktor:_")
     testImplementation("org.wiremock:wiremock:_")
 }
 

@@ -23,7 +23,18 @@ import io.github.attilafazekas.vinylstore.enums.ListingStatus
 import io.github.attilafazekas.vinylstore.enums.Role
 import io.github.smiley4.schemakenerator.core.annotations.Description
 import kotlinx.serialization.Serializable
+import org.komapper.extension.validator.Validation
+import org.komapper.extension.validator.ensureContains
+import org.komapper.extension.validator.ensureLengthAtLeast
+import org.komapper.extension.validator.ensureNotBlank
+import org.komapper.extension.validator.ktor.server.Validated
+import org.komapper.extension.validator.schema
+import org.komapper.extension.validator.text
 import kotlin.uuid.Uuid
+
+private const val INVALID_EMAIL_MESSAGE = "Invalid email"
+private const val MIN_PASSWORD_LENGTH = 8
+private const val PASSWORD_TOO_SHORT_MESSAGE = "Password must be at least 8 characters"
 
 @Serializable
 data class RegisterRequest(
@@ -31,7 +42,14 @@ data class RegisterRequest(
     val email: Email,
     @Description("User's password. Must be at least 8 characters long.")
     val password: Password,
-)
+) : Validated {
+    context(_: Validation)
+    override fun validate() =
+        schema {
+            ::email { it.ensureValidEmail() }
+            ::password { it.ensureValidPassword() }
+        }
+}
 
 @Serializable
 data class LoginRequest(
@@ -185,7 +203,14 @@ data class CreateUserRequest(
     val password: Password,
     @Description("User's role in the system (Customer, Stuff, or Admin). Defaults to Customer.")
     val role: Role = Role.Customer,
-)
+) : Validated {
+    context(_: Validation)
+    override fun validate() =
+        schema {
+            ::email { it.ensureValidEmail() }
+            ::password { it.ensureValidPassword() }
+        }
+}
 
 @Serializable
 data class UpdateUserRequest(
@@ -220,3 +245,14 @@ data class PayOrderRequest(
     @Description("Opaque token identifying the payment method to charge (e.g., 'tok_visa').")
     val paymentMethod: String,
 )
+
+context(_: Validation)
+private fun Email.ensureValidEmail() {
+    value.ensureNotBlank(message = { text(INVALID_EMAIL_MESSAGE) })
+    value.ensureContains("@", message = { text(INVALID_EMAIL_MESSAGE) })
+}
+
+context(_: Validation)
+private fun Password.ensureValidPassword() {
+    value.ensureLengthAtLeast(MIN_PASSWORD_LENGTH, message = { text(PASSWORD_TOO_SHORT_MESSAGE) })
+}

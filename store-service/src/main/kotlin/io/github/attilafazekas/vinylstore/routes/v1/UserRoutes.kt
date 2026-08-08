@@ -37,6 +37,7 @@ import io.github.attilafazekas.vinylstore.documentation.conflictExample
 import io.github.attilafazekas.vinylstore.documentation.insufficientPermissionsExample
 import io.github.attilafazekas.vinylstore.documentation.notAuthenticatedExample
 import io.github.attilafazekas.vinylstore.documentation.notFoundExample
+import io.github.attilafazekas.vinylstore.documentation.validationErrorExample
 import io.github.attilafazekas.vinylstore.enums.Role
 import io.github.attilafazekas.vinylstore.models.CreateUserRequest
 import io.github.attilafazekas.vinylstore.models.ErrorResponse
@@ -403,6 +404,7 @@ private fun createUserDocumentation(): RouteConfig.() -> Unit =
             }
             notAuthenticatedExample()
             insufficientPermissionsExample("Only Admin role can create users")
+            validationErrorExample("Invalid email", "Password must be at least 8 characters")
             conflictExample("Email already exists" to "User with this email already exists")
         }
     }

@@ -31,7 +31,6 @@ import io.github.attilafazekas.vinylstore.PasswordUtil
 import io.github.attilafazekas.vinylstore.TimestampUtil
 import io.github.attilafazekas.vinylstore.UNAUTHORIZED
 import io.github.attilafazekas.vinylstore.V1
-import io.github.attilafazekas.vinylstore.VALIDATION_ERROR
 import io.github.attilafazekas.vinylstore.VinylStoreRepository
 import io.github.attilafazekas.vinylstore.documentation.conflictExample
 import io.github.attilafazekas.vinylstore.documentation.notAuthenticatedExample
@@ -60,19 +59,6 @@ fun Route.authRoutes(store: VinylStoreRepository) {
     route("$V1/auth") {
         post("/register", registerUserDocumentation()) {
             val request = call.receive<RegisterRequest>()
-
-            if (request.email.value.isBlank() || !request.email.value.contains("@")) {
-                call.respond(HttpStatusCode.BadRequest, ErrorResponse(VALIDATION_ERROR, "Invalid email"))
-                return@post
-            }
-
-            if (request.password.value.length < 8) {
-                call.respond(
-                    HttpStatusCode.BadRequest,
-                    ErrorResponse(VALIDATION_ERROR, "Password must be at least 8 characters"),
-                )
-                return@post
-            }
 
             if (store.getUserByEmail(request.email) != null) {
                 call.respond(HttpStatusCode.Conflict, ErrorResponse(CONFLICT, "Email already exists"))
@@ -109,7 +95,8 @@ fun Route.authRoutes(store: VinylStoreRepository) {
             val request = call.receive<LoginRequest>()
             val user = store.getUserByEmail(request.email)
 
-            if (user == null || !PasswordUtil.verify(request.password, user.passwordHash)) {
+            val hasShortPassword = request.password.value.length < 8
+            if (hasShortPassword || user == null || !PasswordUtil.verify(request.password, user.passwordHash)) {
                 call.respond(HttpStatusCode.Unauthorized, ErrorResponse(UNAUTHORIZED, "Invalid credentials"))
                 return@post
             }
@@ -252,7 +239,7 @@ private fun registerUserDocumentation(): RouteConfig.() -> Unit =
                     }
                 }
             }
-            validationErrorExample("Invalid email")
+            validationErrorExample("Invalid email", "Password must be at least 8 characters")
             conflictExample("Email already exists" to "Email is already registered")
         }
     }

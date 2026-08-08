@@ -55,6 +55,8 @@ import io.ktor.server.auth.jwt.jwt
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.plugins.requestvalidation.RequestValidation
+import io.ktor.server.plugins.requestvalidation.RequestValidationException
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.response.respond
 import io.ktor.server.routing.routing
@@ -62,13 +64,16 @@ import io.r2dbc.spi.R2dbcException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
+import org.komapper.extension.validator.ktor.server.SchemaValidator
 import kotlin.uuid.Uuid
 
-const val USER_AUTH = "UserAuth"
 const val V1 = "v1"
 const val V2 = "v2"
 
 private val logger = KotlinLogging.logger {}
+
+private const val INVALID_REQUEST = "Invalid request"
+private const val USER_AUTH = "UserAuth"
 
 fun main(args: Array<String>) {
     val autoReset = args.contains("--auto-reset")
@@ -224,6 +229,14 @@ fun Application.configurePlugins(store: VinylStoreRepository) {
         )
     }
 
+    install(RequestValidation) {
+        validate(
+            SchemaValidator { messages ->
+                messages.firstOrNull()?.text ?: INVALID_REQUEST
+            },
+        )
+    }
+
     install(Authentication) {
         jwt(AUTH_JWT) {
             verifier(JwtConfig.verifier)
@@ -240,6 +253,12 @@ fun Application.configurePlugins(store: VinylStoreRepository) {
     }
 
     install(StatusPages) {
+        exception<RequestValidationException> { call, cause ->
+            call.respond(
+                HttpStatusCode.BadRequest,
+                ErrorResponse(VALIDATION_ERROR, cause.reasons.firstOrNull() ?: INVALID_REQUEST),
+            )
+        }
         exception<AuthException.Unauthenticated> { call, cause ->
             call.respond(HttpStatusCode.Unauthorized, ErrorResponse(UNAUTHORIZED, cause.message!!))
         }
