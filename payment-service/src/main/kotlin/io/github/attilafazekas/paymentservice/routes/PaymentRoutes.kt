@@ -55,7 +55,7 @@ private fun chargePaymentDocumentation(): RouteConfig.() -> Unit =
             stable schema, for example by stubbing this endpoint with WireMock.
 
             **Intended Behavior:**
-            - Charges are synchronous: the response reflects the final outcome (SUCCEEDED or FAILED)
+            - Charges are synchronous: the response reflects the final outcome (Succeeded or Failed)
             - Retrying a charge with the same idempotencyKey must not result in a double charge
             """.trimIndent()
         tags = listOf("payments")

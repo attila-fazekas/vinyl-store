@@ -160,7 +160,7 @@ private fun listVinylsV2Documentation(): RouteConfig.() -> Unit =
 
             **Access Requirements:**
             - Requires authentication via JWT token
-            - Accessible to all authenticated roles (CUSTOMER, STAFF, ADMIN)
+            - Accessible to all authenticated roles (Customer, Stuff, Admin)
             """.trimIndent()
         tags = listOf("vinyls-v2")
         request {

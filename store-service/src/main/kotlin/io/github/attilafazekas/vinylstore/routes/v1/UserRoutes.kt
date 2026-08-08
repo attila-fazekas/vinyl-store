@@ -214,19 +214,19 @@ private fun listUsersDocumentation(): RouteConfig.() -> Unit =
             Retrieve a list of all users in the system with optional filtering capabilities.
 
             Available filters:
-            - role: Filter by user role (CUSTOMER, STAFF, ADMIN)
+            - role: Filter by user role (Customer, Stuff, Admin)
             - isActive: Filter by account active status (true/false)
 
             Access restrictions:
-            - Only ADMIN role can list all users
+            - Only Admin role can list all users
             - Returns user basic information without sensitive data
 
-            Requires ADMIN authentication via JWT token.
+            Requires Admin authentication via JWT token.
             """.trimIndent()
         tags = listOf("users")
         request {
             queryParameter<String>("role") {
-                description = "Filter by role (CUSTOMER, STAFF, ADMIN)"
+                description = "Filter by role (Customer, Stuff, Admin)"
                 required = false
             }
             queryParameter<Boolean>("isActive") {
@@ -280,7 +280,7 @@ private fun listUsersDocumentation(): RouteConfig.() -> Unit =
                 }
             }
             notAuthenticatedExample()
-            insufficientPermissionsExample("Only ADMIN role can list all users")
+            insufficientPermissionsExample("Only Admin role can list all users")
         }
     }
 
@@ -299,9 +299,9 @@ private fun getUserDocumentation(): RouteConfig.() -> Unit =
             - Account active status
 
             Access restrictions:
-            - Only ADMIN role can view user details
+            - Only Admin role can view user details
 
-            Requires ADMIN authentication via JWT token.
+            Requires Admin authentication via JWT token.
             """.trimIndent()
         tags = listOf("users")
         request {
@@ -330,7 +330,7 @@ private fun getUserDocumentation(): RouteConfig.() -> Unit =
             }
             badRequestExample("Invalid user UUID")
             notAuthenticatedExample()
-            insufficientPermissionsExample("Only ADMIN role can view user details")
+            insufficientPermissionsExample("Only Admin role can view user details")
             notFoundExample("User not found")
         }
     }
@@ -346,14 +346,14 @@ private fun createUserDocumentation(): RouteConfig.() -> Unit =
             Fields:
             - email: User's email address (must be unique)
             - password: User's password (must be at least 8 characters)
-            - role: User's role in the system (defaults to CUSTOMER)
+            - role: User's role in the system (defaults to Customer)
 
             The newly created user account will be active by default.
 
             Access restrictions:
-            - Only ADMIN role can create users
+            - Only Admin role can create users
 
-            Requires ADMIN authentication via JWT token.
+            Requires Admin authentication via JWT token.
             """.trimIndent()
         tags = listOf("users")
         request {
@@ -402,7 +402,7 @@ private fun createUserDocumentation(): RouteConfig.() -> Unit =
                 }
             }
             notAuthenticatedExample()
-            insufficientPermissionsExample("Only ADMIN role can create users")
+            insufficientPermissionsExample("Only Admin role can create users")
             conflictExample("Email already exists" to "User with this email already exists")
         }
     }
@@ -416,16 +416,16 @@ private fun updateUserDocumentation(): RouteConfig.() -> Unit =
             Update a user's role or active status with support for partial updates.
 
             Updatable fields:
-            - role: Change user role (CUSTOMER, STAFF, ADMIN)
+            - role: Change user role (Customer, Stuff, Admin)
             - isActive: Activate or deactivate user account
 
             All fields are optional - only provided fields will be updated. Fields set to null or omitted will remain unchanged.
 
             Access restrictions:
-            - Only ADMIN role can update users
-            - Admins cannot demote themselves from ADMIN or deactivate their own account (returns 409 Conflict)
+            - Only Admin role can update users
+            - Admins cannot demote themselves from Admin or deactivate their own account (returns 409 Conflict)
 
-            Requires ADMIN authentication via JWT token.
+            Requires Admin authentication via JWT token.
             """.trimIndent()
         tags = listOf("users")
         request {
@@ -466,7 +466,7 @@ private fun updateUserDocumentation(): RouteConfig.() -> Unit =
             }
             badRequestExample("Invalid user UUID")
             notAuthenticatedExample()
-            insufficientPermissionsExample("Only ADMIN role can update users")
+            insufficientPermissionsExample("Only Admin role can update users")
             notFoundExample("User not found")
             conflictExample(
                 "Self-lockout" to "Admins cannot change their own role or deactivate their own account",
@@ -488,9 +488,9 @@ private fun deleteUserDocumentation(): RouteConfig.() -> Unit =
             - Consider deactivating the account instead if you need to preserve historical data
 
             Access restrictions:
-            - Only ADMIN role can delete users
+            - Only Admin role can delete users
 
-            Requires ADMIN authentication via JWT token.
+            Requires Admin authentication via JWT token.
             """.trimIndent()
         tags = listOf("users")
         request {
@@ -507,7 +507,7 @@ private fun deleteUserDocumentation(): RouteConfig.() -> Unit =
             }
             badRequestExample("Invalid user UUID")
             notAuthenticatedExample()
-            insufficientPermissionsExample("Only ADMIN role can delete users")
+            insufficientPermissionsExample("Only Admin role can delete users")
             notFoundExample("User not found")
         }
     }

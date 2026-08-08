@@ -18,7 +18,7 @@ The project consists of two services:
 
 ## Key Features
 
-- **JWT-based Authentication** with role-based access control (CUSTOMER, STAFF, ADMIN)
+- **JWT-based Authentication** with role-based access control (Customer, Staff, Admin)
 - **Catalog Management** for artists, labels, genres, and vinyl records
 - **Listings & Inventory** with real-time stock tracking
 - **User Management** with registration, authentication, and address management

@@ -159,8 +159,8 @@ private fun deleteLabelDocumentation(): RouteConfig.() -> Unit =
 
             **Access Requirements:**
             - Requires authentication via JWT token
-            - Only ADMIN and STAFF roles can delete labels
-            - Returns 403 Forbidden for CUSTOMER role
+            - Only Admin and Stuff roles can delete labels
+            - Returns 403 Forbidden for Customer role
             """.trimIndent()
         tags = listOf("labels")
         request {
@@ -177,7 +177,7 @@ private fun deleteLabelDocumentation(): RouteConfig.() -> Unit =
             }
             badRequestExample("Invalid label UUID")
             notAuthenticatedExample()
-            insufficientPermissionsExample("Only ADMIN and STAFF roles can delete labels")
+            insufficientPermissionsExample("Only Admin and Stuff roles can delete labels")
             notFoundExample("Label not found")
             conflictExample("Label has vinyls" to "Cannot delete label with associated vinyls")
         }
@@ -207,7 +207,7 @@ private fun listLabelsDocumentation(): RouteConfig.() -> Unit =
 
             **Access Requirements:**
             - Requires authentication via JWT token
-            - Accessible to all authenticated roles (CUSTOMER, STAFF, ADMIN)
+            - Accessible to all authenticated roles (Customer, Stuff, Admin)
             """.trimIndent()
         tags = listOf("labels")
         request {
@@ -259,8 +259,8 @@ private fun createLabelDocumentation(): RouteConfig.() -> Unit =
 
             **Access Requirements:**
             - Requires authentication via JWT token
-            - Only ADMIN and STAFF roles can create labels
-            - Returns 403 Forbidden for CUSTOMER role
+            - Only Admin and Stuff roles can create labels
+            - Returns 403 Forbidden for Customer role
             """.trimIndent()
         tags = listOf("labels")
         request {
@@ -280,7 +280,7 @@ private fun createLabelDocumentation(): RouteConfig.() -> Unit =
                 }
             }
             notAuthenticatedExample()
-            insufficientPermissionsExample("Only ADMIN and STAFF roles can create labels")
+            insufficientPermissionsExample("Only Admin and Stuff roles can create labels")
         }
     }
 
@@ -307,8 +307,8 @@ private fun updateLabelDocumentation(): RouteConfig.() -> Unit =
 
             **Access Requirements:**
             - Requires authentication via JWT token
-            - Only ADMIN and STAFF roles can update labels
-            - Returns 403 Forbidden for CUSTOMER role
+            - Only Admin and Stuff roles can update labels
+            - Returns 403 Forbidden for Customer role
             """.trimIndent()
         tags = listOf("labels")
         request {
@@ -334,7 +334,7 @@ private fun updateLabelDocumentation(): RouteConfig.() -> Unit =
             }
             badRequestExample("Invalid label UUID")
             notAuthenticatedExample()
-            insufficientPermissionsExample("Only ADMIN and STAFF roles can update labels")
+            insufficientPermissionsExample("Only Admin and Stuff roles can update labels")
             notFoundExample("Label not found")
         }
     }
@@ -358,7 +358,7 @@ private fun getLabelDocumentation(): RouteConfig.() -> Unit =
 
             **Access Requirements:**
             - Requires authentication via JWT token
-            - Accessible to all authenticated roles (CUSTOMER, STAFF, ADMIN)
+            - Accessible to all authenticated roles (Customer, Stuff, Admin)
             """.trimIndent()
         tags = listOf("labels")
         request {

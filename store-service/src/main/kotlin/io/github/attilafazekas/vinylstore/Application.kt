@@ -163,7 +163,7 @@ private fun Application.configureOpenApi() {
                 inventory tracking, user accounts, and listings.
 
                 ## Features
-                - **Authentication**: JWT-based authentication with role-based access control (CUSTOMER, STAFF, ADMIN)
+                - **Authentication**: JWT-based authentication with role-based access control (Customer, Stuff, Admin)
                 - **Catalog Management**: Manage artists, labels, genres, and vinyl records
                 - **Listings & Inventory**: Create and manage listings with real-time inventory tracking
                 - **User Management**: User registration, authentication, and profile management with addresses
