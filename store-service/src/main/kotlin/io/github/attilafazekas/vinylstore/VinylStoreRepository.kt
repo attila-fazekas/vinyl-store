@@ -440,8 +440,25 @@ class VinylStoreRepository(
 
     suspend fun getAllArtists(): List<Artist> = db.runQuery { QueryDsl.from(Meta.artist).orderBy(Meta.artist.id) }
 
-    suspend fun hasVinylsForArtist(id: Uuid): Boolean =
-        db.runQuery { QueryDsl.from(Meta.vinylArtist).where { Meta.vinylArtist.artistId eq id } }.isNotEmpty()
+    suspend fun hasVinylsForArtist(id: Uuid): Boolean {
+        val hasPrimaryArtistReference =
+            db
+                .runQuery {
+                    QueryDsl
+                        .from(Meta.vinyl)
+                        .where { Meta.vinyl.artistId eq id }
+                        .limit(1)
+                }.isNotEmpty()
+        if (hasPrimaryArtistReference) return true
+
+        return db
+            .runQuery {
+                QueryDsl
+                    .from(Meta.vinylArtist)
+                    .where { Meta.vinylArtist.artistId eq id }
+                    .limit(1)
+            }.isNotEmpty()
+    }
 
     suspend fun createGenre(name: String): Genre {
         val existing = db.runQuery { QueryDsl.from(Meta.genre) }.find { it.name.equals(name, ignoreCase = true) }
