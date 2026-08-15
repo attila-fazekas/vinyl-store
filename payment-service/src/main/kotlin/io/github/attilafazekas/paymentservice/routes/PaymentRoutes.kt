@@ -17,7 +17,6 @@
 package io.github.attilafazekas.paymentservice.routes
 
 import io.github.attilafazekas.paymentservice.enums.PaymentStatus
-import io.github.attilafazekas.paymentservice.models.HealthResponse
 import io.github.attilafazekas.paymentservice.models.PaymentRequest
 import io.github.attilafazekas.paymentservice.models.PaymentResponse
 import io.github.smiley4.ktoropenapi.config.RouteConfig
@@ -35,10 +34,6 @@ fun Route.paymentRoutes() {
 
     get("/payments/{paymentId}", getPaymentDocumentation()) {
         call.respond(HttpStatusCode.NotImplemented)
-    }
-
-    get("/health", healthCheckDocumentation()) {
-        call.respond(HealthResponse(status = "OK"))
     }
 }
 
@@ -150,22 +145,6 @@ private fun getPaymentDocumentation(): RouteConfig.() -> Unit =
             }
             code(HttpStatusCode.NotImplemented) {
                 description = "This endpoint is not implemented yet."
-            }
-        }
-    }
-
-private fun healthCheckDocumentation(): RouteConfig.() -> Unit =
-    {
-        operationId = "healthCheck"
-        summary = "Health Check"
-        description =
-            """
-            Check the payment service health status.
-            """.trimIndent()
-        tags = listOf("health")
-        response {
-            code(HttpStatusCode.OK) {
-                body<HealthResponse>()
             }
         }
     }

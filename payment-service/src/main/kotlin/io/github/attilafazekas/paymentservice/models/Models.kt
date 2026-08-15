@@ -57,4 +57,6 @@ data class PaymentResponse(
 data class HealthResponse(
     @Description("The health status of the API.")
     val status: String,
+    @Description("How long the service has been running, formatted as HH:MM:SS.")
+    val uptime: String,
 )
