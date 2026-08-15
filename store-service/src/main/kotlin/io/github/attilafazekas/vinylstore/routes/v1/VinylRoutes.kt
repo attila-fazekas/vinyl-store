@@ -421,7 +421,7 @@ private fun getVinylDocumentation(): RouteConfig.() -> Unit =
             pathParameter<Uuid>("id") {
                 description = "Vinyl UUID"
                 example("Vinyl details") {
-                    value = "550e8400-e29b-41d4-a716-446655440000"
+                    value = Uuid.parse("550e8400-e29b-41d4-a716-446655440000")
                 }
             }
         }
@@ -516,7 +516,8 @@ private fun createVinylDocumentation(): RouteConfig.() -> Unit =
                 body<Vinyl> {
                     example("New vinyl") {
                         value =
-                            CreateVinylRequest(
+                            Vinyl(
+                                id = Uuid.parse("550e8400-e29b-41d4-a716-446655440003"),
                                 title = "The Loud Silence",
                                 artistId = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
                                 labelId = Uuid.parse("550e8400-e29b-41d4-a716-446655440001"),
@@ -524,6 +525,8 @@ private fun createVinylDocumentation(): RouteConfig.() -> Unit =
                                 year = 2015,
                                 conditionMedia = "VG",
                                 conditionSleeve = "VG+",
+                                createdAt = TimestampUtil.now(),
+                                updatedAt = TimestampUtil.now(),
                             )
                     }
                 }
@@ -575,7 +578,7 @@ private fun updateVinylDocumentation(): RouteConfig.() -> Unit =
             pathParameter<Uuid>("id") {
                 description = "Vinyl UUID"
                 example("Update vinyl") {
-                    value = "550e8400-e29b-41d4-a716-446655440000"
+                    value = Uuid.parse("550e8400-e29b-41d4-a716-446655440000")
                 }
             }
             body<UpdateVinylRequest> {
@@ -664,7 +667,7 @@ private fun deleteVinylDocumentation(): RouteConfig.() -> Unit =
             pathParameter<Uuid>("id") {
                 description = "Vinyl UUID"
                 example("Delete vinyl") {
-                    value = "550e8400-e29b-41d4-a716-446655440000"
+                    value = Uuid.parse("550e8400-e29b-41d4-a716-446655440000")
                 }
             }
         }

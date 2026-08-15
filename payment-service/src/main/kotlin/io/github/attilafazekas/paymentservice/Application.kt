@@ -24,7 +24,9 @@ import io.github.attilafazekas.paymentservice.routes.paymentRoutes
 import io.github.smiley4.ktoropenapi.OpenApi
 import io.github.smiley4.ktoropenapi.config.AuthKeyLocation
 import io.github.smiley4.ktoropenapi.config.AuthType
+import io.github.smiley4.ktoropenapi.config.ExampleEncoder
 import io.github.smiley4.ktoropenapi.config.OutputFormat
+import io.github.smiley4.ktoropenapi.config.SchemaGenerator
 import io.github.smiley4.ktoropenapi.openApi
 import io.github.smiley4.ktoropenapi.route
 import io.github.smiley4.ktorswaggerui.swaggerUI
@@ -92,6 +94,15 @@ private fun Application.configureOpenApi() {
                 $API_KEY_HEADER: $DEFAULT_PAYMENT_SERVICE_API_KEY
                 ```
                 """.trimIndent()
+        }
+        schemas {
+            generator =
+                SchemaGenerator.reflection {
+                    overwrite(SchemaGenerator.TypeOverwrites.KotlinUuid())
+                }
+        }
+        examples {
+            exampleEncoder = ExampleEncoder.kotlinx()
         }
         server {
             url = "http://localhost:9090"

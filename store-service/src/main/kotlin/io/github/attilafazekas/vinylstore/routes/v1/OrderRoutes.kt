@@ -124,11 +124,11 @@ fun Route.orderRoutes(
                 val centsPerUnit = 100
                 val chargeRequest =
                     PaymentRequest(
-                        orderReference = order.id.toString(),
+                        orderReference = order.id,
                         amountCents = (order.totalAmount * centsPerUnit).roundToInt(),
                         currency = order.currency,
                         paymentMethod = request.paymentMethod,
-                        idempotencyKey = order.id.toString(),
+                        idempotencyKey = order.id,
                     )
 
                 when (paymentClient.charge(chargeRequest)) {
@@ -315,7 +315,7 @@ private fun payOrderDocumentation(): RouteConfig.() -> Unit =
             pathParameter<Uuid>("id") {
                 description = "Order UUID"
                 example("Order") {
-                    value = "550e8400-e29b-41d4-a716-446655440000"
+                    value = Uuid.parse("550e8400-e29b-41d4-a716-446655440000")
                 }
             }
             body<PayOrderRequest> {
@@ -361,7 +361,7 @@ private fun cancelOrderDocumentation(): RouteConfig.() -> Unit =
             pathParameter<Uuid>("id") {
                 description = "Order UUID"
                 example("Order") {
-                    value = "550e8400-e29b-41d4-a716-446655440000"
+                    value = Uuid.parse("550e8400-e29b-41d4-a716-446655440000")
                 }
             }
         }
@@ -429,7 +429,7 @@ private fun getOrderDocumentation(): RouteConfig.() -> Unit =
             pathParameter<Uuid>("id") {
                 description = "Order UUID"
                 example("Order") {
-                    value = "550e8400-e29b-41d4-a716-446655440000"
+                    value = Uuid.parse("550e8400-e29b-41d4-a716-446655440000")
                 }
             }
         }

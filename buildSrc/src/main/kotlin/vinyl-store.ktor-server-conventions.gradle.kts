@@ -23,6 +23,8 @@ dependencies {
     implementation("io.github.smiley4:ktor-openapi:_")
     implementation("io.github.smiley4:ktor-swagger-ui:_")
     implementation("io.github.smiley4:schema-kenerator-core:_")
+    implementation("io.github.smiley4:schema-kenerator-reflection:_")
+    implementation("io.github.smiley4:schema-kenerator-serialization:_")
     implementation("io.github.smiley4:schema-kenerator-swagger:_")
     implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:_")
     implementation("io.ktor:ktor-server-auth-jwt-jvm:_")

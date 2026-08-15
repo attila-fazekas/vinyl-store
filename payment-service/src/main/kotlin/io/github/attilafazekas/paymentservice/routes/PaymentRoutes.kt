@@ -81,11 +81,11 @@ private fun chargePaymentDocumentation(): RouteConfig.() -> Unit =
                 example("Charge request") {
                     value =
                         PaymentRequest(
-                            orderReference = "550e8400-e29b-41d4-a716-446655440000",
+                            orderReference = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
                             amountCents = 3499,
                             currency = "EUR",
                             paymentMethod = "tok_visa",
-                            idempotencyKey = "550e8400-e29b-41d4-a716-446655440000",
+                            idempotencyKey = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
                         )
                 }
             }
@@ -98,7 +98,7 @@ private fun chargePaymentDocumentation(): RouteConfig.() -> Unit =
                             PaymentResponse(
                                 paymentId = Uuid.parse("660e8400-e29b-41d4-a716-446655440000"),
                                 status = PaymentStatus.Succeeded,
-                                orderReference = "550e8400-e29b-41d4-a716-446655440000",
+                                orderReference = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
                                 amountCents = 3499,
                                 currency = "EUR",
                                 failureReason = null,
@@ -110,7 +110,7 @@ private fun chargePaymentDocumentation(): RouteConfig.() -> Unit =
                             PaymentResponse(
                                 paymentId = Uuid.parse("660e8400-e29b-41d4-a716-446655440001"),
                                 status = PaymentStatus.Failed,
-                                orderReference = "550e8400-e29b-41d4-a716-446655440000",
+                                orderReference = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
                                 amountCents = 3499,
                                 currency = "EUR",
                                 failureReason = "Card declined",
@@ -136,7 +136,7 @@ private fun getPaymentDocumentation(): RouteConfig.() -> Unit =
             pathParameter<Uuid>("paymentId") {
                 description = "Payment UUID"
                 example("Payment details") {
-                    value = "660e8400-e29b-41d4-a716-446655440000"
+                    value = Uuid.parse("660e8400-e29b-41d4-a716-446655440000")
                 }
             }
         }
@@ -148,7 +148,7 @@ private fun getPaymentDocumentation(): RouteConfig.() -> Unit =
                             PaymentResponse(
                                 paymentId = Uuid.parse("660e8400-e29b-41d4-a716-446655440000"),
                                 status = PaymentStatus.Succeeded,
-                                orderReference = "550e8400-e29b-41d4-a716-446655440000",
+                                orderReference = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
                                 amountCents = 3499,
                                 currency = "EUR",
                                 failureReason = null,

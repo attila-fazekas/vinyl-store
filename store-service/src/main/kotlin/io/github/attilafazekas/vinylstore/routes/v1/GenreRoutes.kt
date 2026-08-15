@@ -261,7 +261,7 @@ private fun getGenreDocumentation(): RouteConfig.() -> Unit =
             pathParameter<Uuid>("id") {
                 description = "Genre UUID"
                 example("Genre details") {
-                    value = "550e8400-e29b-41d4-a716-446655440000"
+                    value = Uuid.parse("550e8400-e29b-41d4-a716-446655440000")
                 }
             }
         }
@@ -310,7 +310,7 @@ private fun updateGenreDocumentation(): RouteConfig.() -> Unit =
             pathParameter<Uuid>("id") {
                 description = "Genre UUID"
                 example("Update genre") {
-                    value = "550e8400-e29b-41d4-a716-446655440000"
+                    value = Uuid.parse("550e8400-e29b-41d4-a716-446655440000")
                 }
             }
             body<UpdateGenreRequest> {
@@ -367,7 +367,7 @@ private fun deleteGenreDocumentation(): RouteConfig.() -> Unit =
             pathParameter<Uuid>("id") {
                 description = "Genre UUID"
                 example("Delete genre") {
-                    value = "550e8400-e29b-41d4-a716-446655440000"
+                    value = Uuid.parse("550e8400-e29b-41d4-a716-446655440000")
                 }
             }
         }

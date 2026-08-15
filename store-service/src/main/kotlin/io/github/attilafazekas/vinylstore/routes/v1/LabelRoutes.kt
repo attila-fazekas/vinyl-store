@@ -167,7 +167,7 @@ private fun deleteLabelDocumentation(): RouteConfig.() -> Unit =
             pathParameter<Uuid>("id") {
                 description = "Label UUID"
                 example("Delete label") {
-                    value = "550e8400-e29b-41d4-a716-446655440000"
+                    value = Uuid.parse("550e8400-e29b-41d4-a716-446655440000")
                 }
             }
         }
@@ -315,7 +315,7 @@ private fun updateLabelDocumentation(): RouteConfig.() -> Unit =
             pathParameter<Uuid>("id") {
                 description = "Label UUID"
                 example("Update label") {
-                    value = "550e8400-e29b-41d4-a716-446655440000"
+                    value = Uuid.parse("550e8400-e29b-41d4-a716-446655440000")
                 }
             }
             body<UpdateLabelRequest> {
@@ -365,7 +365,7 @@ private fun getLabelDocumentation(): RouteConfig.() -> Unit =
             pathParameter<Uuid>("id") {
                 description = "Label UUID"
                 example("Label details") {
-                    value = "550e8400-e29b-41d4-a716-446655440000"
+                    value = Uuid.parse("550e8400-e29b-41d4-a716-446655440000")
                 }
             }
         }

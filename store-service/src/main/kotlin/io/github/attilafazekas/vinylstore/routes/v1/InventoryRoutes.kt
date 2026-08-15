@@ -35,7 +35,6 @@ import io.github.attilafazekas.vinylstore.enums.Role
 import io.github.attilafazekas.vinylstore.models.Inventory
 import io.github.attilafazekas.vinylstore.models.InventoryResponse
 import io.github.attilafazekas.vinylstore.models.UpdateInventoryRequest
-import io.github.attilafazekas.vinylstore.models.VinylsResponse
 import io.github.attilafazekas.vinylstore.requireRole
 import io.github.smiley4.ktoropenapi.config.RouteConfig
 import io.github.smiley4.ktoropenapi.get
@@ -255,8 +254,8 @@ private fun listInventoryDocumentation(): RouteConfig.() -> Unit =
                     }
                     example("Empty results") {
                         value =
-                            VinylsResponse(
-                                vinyls = emptyList(),
+                            InventoryResponse(
+                                inventory = emptyList(),
                                 total = 0,
                             )
                     }

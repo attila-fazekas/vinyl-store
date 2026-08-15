@@ -24,7 +24,7 @@ import kotlin.uuid.Uuid
 @Serializable
 data class PaymentRequest(
     @Description("Reference to the order this payment is for, supplied by the calling system.")
-    val orderReference: String,
+    val orderReference: Uuid,
     @Description("The amount to charge, expressed in the smallest currency unit (e.g., cents for EUR).")
     val amountCents: Int,
     @Description("The ISO 4217 currency code for the amount.")
@@ -32,7 +32,7 @@ data class PaymentRequest(
     @Description("Opaque token identifying the payment method to charge (e.g., 'tok_visa').")
     val paymentMethod: String,
     @Description("Idempotency key for this charge. Retrying a charge with the same key must not result in a double charge.")
-    val idempotencyKey: String,
+    val idempotencyKey: Uuid,
 )
 
 @Serializable
@@ -42,7 +42,7 @@ data class PaymentResponse(
     @Description("The outcome of the payment attempt.")
     val status: PaymentStatus,
     @Description("Reference to the order this payment is for, as supplied in the request.")
-    val orderReference: String,
+    val orderReference: Uuid,
     @Description("The charged amount, expressed in the smallest currency unit (e.g., cents for EUR).")
     val amountCents: Int,
     @Description("The ISO 4217 currency code for the amount.")
