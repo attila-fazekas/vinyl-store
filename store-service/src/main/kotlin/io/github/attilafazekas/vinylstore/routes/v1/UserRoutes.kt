@@ -309,7 +309,7 @@ private fun getUserDocumentation(): RouteConfig.() -> Unit =
             pathParameter<Uuid>("id") {
                 description = "User UUID"
                 example("User details") {
-                    value = "550e8400-e29b-41d4-a716-446655440000"
+                    value = Uuid.parse("550e8400-e29b-41d4-a716-446655440000")
                 }
             }
         }
@@ -434,7 +434,7 @@ private fun updateUserDocumentation(): RouteConfig.() -> Unit =
             pathParameter<Uuid>("id") {
                 description = "User UUID"
                 example("Update user") {
-                    value = "550e8400-e29b-41d4-a716-446655440000"
+                    value = Uuid.parse("550e8400-e29b-41d4-a716-446655440000")
                 }
             }
             body<UpdateUserRequest> {
@@ -499,7 +499,7 @@ private fun deleteUserDocumentation(): RouteConfig.() -> Unit =
             pathParameter<Uuid>("id") {
                 description = "User UUID"
                 example("Delete user") {
-                    value = "550e8400-e29b-41d4-a716-446655440000"
+                    value = Uuid.parse("550e8400-e29b-41d4-a716-446655440000")
                 }
             }
         }

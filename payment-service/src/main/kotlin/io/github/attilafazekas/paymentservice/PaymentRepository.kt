@@ -27,7 +27,7 @@ private const val DECLINED_PAYMENT_METHOD = "tok_chargeDeclined"
 
 class PaymentRepository {
     private val paymentsById = ConcurrentHashMap<Uuid, PaymentResponse>()
-    private val paymentsByIdempotencyKey = ConcurrentHashMap<String, PaymentResponse>()
+    private val paymentsByIdempotencyKey = ConcurrentHashMap<Uuid, PaymentResponse>()
 
     fun charge(request: PaymentRequest): PaymentResponse =
         paymentsByIdempotencyKey.computeIfAbsent(request.idempotencyKey) {

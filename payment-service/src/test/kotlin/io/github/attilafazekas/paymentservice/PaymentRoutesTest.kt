@@ -45,9 +45,9 @@ import kotlin.uuid.Uuid
 
 private fun testChargeRequest(
     paymentMethod: String = "tok_visa",
-    idempotencyKey: String = Uuid.random().toString(),
+    idempotencyKey: Uuid = Uuid.random(),
 ) = PaymentRequest(
-    orderReference = Uuid.random().toString(),
+    orderReference = Uuid.random(),
     amountCents = 3499,
     currency = "EUR",
     paymentMethod = paymentMethod,
@@ -114,7 +114,7 @@ class PaymentRoutesTest {
         testApplication {
             application { paymentServiceApplication() }
             val client = authenticatedClient()
-            val idempotencyKey = Uuid.random().toString()
+            val idempotencyKey = Uuid.random()
 
             val first = client.post("/payments") { setBody(testChargeRequest(idempotencyKey = idempotencyKey)) }
             val second =

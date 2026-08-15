@@ -46,7 +46,9 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import io.github.smiley4.ktoropenapi.OpenApi
 import io.github.smiley4.ktoropenapi.config.AuthScheme
 import io.github.smiley4.ktoropenapi.config.AuthType
+import io.github.smiley4.ktoropenapi.config.ExampleEncoder
 import io.github.smiley4.ktoropenapi.config.OutputFormat
+import io.github.smiley4.ktoropenapi.config.SchemaGenerator
 import io.github.smiley4.ktoropenapi.openApi
 import io.github.smiley4.ktoropenapi.route
 import io.github.smiley4.ktorswaggerui.swaggerUI
@@ -213,6 +215,15 @@ private fun Application.configureOpenApi() {
                 - **v1**: Standard responses with separate entities and references by ID
                 - **v2**: Enhanced responses with embedded/nested entities for reduced API calls
                 """.trimIndent()
+        }
+        schemas {
+            generator =
+                SchemaGenerator.reflection {
+                    overwrite(SchemaGenerator.TypeOverwrites.KotlinUuid())
+                }
+        }
+        examples {
+            exampleEncoder = ExampleEncoder.kotlinx()
         }
         server {
             url = "http://localhost:8080"

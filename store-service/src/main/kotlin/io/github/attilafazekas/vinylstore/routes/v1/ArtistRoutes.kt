@@ -160,7 +160,7 @@ private fun getArtistDocumentation(): RouteConfig.() -> Unit =
             pathParameter<Uuid>("id") {
                 description = "Artist UUID"
                 example("Artist details") {
-                    value = "550e8400-e29b-41d4-a716-446655440000"
+                    value = Uuid.parse("550e8400-e29b-41d4-a716-446655440000")
                 }
             }
         }
@@ -310,7 +310,7 @@ private fun updateArtistDocumentation(): RouteConfig.() -> Unit =
             pathParameter<Uuid>("id") {
                 description = "Artist UUID"
                 example("Update artist") {
-                    value = "550e8400-e29b-41d4-a716-446655440000"
+                    value = Uuid.parse("550e8400-e29b-41d4-a716-446655440000")
                 }
             }
             body<UpdateArtistRequest> {
@@ -367,7 +367,7 @@ private fun deleteArtistDocumentation(): RouteConfig.() -> Unit =
             pathParameter<Uuid>("id") {
                 description = "Artist UUID"
                 example("Delete artist") {
-                    value = "550e8400-e29b-41d4-a716-446655440000"
+                    value = Uuid.parse("550e8400-e29b-41d4-a716-446655440000")
                 }
             }
         }

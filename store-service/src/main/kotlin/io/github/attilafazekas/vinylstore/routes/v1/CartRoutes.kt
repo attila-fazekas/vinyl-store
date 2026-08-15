@@ -300,7 +300,7 @@ private fun updateCartItemDocumentation(): RouteConfig.() -> Unit =
             pathParameter<Uuid>("listingId") {
                 description = "Listing UUID"
                 example("Cart item") {
-                    value = "550e8400-e29b-41d4-a716-446655440000"
+                    value = Uuid.parse("550e8400-e29b-41d4-a716-446655440000")
                 }
             }
             body<UpdateCartItemRequest> {
@@ -354,7 +354,7 @@ private fun removeCartItemDocumentation(): RouteConfig.() -> Unit =
             pathParameter<Uuid>("listingId") {
                 description = "Listing UUID"
                 example("Cart item") {
-                    value = "550e8400-e29b-41d4-a716-446655440000"
+                    value = Uuid.parse("550e8400-e29b-41d4-a716-446655440000")
                 }
             }
         }
