@@ -38,8 +38,6 @@ import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Test
 import kotlin.uuid.Uuid
 
-private const val API_KEY_HEADER = "X-API-Key"
-
 private fun testChargeRequest(
     paymentMethod: String = "tok_visa",
     idempotencyKey: String = Uuid.random().toString(),
@@ -57,7 +55,7 @@ class PaymentRoutesTest {
         testApplication {
             application { paymentServiceApplication() }
 
-            val response = jsonClient().post("/payments") { setBody(testChargeRequest()) }
+            val response = unauthenticatedClient().post("/payments") { setBody(testChargeRequest()) }
 
             response.status shouldBe HttpStatusCode.Unauthorized
         }
@@ -68,7 +66,7 @@ class PaymentRoutesTest {
             application { paymentServiceApplication() }
 
             val response =
-                jsonClient().post("/payments") {
+                unauthenticatedClient().post("/payments") {
                     header(API_KEY_HEADER, "wrong-key")
                     setBody(testChargeRequest())
                 }
@@ -162,9 +160,19 @@ class PaymentRoutesTest {
         testApplication {
             application { paymentServiceApplication() }
 
-            val response = jsonClient().get("/payments/${Uuid.random()}")
+            val response = unauthenticatedClient().get("/payments/${Uuid.random()}")
 
             response.status shouldBe HttpStatusCode.Unauthorized
+        }
+
+    private fun ApplicationTestBuilder.unauthenticatedClient() =
+        createClient {
+            install(ContentNegotiation) {
+                json(Json { ignoreUnknownKeys = true })
+            }
+            install(DefaultRequest) {
+                contentType(ContentType.Application.Json)
+            }
         }
 
     private fun ApplicationTestBuilder.authenticatedClient() =
@@ -176,13 +184,5 @@ class PaymentRoutesTest {
                 contentType(ContentType.Application.Json)
                 header(API_KEY_HEADER, DEFAULT_PAYMENT_SERVICE_API_KEY)
             }
-        }
-
-    private fun ApplicationTestBuilder.jsonClient() =
-        createClient {
-            install(ContentNegotiation) {
-                json(Json { ignoreUnknownKeys = true })
-            }
-            install(DefaultRequest) { contentType(ContentType.Application.Json) }
         }
 }

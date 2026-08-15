@@ -18,6 +18,7 @@ package io.github.attilafazekas.paymentservice
 
 const val AUTH_API_KEY = "auth-api-key"
 const val DEFAULT_PAYMENT_SERVICE_API_KEY = "vinyl-store-payment-service-api-key-for-testing"
+const val API_KEY_HEADER = "X-API-Key"
 
 const val BAD_REQUEST = "Bad Request"
 const val NOT_FOUND = "Not Found"

@@ -94,7 +94,7 @@ private fun Application.configureOpenApi() {
             securityScheme(AUTH_API_KEY) {
                 type = AuthType.API_KEY
                 location = AuthKeyLocation.HEADER
-                name = "X-API-Key"
+                name = API_KEY_HEADER
             }
             defaultSecuritySchemeNames(AUTH_API_KEY)
         }

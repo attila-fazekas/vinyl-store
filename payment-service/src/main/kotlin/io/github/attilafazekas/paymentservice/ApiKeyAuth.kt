@@ -25,6 +25,8 @@ import io.ktor.server.auth.AuthenticationProvider
 import io.ktor.server.response.respond
 import java.security.MessageDigest
 
+private val challengeKey: Any = "ApiKeyAuth"
+
 fun AuthenticationConfig.apiKey(
     name: String,
     expectedKey: String,
@@ -32,10 +34,7 @@ fun AuthenticationConfig.apiKey(
     register(ApiKeyAuthenticationProvider(ApiKeyAuthenticationProvider.Config(name, expectedKey)))
 }
 
-object ApiKeyPrincipal
-
-private val challengeKey: Any = "ApiKeyAuth"
-private const val API_KEY_HEADER = "X-API-Key"
+private object ApiKeyPrincipal
 
 private class ApiKeyAuthenticationProvider(
     config: Config,
