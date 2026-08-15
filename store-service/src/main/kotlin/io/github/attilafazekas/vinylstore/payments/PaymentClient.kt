@@ -16,7 +16,10 @@
 
 package io.github.attilafazekas.vinylstore.payments
 
-import io.github.attilafazekas.vinylstore.enums.PaymentChargeStatus
+import io.github.attilafazekas.common.API_KEY_HEADER
+import io.github.attilafazekas.common.enums.PaymentStatus
+import io.github.attilafazekas.common.models.PaymentRequest
+import io.github.attilafazekas.common.models.PaymentResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
@@ -33,7 +36,6 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.json.Json
 
-private const val API_KEY_HEADER = "X-API-Key"
 private const val PAYMENT_CLIENT_TIMEOUT_MILLIS = 5_000L
 
 class PaymentClient(
@@ -41,7 +43,7 @@ class PaymentClient(
     private val apiKey: String,
     private val client: HttpClient = createHttpClient(),
 ) {
-    suspend fun charge(request: PaymentChargeRequest): PaymentChargeOutcome =
+    suspend fun charge(request: PaymentRequest): PaymentChargeOutcome =
         try {
             val response =
                 client.post("$baseUrl/payments") {
@@ -49,10 +51,10 @@ class PaymentClient(
                     setBody(request)
                 }
             if (response.status.isSuccess()) {
-                val chargeResponse = response.body<PaymentChargeResponse>()
+                val chargeResponse = response.body<PaymentResponse>()
                 when (chargeResponse.status) {
-                    PaymentChargeStatus.Succeeded -> PaymentChargeOutcome.Approved(chargeResponse)
-                    PaymentChargeStatus.Failed -> PaymentChargeOutcome.Declined(chargeResponse)
+                    PaymentStatus.Succeeded -> PaymentChargeOutcome.Approved(chargeResponse)
+                    PaymentStatus.Failed -> PaymentChargeOutcome.Declined(chargeResponse)
                 }
             } else {
                 PaymentChargeOutcome.Unavailable(IllegalStateException("Payment service responded with ${response.status}"))
@@ -66,11 +68,11 @@ class PaymentClient(
 
 sealed interface PaymentChargeOutcome {
     data class Approved(
-        val response: PaymentChargeResponse,
+        val response: PaymentResponse,
     ) : PaymentChargeOutcome
 
     data class Declined(
-        val response: PaymentChargeResponse,
+        val response: PaymentResponse,
     ) : PaymentChargeOutcome
 
     data class Unavailable(

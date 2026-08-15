@@ -16,15 +16,15 @@
 
 package io.github.attilafazekas.vinylstore.routes.v2
 
+import io.github.attilafazekas.common.TimestampUtil
+import io.github.attilafazekas.common.notAuthenticatedExample
 import io.github.attilafazekas.vinylstore.ADMIN_EMAIL
 import io.github.attilafazekas.vinylstore.AUTH_JWT
 import io.github.attilafazekas.vinylstore.AuthException
 import io.github.attilafazekas.vinylstore.CUSTOMER_EMAIL
 import io.github.attilafazekas.vinylstore.Email
-import io.github.attilafazekas.vinylstore.TimestampUtil
 import io.github.attilafazekas.vinylstore.V2
 import io.github.attilafazekas.vinylstore.VinylStoreRepository
-import io.github.attilafazekas.vinylstore.documentation.notAuthenticatedExample
 import io.github.attilafazekas.vinylstore.enums.AddressType
 import io.github.attilafazekas.vinylstore.enums.Role
 import io.github.attilafazekas.vinylstore.models.Address

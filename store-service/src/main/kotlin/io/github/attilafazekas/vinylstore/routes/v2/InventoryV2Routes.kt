@@ -16,19 +16,19 @@
 
 package io.github.attilafazekas.vinylstore.routes.v2
 
+import io.github.attilafazekas.common.BAD_REQUEST
+import io.github.attilafazekas.common.NOT_FOUND
+import io.github.attilafazekas.common.badRequestExample
+import io.github.attilafazekas.common.insufficientPermissionsExample
+import io.github.attilafazekas.common.models.ErrorResponse
+import io.github.attilafazekas.common.notAuthenticatedExample
+import io.github.attilafazekas.common.notFoundExample
 import io.github.attilafazekas.vinylstore.AUTH_JWT
-import io.github.attilafazekas.vinylstore.BAD_REQUEST
-import io.github.attilafazekas.vinylstore.NOT_FOUND
 import io.github.attilafazekas.vinylstore.V2
 import io.github.attilafazekas.vinylstore.VinylStoreRepository
-import io.github.attilafazekas.vinylstore.documentation.badRequestExample
-import io.github.attilafazekas.vinylstore.documentation.insufficientPermissionsExample
-import io.github.attilafazekas.vinylstore.documentation.notAuthenticatedExample
-import io.github.attilafazekas.vinylstore.documentation.notFoundExample
 import io.github.attilafazekas.vinylstore.enums.ListingStatus
 import io.github.attilafazekas.vinylstore.enums.Role
 import io.github.attilafazekas.vinylstore.models.Artist
-import io.github.attilafazekas.vinylstore.models.ErrorResponse
 import io.github.attilafazekas.vinylstore.models.InventoriesV2Response
 import io.github.attilafazekas.vinylstore.models.InventoryWithListingV2Response
 import io.github.attilafazekas.vinylstore.models.ListingContextV2

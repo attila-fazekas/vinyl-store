@@ -16,6 +16,9 @@
 
 package io.github.attilafazekas.paymentservice
 
+import io.github.attilafazekas.common.API_KEY_HEADER
+import io.github.attilafazekas.common.DEFAULT_PAYMENT_SERVICE_API_KEY
+import io.github.attilafazekas.common.PAYMENT_SERVICE_API_KEY_ENV
 import io.github.attilafazekas.paymentservice.routes.healthRoutes
 import io.github.attilafazekas.paymentservice.routes.paymentRoutes
 import io.github.smiley4.ktoropenapi.OpenApi
@@ -83,7 +86,11 @@ private fun Application.configureOpenApi() {
                 response instead of charging again.
 
                 ## Authentication
-                All endpoints (except `/health`) require an `X-API-Key` header.
+                All endpoints (except `/health`) require an `$API_KEY_HEADER` header. When running the
+                service in isolation without setting `$PAYMENT_SERVICE_API_KEY_ENV`, use:
+                ```
+                $API_KEY_HEADER: $DEFAULT_PAYMENT_SERVICE_API_KEY
+                ```
                 """.trimIndent()
         }
         server {
@@ -113,7 +120,7 @@ private fun Application.configurePlugins() {
 }
 
 private fun Application.configureAuthentication() {
-    val expectedApiKey = System.getenv("PAYMENT_SERVICE_API_KEY") ?: DEFAULT_PAYMENT_SERVICE_API_KEY
+    val expectedApiKey = System.getenv(PAYMENT_SERVICE_API_KEY_ENV) ?: DEFAULT_PAYMENT_SERVICE_API_KEY
     install(Authentication) {
         apiKey(AUTH_API_KEY, expectedApiKey)
     }

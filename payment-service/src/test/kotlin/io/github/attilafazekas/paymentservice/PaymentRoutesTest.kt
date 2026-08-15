@@ -16,10 +16,15 @@
 
 package io.github.attilafazekas.paymentservice
 
-import io.github.attilafazekas.paymentservice.enums.PaymentStatus
-import io.github.attilafazekas.paymentservice.models.ErrorResponse
-import io.github.attilafazekas.paymentservice.models.PaymentRequest
-import io.github.attilafazekas.paymentservice.models.PaymentResponse
+import io.github.attilafazekas.common.API_KEY_HEADER
+import io.github.attilafazekas.common.BAD_REQUEST
+import io.github.attilafazekas.common.DEFAULT_PAYMENT_SERVICE_API_KEY
+import io.github.attilafazekas.common.NOT_FOUND
+import io.github.attilafazekas.common.UNAUTHORIZED
+import io.github.attilafazekas.common.enums.PaymentStatus
+import io.github.attilafazekas.common.models.ErrorResponse
+import io.github.attilafazekas.common.models.PaymentRequest
+import io.github.attilafazekas.common.models.PaymentResponse
 import io.kotest.matchers.shouldBe
 import io.ktor.client.call.body
 import io.ktor.client.plugins.DefaultRequest

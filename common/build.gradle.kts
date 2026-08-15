@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 
-package io.github.attilafazekas.vinylstore
+import org.gradle.kotlin.dsl.withType
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-const val AUTH_JWT = "auth-jwt"
+plugins {
+    id("vinyl-store.detekt-conventions")
+    id("vinyl-store.kotlin-conventions")
+    id("vinyl-store.ktlint-conventions")
+    id("org.jetbrains.kotlin.plugin.serialization")
+}
 
-const val ADMIN_EMAIL = "admin@vinylstore.com"
-const val ADMIN_PASSWORD = "admin123"
-const val STAFF_EMAIL = "staff@vinylstore.com"
-const val STAFF_PASSWORD = "staff123"
-const val CUSTOMER_EMAIL = "customer@vinylstore.com"
-const val CUSTOMER_PASSWORD = "customer123"
+dependencies {
+    implementation("io.github.smiley4:ktor-openapi:_")
+    implementation("io.github.smiley4:schema-kenerator-core:_")
+    implementation("io.ktor:ktor-http-jvm:_")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:_")
+}

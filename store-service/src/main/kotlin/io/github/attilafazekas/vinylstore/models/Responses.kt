@@ -56,14 +56,6 @@ data class UserResponse(
 )
 
 @Serializable
-data class ErrorResponse(
-    @Description("The error type or category.")
-    val error: String,
-    @Description("A detailed error message describing what went wrong.")
-    val message: String,
-)
-
-@Serializable
 data class HealthResponse(
     @Description("The health status of the API (typically 'ok').")
     val status: String,

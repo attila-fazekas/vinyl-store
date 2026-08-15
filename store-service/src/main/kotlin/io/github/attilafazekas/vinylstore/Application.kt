@@ -16,8 +16,13 @@
 
 package io.github.attilafazekas.vinylstore
 
+import io.github.attilafazekas.common.DEFAULT_PAYMENT_SERVICE_API_KEY
+import io.github.attilafazekas.common.FORBIDDEN
+import io.github.attilafazekas.common.PAYMENT_SERVICE_API_KEY_ENV
+import io.github.attilafazekas.common.UNAUTHORIZED
+import io.github.attilafazekas.common.VALIDATION_ERROR
+import io.github.attilafazekas.common.models.ErrorResponse
 import io.github.attilafazekas.vinylstore.db.DatabaseFactory
-import io.github.attilafazekas.vinylstore.models.ErrorResponse
 import io.github.attilafazekas.vinylstore.models.UserPrincipal
 import io.github.attilafazekas.vinylstore.payments.PaymentClient
 import io.github.attilafazekas.vinylstore.routes.adminRoutes
@@ -96,7 +101,7 @@ fun Application.vinylStoreApplication(
     paymentClient: PaymentClient =
         PaymentClient(
             baseUrl = System.getenv("PAYMENT_SERVICE_URL") ?: "http://localhost:9090",
-            apiKey = System.getenv("PAYMENT_SERVICE_API_KEY") ?: DEFAULT_PAYMENT_SERVICE_API_KEY,
+            apiKey = System.getenv(PAYMENT_SERVICE_API_KEY_ENV) ?: DEFAULT_PAYMENT_SERVICE_API_KEY,
         ),
     autoReset: Boolean = false,
 ) {

@@ -32,16 +32,9 @@ application {
 }
 
 dependencies {
+    implementation(project(":common"))
     implementation("io.ktor:ktor-server-request-validation-jvm:_")
     implementation("org.komapper:kova-core:_")
     implementation("org.komapper:kova-ktor:_")
     testImplementation("org.wiremock:wiremock:_")
-}
-
-tasks.withType<KotlinCompile>().configureEach {
-    compilerOptions {
-        optIn.addAll(
-            "kotlin.uuid.ExperimentalUuidApi",
-        )
-    }
 }

@@ -16,6 +16,7 @@
 
 package io.github.attilafazekas.paymentservice.routes
 
+import io.github.attilafazekas.common.formatDuration
 import io.github.attilafazekas.paymentservice.models.HealthResponse
 import io.github.smiley4.ktoropenapi.config.RouteConfig
 import io.github.smiley4.ktoropenapi.get
@@ -30,13 +31,6 @@ fun Route.healthRoutes() {
         val uptime = System.currentTimeMillis() - serviceStartedAt
         call.respond(HealthResponse(status = "OK", uptime = formatDuration(uptime)))
     }
-}
-
-private fun formatDuration(milliseconds: Long): String {
-    val seconds = (milliseconds / 1000) % 60
-    val minutes = (milliseconds / (1000 * 60)) % 60
-    val hours = (milliseconds / (1000 * 60 * 60))
-    return String.format("%02d:%02d:%02d", hours, minutes, seconds)
 }
 
 private fun healthCheckDocumentation(): RouteConfig.() -> Unit =

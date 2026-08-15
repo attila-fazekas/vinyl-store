@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package io.github.attilafazekas.paymentservice
+package io.github.attilafazekas.paymentservice.models
 
-import java.time.Instant
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
+import io.github.smiley4.schemakenerator.core.annotations.Description
+import kotlinx.serialization.Serializable
 
-object TimestampUtil {
-    private val formatter: DateTimeFormatter =
-        DateTimeFormatter
-            .ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-            .withZone(ZoneOffset.UTC)
-
-    fun now(): String = formatter.format(Instant.now())
-}
+@Serializable
+data class HealthResponse(
+    @Description("The health status of the API.")
+    val status: String,
+    @Description("How long the service has been running, formatted as HH:MM:SS.")
+    val uptime: String,
+)

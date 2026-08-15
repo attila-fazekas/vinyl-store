@@ -16,24 +16,25 @@
 
 package io.github.attilafazekas.vinylstore.routes.v1
 
+import io.github.attilafazekas.common.BAD_REQUEST
+import io.github.attilafazekas.common.CONFLICT
+import io.github.attilafazekas.common.NOT_FOUND
+import io.github.attilafazekas.common.SERVICE_UNAVAILABLE
+import io.github.attilafazekas.common.TimestampUtil
+import io.github.attilafazekas.common.badRequestExample
+import io.github.attilafazekas.common.conflictExample
+import io.github.attilafazekas.common.models.ErrorResponse
+import io.github.attilafazekas.common.models.PaymentRequest
+import io.github.attilafazekas.common.notAuthenticatedExample
+import io.github.attilafazekas.common.notFoundExample
+import io.github.attilafazekas.common.serviceUnavailableExample
 import io.github.attilafazekas.vinylstore.AUTH_JWT
-import io.github.attilafazekas.vinylstore.BAD_REQUEST
-import io.github.attilafazekas.vinylstore.CONFLICT
-import io.github.attilafazekas.vinylstore.NOT_FOUND
 import io.github.attilafazekas.vinylstore.OrderCreationResult
-import io.github.attilafazekas.vinylstore.SERVICE_UNAVAILABLE
-import io.github.attilafazekas.vinylstore.TimestampUtil
 import io.github.attilafazekas.vinylstore.V1
 import io.github.attilafazekas.vinylstore.VinylStoreRepository
-import io.github.attilafazekas.vinylstore.documentation.badRequestExample
-import io.github.attilafazekas.vinylstore.documentation.conflictExample
-import io.github.attilafazekas.vinylstore.documentation.notAuthenticatedExample
-import io.github.attilafazekas.vinylstore.documentation.notFoundExample
-import io.github.attilafazekas.vinylstore.documentation.serviceUnavailableExample
 import io.github.attilafazekas.vinylstore.enums.OrderStatus
 import io.github.attilafazekas.vinylstore.enums.Role
 import io.github.attilafazekas.vinylstore.models.CreateOrderRequest
-import io.github.attilafazekas.vinylstore.models.ErrorResponse
 import io.github.attilafazekas.vinylstore.models.Order
 import io.github.attilafazekas.vinylstore.models.OrderItem
 import io.github.attilafazekas.vinylstore.models.OrderResponse
@@ -41,7 +42,6 @@ import io.github.attilafazekas.vinylstore.models.OrdersResponse
 import io.github.attilafazekas.vinylstore.models.PayOrderRequest
 import io.github.attilafazekas.vinylstore.models.UserPrincipal
 import io.github.attilafazekas.vinylstore.payments.PaymentChargeOutcome
-import io.github.attilafazekas.vinylstore.payments.PaymentChargeRequest
 import io.github.attilafazekas.vinylstore.payments.PaymentClient
 import io.github.smiley4.ktoropenapi.config.RouteConfig
 import io.github.smiley4.ktoropenapi.get
@@ -123,7 +123,7 @@ fun Route.orderRoutes(
 
                 val centsPerUnit = 100
                 val chargeRequest =
-                    PaymentChargeRequest(
+                    PaymentRequest(
                         orderReference = order.id.toString(),
                         amountCents = (order.totalAmount * centsPerUnit).roundToInt(),
                         currency = order.currency,

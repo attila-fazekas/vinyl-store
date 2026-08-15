@@ -14,9 +14,16 @@
  * limitations under the License.
  */
 
-package io.github.attilafazekas.vinylstore.enums
+package io.github.attilafazekas.common
 
-enum class PaymentChargeStatus {
-    Succeeded,
-    Failed,
-}
+const val API_KEY_HEADER = "X-API-Key"
+const val PAYMENT_SERVICE_API_KEY_ENV = "PAYMENT_SERVICE_API_KEY"
+const val DEFAULT_PAYMENT_SERVICE_API_KEY = "vinyl-store-payment-service-api-key-for-testing"
+
+const val BAD_REQUEST = "Bad Request"
+const val CONFLICT = "Conflict"
+const val FORBIDDEN = "Forbidden"
+const val NOT_FOUND = "Not Found"
+const val SERVICE_UNAVAILABLE = "Service Unavailable"
+const val UNAUTHORIZED = "Unauthorized"
+const val VALIDATION_ERROR = "Validation Error"

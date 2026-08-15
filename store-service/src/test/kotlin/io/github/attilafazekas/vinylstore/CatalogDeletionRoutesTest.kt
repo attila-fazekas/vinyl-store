@@ -16,8 +16,9 @@
 
 package io.github.attilafazekas.vinylstore
 
+import io.github.attilafazekas.common.CONFLICT
+import io.github.attilafazekas.common.models.ErrorResponse
 import io.github.attilafazekas.vinylstore.enums.Role
-import io.github.attilafazekas.vinylstore.models.ErrorResponse
 import io.kotest.matchers.shouldBe
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body

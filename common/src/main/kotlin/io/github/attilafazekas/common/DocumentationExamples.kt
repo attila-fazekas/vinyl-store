@@ -14,16 +14,9 @@
  * limitations under the License.
  */
 
-package io.github.attilafazekas.vinylstore.documentation
+package io.github.attilafazekas.common
 
-import io.github.attilafazekas.vinylstore.BAD_REQUEST
-import io.github.attilafazekas.vinylstore.CONFLICT
-import io.github.attilafazekas.vinylstore.FORBIDDEN
-import io.github.attilafazekas.vinylstore.NOT_FOUND
-import io.github.attilafazekas.vinylstore.SERVICE_UNAVAILABLE
-import io.github.attilafazekas.vinylstore.UNAUTHORIZED
-import io.github.attilafazekas.vinylstore.VALIDATION_ERROR
-import io.github.attilafazekas.vinylstore.models.ErrorResponse
+import io.github.attilafazekas.common.models.ErrorResponse
 import io.github.smiley4.ktoropenapi.config.ResponsesConfig
 import io.ktor.http.HttpStatusCode
 
@@ -49,11 +42,11 @@ fun ResponsesConfig.validationErrorExample(vararg message: String) {
     }
 }
 
-fun ResponsesConfig.notAuthenticatedExample() {
+fun ResponsesConfig.notAuthenticatedExample(message: String = "Not authenticated") {
     code(HttpStatusCode.Unauthorized) {
         body<ErrorResponse> {
-            example("Not authenticated") {
-                value = ErrorResponse(UNAUTHORIZED, "Not authenticated")
+            example(message) {
+                value = ErrorResponse(UNAUTHORIZED, message)
             }
         }
     }

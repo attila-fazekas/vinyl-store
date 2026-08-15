@@ -16,27 +16,27 @@
 
 package io.github.attilafazekas.vinylstore.routes.v1
 
+import io.github.attilafazekas.common.CONFLICT
+import io.github.attilafazekas.common.FORBIDDEN
+import io.github.attilafazekas.common.TimestampUtil
+import io.github.attilafazekas.common.UNAUTHORIZED
+import io.github.attilafazekas.common.conflictExample
+import io.github.attilafazekas.common.models.ErrorResponse
+import io.github.attilafazekas.common.notAuthenticatedExample
+import io.github.attilafazekas.common.validationErrorExample
 import io.github.attilafazekas.vinylstore.ADMIN_EMAIL
 import io.github.attilafazekas.vinylstore.ADMIN_PASSWORD
 import io.github.attilafazekas.vinylstore.AUTH_JWT
 import io.github.attilafazekas.vinylstore.AuthException
-import io.github.attilafazekas.vinylstore.CONFLICT
 import io.github.attilafazekas.vinylstore.CUSTOMER_EMAIL
 import io.github.attilafazekas.vinylstore.CUSTOMER_PASSWORD
 import io.github.attilafazekas.vinylstore.Email
-import io.github.attilafazekas.vinylstore.FORBIDDEN
 import io.github.attilafazekas.vinylstore.JwtConfig
 import io.github.attilafazekas.vinylstore.Password
 import io.github.attilafazekas.vinylstore.PasswordUtil
-import io.github.attilafazekas.vinylstore.TimestampUtil
-import io.github.attilafazekas.vinylstore.UNAUTHORIZED
 import io.github.attilafazekas.vinylstore.V1
 import io.github.attilafazekas.vinylstore.VinylStoreRepository
-import io.github.attilafazekas.vinylstore.documentation.conflictExample
-import io.github.attilafazekas.vinylstore.documentation.notAuthenticatedExample
-import io.github.attilafazekas.vinylstore.documentation.validationErrorExample
 import io.github.attilafazekas.vinylstore.enums.Role
-import io.github.attilafazekas.vinylstore.models.ErrorResponse
 import io.github.attilafazekas.vinylstore.models.LoginRequest
 import io.github.attilafazekas.vinylstore.models.LoginResponse
 import io.github.attilafazekas.vinylstore.models.RegisterRequest

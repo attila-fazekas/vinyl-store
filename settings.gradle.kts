@@ -13,5 +13,6 @@ refreshVersions {
     }
 }
 
+include("common")
 include("store-service")
 include("payment-service")

@@ -16,10 +16,10 @@
 
 package io.github.attilafazekas.vinylstore.routes
 
+import io.github.attilafazekas.common.insufficientPermissionsExample
+import io.github.attilafazekas.common.notAuthenticatedExample
 import io.github.attilafazekas.vinylstore.AUTH_JWT
 import io.github.attilafazekas.vinylstore.VinylStoreRepository
-import io.github.attilafazekas.vinylstore.documentation.insufficientPermissionsExample
-import io.github.attilafazekas.vinylstore.documentation.notAuthenticatedExample
 import io.github.attilafazekas.vinylstore.enums.Role
 import io.github.attilafazekas.vinylstore.models.MessageResponse
 import io.github.attilafazekas.vinylstore.requireRole

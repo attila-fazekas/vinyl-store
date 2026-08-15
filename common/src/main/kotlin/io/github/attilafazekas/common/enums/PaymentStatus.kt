@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.github.attilafazekas.paymentservice.enums
+package io.github.attilafazekas.common.enums
 
 enum class PaymentStatus {
     Succeeded,

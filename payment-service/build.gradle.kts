@@ -30,13 +30,6 @@ application {
 }
 
 dependencies {
+    implementation(project(":common"))
     testImplementation("io.ktor:ktor-client-content-negotiation-jvm:_")
-}
-
-tasks.withType<KotlinCompile>().configureEach {
-    compilerOptions {
-        optIn.addAll(
-            "kotlin.uuid.ExperimentalUuidApi",
-        )
-    }
 }
