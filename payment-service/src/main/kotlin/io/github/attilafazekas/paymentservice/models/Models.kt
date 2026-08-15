@@ -60,3 +60,11 @@ data class HealthResponse(
     @Description("How long the service has been running, formatted as HH:MM:SS.")
     val uptime: String,
 )
+
+@Serializable
+data class ErrorResponse(
+    @Description("The error type or category.")
+    val error: String,
+    @Description("A detailed error message describing what went wrong.")
+    val message: String,
+)

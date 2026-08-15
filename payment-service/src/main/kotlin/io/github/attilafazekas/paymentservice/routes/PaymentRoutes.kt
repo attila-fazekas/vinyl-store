@@ -16,24 +16,48 @@
 
 package io.github.attilafazekas.paymentservice.routes
 
+import io.github.attilafazekas.paymentservice.AUTH_API_KEY
+import io.github.attilafazekas.paymentservice.BAD_REQUEST
+import io.github.attilafazekas.paymentservice.NOT_FOUND
+import io.github.attilafazekas.paymentservice.PaymentRepository
+import io.github.attilafazekas.paymentservice.documentation.badRequestExample
+import io.github.attilafazekas.paymentservice.documentation.notAuthenticatedExample
+import io.github.attilafazekas.paymentservice.documentation.notFoundExample
 import io.github.attilafazekas.paymentservice.enums.PaymentStatus
+import io.github.attilafazekas.paymentservice.models.ErrorResponse
 import io.github.attilafazekas.paymentservice.models.PaymentRequest
 import io.github.attilafazekas.paymentservice.models.PaymentResponse
 import io.github.smiley4.ktoropenapi.config.RouteConfig
 import io.github.smiley4.ktoropenapi.get
 import io.github.smiley4.ktoropenapi.post
 import io.ktor.http.HttpStatusCode
+import io.ktor.server.auth.authenticate
+import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import kotlin.uuid.Uuid
 
-fun Route.paymentRoutes() {
-    post("/payments", chargePaymentDocumentation()) {
-        call.respond(HttpStatusCode.NotImplemented)
-    }
+fun Route.paymentRoutes(paymentRepo: PaymentRepository) {
+    authenticate(AUTH_API_KEY) {
+        post("/payments", chargePaymentDocumentation()) {
+            val request = call.receive<PaymentRequest>()
+            call.respond(HttpStatusCode.OK, paymentRepo.charge(request))
+        }
 
-    get("/payments/{paymentId}", getPaymentDocumentation()) {
-        call.respond(HttpStatusCode.NotImplemented)
+        get("/payments/{paymentId}", getPaymentDocumentation()) {
+            val paymentId = call.parameters["paymentId"]?.let { runCatching { Uuid.parse(it) }.getOrNull() }
+            if (paymentId == null) {
+                call.respond(HttpStatusCode.BadRequest, ErrorResponse(BAD_REQUEST, "Invalid payment ID"))
+                return@get
+            }
+
+            val payment = paymentRepo.getById(paymentId)
+            if (payment == null) {
+                call.respond(HttpStatusCode.NotFound, ErrorResponse(NOT_FOUND, "Payment not found"))
+            } else {
+                call.respond(payment)
+            }
+        }
     }
 }
 
@@ -45,13 +69,10 @@ private fun chargePaymentDocumentation(): RouteConfig.() -> Unit =
             """
             Charge a payment method for a given order.
 
-            **This endpoint is not implemented yet.** It documents the intended request and response
-            contract so that calling services (such as vinylstore) can be built and tested against a
-            stable schema, for example by stubbing this endpoint with WireMock.
-
-            **Intended Behavior:**
+            **Simulated Behavior:**
             - Charges are synchronous: the response reflects the final outcome (Succeeded or Failed)
-            - Retrying a charge with the same idempotencyKey must not result in a double charge
+            - Retrying a charge with the same idempotencyKey replays the original response instead of charging again
+            - The paymentMethod `tok_chargeDeclined` simulates a declined card; any other value succeeds
             """.trimIndent()
         tags = listOf("payments")
         request {
@@ -71,7 +92,6 @@ private fun chargePaymentDocumentation(): RouteConfig.() -> Unit =
         }
         response {
             code(HttpStatusCode.OK) {
-                description = "The intended response shape once this endpoint is implemented."
                 body<PaymentResponse> {
                     example("Payment succeeded") {
                         value =
@@ -99,9 +119,7 @@ private fun chargePaymentDocumentation(): RouteConfig.() -> Unit =
                     }
                 }
             }
-            code(HttpStatusCode.NotImplemented) {
-                description = "This endpoint is not implemented yet."
-            }
+            notAuthenticatedExample()
         }
     }
 
@@ -112,9 +130,6 @@ private fun getPaymentDocumentation(): RouteConfig.() -> Unit =
         description =
             """
             Retrieve a previously created payment by its ID.
-
-            **This endpoint is not implemented yet.** It documents the intended response contract so
-            that calling services can be built and tested against a stable schema.
             """.trimIndent()
         tags = listOf("payments")
         request {
@@ -127,7 +142,6 @@ private fun getPaymentDocumentation(): RouteConfig.() -> Unit =
         }
         response {
             code(HttpStatusCode.OK) {
-                description = "The intended response shape once this endpoint is implemented."
                 body<PaymentResponse> {
                     example("Payment details") {
                         value =
@@ -143,8 +157,8 @@ private fun getPaymentDocumentation(): RouteConfig.() -> Unit =
                     }
                 }
             }
-            code(HttpStatusCode.NotImplemented) {
-                description = "This endpoint is not implemented yet."
-            }
+            badRequestExample("Invalid payment ID")
+            notAuthenticatedExample()
+            notFoundExample("Payment not found")
         }
     }

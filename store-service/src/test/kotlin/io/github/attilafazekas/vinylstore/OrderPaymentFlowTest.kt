@@ -51,6 +51,8 @@ import org.junit.jupiter.api.Test
 import org.komapper.r2dbc.R2dbcDatabase
 import kotlin.uuid.Uuid
 
+private const val TEST_PAYMENT_SERVICE_API_KEY = "test-payment-service-api-key"
+
 class OrderPaymentFlowTest {
     @Test
     fun `pay succeeds - order becomes Paid and inventory converts reserved to sold`() {
@@ -113,8 +115,9 @@ class OrderPaymentFlowTest {
     fun `payment service timeout - order stays Pending and endpoint reports unavailable`() {
         withCheckoutFixture(paymentClientFactory = { baseUrl ->
             PaymentClient(
-                baseUrl,
-                shortTimeoutHttpClient(),
+                baseUrl = baseUrl,
+                apiKey = TEST_PAYMENT_SERVICE_API_KEY,
+                client = shortTimeoutHttpClient(),
             )
         }) { store, wireMock, client, fixture, order ->
             wireMock.stubFor(
@@ -157,7 +160,7 @@ class OrderPaymentFlowTest {
     }
 
     private fun withCheckoutFixture(
-        paymentClientFactory: (String) -> PaymentClient = { baseUrl -> PaymentClient(baseUrl) },
+        paymentClientFactory: (String) -> PaymentClient = { baseUrl -> PaymentClient(baseUrl, TEST_PAYMENT_SERVICE_API_KEY) },
         block: suspend (
             store: VinylStoreRepository,
             wireMock: WireMockServer,

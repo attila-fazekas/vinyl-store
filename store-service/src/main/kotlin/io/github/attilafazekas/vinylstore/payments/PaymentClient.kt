@@ -23,6 +23,7 @@ import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
@@ -32,16 +33,19 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.json.Json
 
+private const val API_KEY_HEADER = "X-API-Key"
 private const val PAYMENT_CLIENT_TIMEOUT_MILLIS = 5_000L
 
 class PaymentClient(
     private val baseUrl: String,
+    private val apiKey: String,
     private val client: HttpClient = createHttpClient(),
 ) {
     suspend fun charge(request: PaymentChargeRequest): PaymentChargeOutcome =
         try {
             val response =
                 client.post("$baseUrl/payments") {
+                    header(API_KEY_HEADER, apiKey)
                     setBody(request)
                 }
             if (response.status.isSuccess()) {

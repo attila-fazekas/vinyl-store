@@ -27,6 +27,7 @@ services:
       POSTGRES_USER: vinylstore
       POSTGRES_PASSWORD: vinylstore
       PAYMENT_SERVICE_URL: http://payment-service:9090
+      PAYMENT_SERVICE_API_KEY: vinyl-store-payment-service-api-key-for-testing
     depends_on:
       postgres:
         condition: service_healthy
@@ -40,6 +41,8 @@ services:
     restart: on-failure
     ports:
       - "9090:9090"
+    environment:
+      PAYMENT_SERVICE_API_KEY: vinyl-store-payment-service-api-key-for-testing
 
 volumes:
   postgres-data:

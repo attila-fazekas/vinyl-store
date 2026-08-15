@@ -14,22 +14,11 @@
  * limitations under the License.
  */
 
-package io.github.attilafazekas.vinylstore
+package io.github.attilafazekas.paymentservice
 
-const val AUTH_JWT = "auth-jwt"
+const val AUTH_API_KEY = "auth-api-key"
 const val DEFAULT_PAYMENT_SERVICE_API_KEY = "vinyl-store-payment-service-api-key-for-testing"
 
 const val BAD_REQUEST = "Bad Request"
-const val CONFLICT = "Conflict"
-const val FORBIDDEN = "Forbidden"
 const val NOT_FOUND = "Not Found"
-const val SERVICE_UNAVAILABLE = "Service Unavailable"
 const val UNAUTHORIZED = "Unauthorized"
-const val VALIDATION_ERROR = "Validation Error"
-
-const val ADMIN_EMAIL = "admin@vinylstore.com"
-const val ADMIN_PASSWORD = "admin123"
-const val STAFF_EMAIL = "staff@vinylstore.com"
-const val STAFF_PASSWORD = "staff123"
-const val CUSTOMER_EMAIL = "customer@vinylstore.com"
-const val CUSTOMER_PASSWORD = "customer123"
