@@ -16,6 +16,7 @@
 
 package io.github.attilafazekas.paymentservice
 
+import io.github.attilafazekas.paymentservice.routes.healthRoutes
 import io.github.attilafazekas.paymentservice.routes.paymentRoutes
 import io.github.smiley4.ktoropenapi.OpenApi
 import io.github.smiley4.ktoropenapi.config.OutputFormat
@@ -56,6 +57,7 @@ fun Application.paymentServiceApplication() {
         }
 
         paymentRoutes()
+        healthRoutes()
     }
 }
 
