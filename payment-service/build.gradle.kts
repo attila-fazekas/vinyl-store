@@ -29,6 +29,10 @@ application {
     mainClass.set("io.github.attilafazekas.paymentservice.ApplicationKt")
 }
 
+dependencies {
+    testImplementation("io.ktor:ktor-client-content-negotiation-jvm:_")
+}
+
 tasks.withType<KotlinCompile>().configureEach {
     compilerOptions {
         optIn.addAll(

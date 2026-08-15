@@ -14,7 +14,7 @@ A comprehensive REST API server for managing a vinyl record store, featuring cat
 The project consists of two services:
 
 - **store-service** — the main Vinyl Store API described below
-- **payment-service** — a contract-only payment processing API modeling how store-service integrates with an external payment provider (see [Payment Service](#payment-service))
+- **payment-service** — a simulated payment processing API modeling how store-service integrates with an external payment provider (see [Payment Service](#payment-service))
 
 ## Key Features
 
@@ -72,9 +72,10 @@ To enable auto-reset, pass `--auto-reset` argument to the server: `./gradlew :st
 
 ## Payment Service
 
-`payment-service` is a contract-only API that models how store-service integrates with an external payment provider. It is not implemented yet — every endpoint documents its intended request and response shape, but handlers currently respond with `501 Not Implemented`. The published contract is intended to be stubbed with WireMock by calling services (such as `store-service`) during testing.
+`payment-service` simulates an external payment provider that `store-service` integrates with. Charges are processed synchronously against an in-memory store (no data persists across restarts): any `paymentMethod` succeeds except the magic value `tok_chargeDeclined`, which is always declined. Retrying a charge with the same `idempotencyKey` replays the original response instead of charging again.
 
 - **Endpoints**: `POST /payments` (charge a payment), `GET /payments/{paymentId}` (retrieve a payment), `GET /health` (health check)
+- **Authentication**: `POST /payments` and `GET /payments/{paymentId}` require an API key via the `X-API-Key` header. `GET /health` is open.
 - **OpenAPI/Swagger Documentation** at [http://localhost:9090/swagger](http://localhost:9090/swagger)
 
-Run it directly with `./gradlew :payment-service:run`, or via `docker compose up --build`. The `store-service` service points at it through the `PAYMENT_SERVICE_URL` environment variable (default: `http://payment-service:9090` in Docker Compose).
+Run it directly with `./gradlew :payment-service:run`, or via `docker compose up --build`. The `store-service` service points at it through the `PAYMENT_SERVICE_URL` environment variable (default: `http://payment-service:9090` in Docker Compose) and authenticates with it via the `PAYMENT_SERVICE_API_KEY` environment variable, which must match between both services (both default to the same hardcoded testing key if unset).
