@@ -16,9 +16,11 @@
 
 package io.github.attilafazekas.vinylstore
 
+import io.github.attilafazekas.common.UNAUTHORIZED
+import io.github.attilafazekas.common.VALIDATION_ERROR
+import io.github.attilafazekas.common.models.ErrorResponse
 import io.github.attilafazekas.vinylstore.enums.Role
 import io.github.attilafazekas.vinylstore.models.CreateUserRequest
-import io.github.attilafazekas.vinylstore.models.ErrorResponse
 import io.github.attilafazekas.vinylstore.models.LoginRequest
 import io.github.attilafazekas.vinylstore.models.RegisterRequest
 import io.kotest.matchers.shouldBe

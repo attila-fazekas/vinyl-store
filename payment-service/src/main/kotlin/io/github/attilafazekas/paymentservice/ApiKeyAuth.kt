@@ -16,7 +16,9 @@
 
 package io.github.attilafazekas.paymentservice
 
-import io.github.attilafazekas.paymentservice.models.ErrorResponse
+import io.github.attilafazekas.common.API_KEY_HEADER
+import io.github.attilafazekas.common.UNAUTHORIZED
+import io.github.attilafazekas.common.models.ErrorResponse
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.auth.AuthenticationConfig
 import io.ktor.server.auth.AuthenticationContext

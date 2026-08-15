@@ -16,17 +16,17 @@
 
 package io.github.attilafazekas.paymentservice.routes
 
+import io.github.attilafazekas.common.BAD_REQUEST
+import io.github.attilafazekas.common.NOT_FOUND
+import io.github.attilafazekas.common.badRequestExample
+import io.github.attilafazekas.common.enums.PaymentStatus
+import io.github.attilafazekas.common.models.ErrorResponse
+import io.github.attilafazekas.common.models.PaymentRequest
+import io.github.attilafazekas.common.models.PaymentResponse
+import io.github.attilafazekas.common.notAuthenticatedExample
+import io.github.attilafazekas.common.notFoundExample
 import io.github.attilafazekas.paymentservice.AUTH_API_KEY
-import io.github.attilafazekas.paymentservice.BAD_REQUEST
-import io.github.attilafazekas.paymentservice.NOT_FOUND
 import io.github.attilafazekas.paymentservice.PaymentRepository
-import io.github.attilafazekas.paymentservice.documentation.badRequestExample
-import io.github.attilafazekas.paymentservice.documentation.notAuthenticatedExample
-import io.github.attilafazekas.paymentservice.documentation.notFoundExample
-import io.github.attilafazekas.paymentservice.enums.PaymentStatus
-import io.github.attilafazekas.paymentservice.models.ErrorResponse
-import io.github.attilafazekas.paymentservice.models.PaymentRequest
-import io.github.attilafazekas.paymentservice.models.PaymentResponse
 import io.github.smiley4.ktoropenapi.config.RouteConfig
 import io.github.smiley4.ktoropenapi.get
 import io.github.smiley4.ktoropenapi.post
@@ -119,7 +119,7 @@ private fun chargePaymentDocumentation(): RouteConfig.() -> Unit =
                     }
                 }
             }
-            notAuthenticatedExample()
+            notAuthenticatedExample("Missing or invalid API key")
         }
     }
 
@@ -158,7 +158,7 @@ private fun getPaymentDocumentation(): RouteConfig.() -> Unit =
                 }
             }
             badRequestExample("Invalid payment ID")
-            notAuthenticatedExample()
+            notAuthenticatedExample("Missing or invalid API key")
             notFoundExample("Payment not found")
         }
     }

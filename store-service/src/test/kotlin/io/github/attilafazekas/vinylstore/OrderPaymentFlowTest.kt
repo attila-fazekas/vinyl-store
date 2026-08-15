@@ -19,9 +19,10 @@ package io.github.attilafazekas.vinylstore
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
+import io.github.attilafazekas.common.TimestampUtil
+import io.github.attilafazekas.common.enums.PaymentStatus
 import io.github.attilafazekas.vinylstore.enums.AddressType
 import io.github.attilafazekas.vinylstore.enums.OrderStatus
-import io.github.attilafazekas.vinylstore.enums.PaymentChargeStatus
 import io.github.attilafazekas.vinylstore.enums.Role
 import io.github.attilafazekas.vinylstore.models.Address
 import io.github.attilafazekas.vinylstore.models.CreateOrderRequest
@@ -60,7 +61,7 @@ class OrderPaymentFlowTest {
             wireMock.stubFor(
                 WireMock
                     .post(WireMock.urlEqualTo("/payments"))
-                    .willReturn(WireMock.okJson(paymentResponseJson(PaymentChargeStatus.Succeeded))),
+                    .willReturn(WireMock.okJson(paymentResponseJson(PaymentStatus.Succeeded))),
             )
 
             val response = client.payOrder(fixture.token, order.order.id)
@@ -79,7 +80,7 @@ class OrderPaymentFlowTest {
             wireMock.stubFor(
                 WireMock
                     .post(WireMock.urlEqualTo("/payments"))
-                    .willReturn(WireMock.okJson(paymentResponseJson(PaymentChargeStatus.Failed))),
+                    .willReturn(WireMock.okJson(paymentResponseJson(PaymentStatus.Failed))),
             )
 
             val response = client.payOrder(fixture.token, order.order.id)
@@ -125,7 +126,7 @@ class OrderPaymentFlowTest {
                     .post(WireMock.urlEqualTo("/payments"))
                     .willReturn(
                         WireMock
-                            .okJson(paymentResponseJson(PaymentChargeStatus.Succeeded))
+                            .okJson(paymentResponseJson(PaymentStatus.Succeeded))
                             .withFixedDelay(TIMEOUT_TEST_DELAY_MILLIS),
                     ),
             )
@@ -146,7 +147,7 @@ class OrderPaymentFlowTest {
             wireMock.stubFor(
                 WireMock
                     .post(WireMock.urlEqualTo("/payments"))
-                    .willReturn(WireMock.okJson(paymentResponseJson(PaymentChargeStatus.Succeeded))),
+                    .willReturn(WireMock.okJson(paymentResponseJson(PaymentStatus.Succeeded))),
             )
 
             client.payOrder(fixture.token, order.order.id).status shouldBe HttpStatusCode.OK
@@ -247,7 +248,7 @@ class OrderPaymentFlowTest {
             setBody(PayOrderRequest("tok_visa"))
         }
 
-    private fun paymentResponseJson(status: PaymentChargeStatus): String =
+    private fun paymentResponseJson(status: PaymentStatus): String =
         """
         {
           "paymentId": "${Uuid.random()}",

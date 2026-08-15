@@ -9,6 +9,7 @@ COPY settings.gradle.kts versions.properties ./
 COPY buildSrc/build.gradle.kts ./buildSrc/build.gradle.kts
 COPY buildSrc/settings.gradle.kts ./buildSrc/settings.gradle.kts
 COPY buildSrc/src ./buildSrc/src
+COPY common/build.gradle.kts ./common/build.gradle.kts
 COPY store-service/build.gradle.kts ./store-service/build.gradle.kts
 COPY payment-service/build.gradle.kts ./payment-service/build.gradle.kts
 
@@ -17,6 +18,7 @@ COPY payment-service/build.gradle.kts ./payment-service/build.gradle.kts
 RUN ./gradlew :store-service:dependencies --no-daemon
 
 # Now copy the actual source and build the fat jar
+COPY common/src/main ./common/src/main
 COPY store-service/src/main ./store-service/src/main
 RUN ./gradlew :store-service:buildFatJar --no-daemon
 

@@ -16,23 +16,23 @@
 
 package io.github.attilafazekas.vinylstore.routes.v1
 
+import io.github.attilafazekas.common.BAD_REQUEST
+import io.github.attilafazekas.common.CONFLICT
+import io.github.attilafazekas.common.NOT_FOUND
+import io.github.attilafazekas.common.badRequestExample
+import io.github.attilafazekas.common.conflictExample
+import io.github.attilafazekas.common.insufficientPermissionsExample
+import io.github.attilafazekas.common.models.ErrorResponse
+import io.github.attilafazekas.common.notAuthenticatedExample
+import io.github.attilafazekas.common.notFoundExample
 import io.github.attilafazekas.vinylstore.AUTH_JWT
-import io.github.attilafazekas.vinylstore.BAD_REQUEST
-import io.github.attilafazekas.vinylstore.CONFLICT
-import io.github.attilafazekas.vinylstore.NOT_FOUND
 import io.github.attilafazekas.vinylstore.V1
 import io.github.attilafazekas.vinylstore.VinylStoreRepository
-import io.github.attilafazekas.vinylstore.documentation.badRequestExample
-import io.github.attilafazekas.vinylstore.documentation.conflictExample
-import io.github.attilafazekas.vinylstore.documentation.insufficientPermissionsExample
-import io.github.attilafazekas.vinylstore.documentation.notAuthenticatedExample
-import io.github.attilafazekas.vinylstore.documentation.notFoundExample
 import io.github.attilafazekas.vinylstore.enums.DeletionResult
 import io.github.attilafazekas.vinylstore.enums.Role
 import io.github.attilafazekas.vinylstore.models.Artist
 import io.github.attilafazekas.vinylstore.models.ArtistsResponse
 import io.github.attilafazekas.vinylstore.models.CreateArtistRequest
-import io.github.attilafazekas.vinylstore.models.ErrorResponse
 import io.github.attilafazekas.vinylstore.models.UpdateArtistRequest
 import io.github.attilafazekas.vinylstore.requireRole
 import io.github.smiley4.ktoropenapi.config.RouteConfig

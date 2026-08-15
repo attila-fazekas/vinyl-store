@@ -16,6 +16,7 @@
 
 package io.github.attilafazekas.vinylstore.routes
 
+import io.github.attilafazekas.common.formatDuration
 import io.github.attilafazekas.vinylstore.VinylStoreRepository
 import io.github.attilafazekas.vinylstore.models.HealthResponse
 import io.github.smiley4.ktoropenapi.config.RouteConfig
@@ -39,13 +40,6 @@ fun Route.healthRoutes(
             }
         call.respond(HealthResponse("OK", formatDuration(uptime), nextReset))
     }
-}
-
-private fun formatDuration(milliseconds: Long): String {
-    val seconds = (milliseconds / 1000) % 60
-    val minutes = (milliseconds / (1000 * 60)) % 60
-    val hours = (milliseconds / (1000 * 60 * 60))
-    return String.format("%02d:%02d:%02d", hours, minutes, seconds)
 }
 
 private fun healthCheckDocumentation(): RouteConfig.() -> Unit =

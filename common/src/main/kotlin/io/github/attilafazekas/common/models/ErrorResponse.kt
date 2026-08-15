@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package io.github.attilafazekas.vinylstore
+package io.github.attilafazekas.common.models
 
-const val AUTH_JWT = "auth-jwt"
+import io.github.smiley4.schemakenerator.core.annotations.Description
+import kotlinx.serialization.Serializable
 
-const val ADMIN_EMAIL = "admin@vinylstore.com"
-const val ADMIN_PASSWORD = "admin123"
-const val STAFF_EMAIL = "staff@vinylstore.com"
-const val STAFF_PASSWORD = "staff123"
-const val CUSTOMER_EMAIL = "customer@vinylstore.com"
-const val CUSTOMER_PASSWORD = "customer123"
+@Serializable
+data class ErrorResponse(
+    @Description("The error type or category.")
+    val error: String,
+    @Description("A detailed error message describing what went wrong.")
+    val message: String,
+)

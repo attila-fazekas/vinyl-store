@@ -38,7 +38,14 @@ dependencies {
 
 tasks.withType<KotlinCompile> {
     compilerOptions.freeCompilerArgs = listOf(
-        "-Xcontext-parameters",
         "-Xreturn-value-checker=full"
     )
+}
+
+tasks.withType<KotlinCompile>().configureEach {
+    compilerOptions {
+        optIn.addAll(
+            "kotlin.uuid.ExperimentalUuidApi",
+        )
+    }
 }

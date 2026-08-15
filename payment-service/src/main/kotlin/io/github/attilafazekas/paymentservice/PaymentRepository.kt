@@ -16,9 +16,10 @@
 
 package io.github.attilafazekas.paymentservice
 
-import io.github.attilafazekas.paymentservice.enums.PaymentStatus
-import io.github.attilafazekas.paymentservice.models.PaymentRequest
-import io.github.attilafazekas.paymentservice.models.PaymentResponse
+import io.github.attilafazekas.common.TimestampUtil
+import io.github.attilafazekas.common.enums.PaymentStatus
+import io.github.attilafazekas.common.models.PaymentRequest
+import io.github.attilafazekas.common.models.PaymentResponse
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.uuid.Uuid
 
